@@ -13,4 +13,8 @@ export class CircleListComponent {
   constructor(private circlesService: CircleService) {
     this.circlesList = this.circlesService.circleList;
   }
+
+  circleClicked(circle: Circle) {
+    this.circlesService.setSelectedCircle(circle);
+  }
 }

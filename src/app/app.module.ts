@@ -7,6 +7,7 @@ import { CircleComponent } from './square/circle/circle.component';
 import { CircleListComponent } from './circle-list/circle-list.component';
 import { NotesTabComponent } from './notes-tab/notes-tab.component';
 import { InstrumentsTabComponent } from './instruments-tab/instruments-tab.component';
+import { CircleCharacteristicsComponent } from "./circle-characteristics/circle-characteristics.component";
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { InstrumentsTabComponent } from './instruments-tab/instruments-tab.compo
     CircleComponent,
     CircleListComponent,
     NotesTabComponent,
-    InstrumentsTabComponent
+    InstrumentsTabComponent,
+    CircleCharacteristicsComponent
   ],
   imports: [
     BrowserModule

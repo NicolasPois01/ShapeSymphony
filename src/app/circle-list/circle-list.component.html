@@ -1,7 +1,7 @@
 <div class="title">Liste des entités</div>
 <ul>
   <li *ngFor="let circle of circlesList">
-    <span class="color-box" [style.background-color]="circle.color"></span>
+    <span class="color-box" [style.background-color]="circle.color" (click)="circleClicked(circle)"></span>
     Circle {{circle.id}}
   </li>
 </ul>

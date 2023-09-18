@@ -1,5 +1,6 @@
 import {Injectable, OnInit} from '@angular/core';
 import {Circle} from "../models/circle";
+import {BehaviorSubject} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -8,8 +9,10 @@ export class CircleService {
 
   circleList: Circle[] = [];
   colors = ["red", "green", "blue", "yellow", "pink", "orange", "purple", "cyan", "magenta", "brown"];
-
-  constructor() {}
+  selectedCircle: Circle | null;
+  constructor() {
+    this.selectedCircle = null;
+  }
 
   updatePos(id: number, x: number, y: number) {
     const circleIndex = this.circleList.findIndex(circle => circle.id === id);
@@ -57,5 +60,12 @@ export class CircleService {
     };
 
     this.circleList.push(circle);
+  }
+
+  private selectedCircleSubject = new BehaviorSubject<Circle | null>(null);
+  selectedCircle$ = this.selectedCircleSubject.asObservable();
+
+  setSelectedCircle(circle: Circle) {
+    this.selectedCircleSubject.next(circle);
   }
 }
