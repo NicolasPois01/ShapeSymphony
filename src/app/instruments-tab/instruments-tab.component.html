@@ -1,0 +1,7 @@
+<div *ngFor="let instrument of instrumentsList">
+  <div class="toggle-button"
+       [class.active]="isActive(instrument)"
+       (click)="toggleInstrument(instrument)">
+    {{ instrument }}
+  </div>
+</div>
