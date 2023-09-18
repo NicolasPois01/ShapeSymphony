@@ -1,0 +1,21 @@
+.d-flex {
+  display: flex;
+  align-items: start; // this ensures they are top-aligned if they have different heights
+}
+
+app-square, app-circle-list {
+  flex: 0 0 auto; // This means: don't grow, don't shrink, and initial size is auto
+}
+.circles-list-container {
+  max-height: 600px; /* Adjust this value to match the height of your square */
+  overflow-y: auto;  /* This makes the list scrollable if it exceeds the max height */
+  width: 150px;
+  margin-left: 2rem;
+  margin-top: 0;
+  border: 1px solid #000;
+}
+.container {
+  display: flex;
+  justify-content: center;
+}
+

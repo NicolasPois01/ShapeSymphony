@@ -1,0 +1,22 @@
+ul {
+  list-style-type: none; /* Removes bullet points */
+  padding-left: 0; /* Removes the default padding on the left side */
+}
+
+li {
+  margin: 0.2rem;
+}
+
+.color-box {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  margin-right: 10px;
+  border: 1px solid #000;  // Optional, to give it a border for visibility
+  vertical-align: middle; /* Aligns the box vertically in line with the text */
+}
+.title {
+  margin-left: 1rem;
+}
+
+

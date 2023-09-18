@@ -1,0 +1,15 @@
+.square {
+  position: relative;
+  width: 600px;
+  height: 600px;
+  border: 2px solid black;
+  overflow: hidden;
+}
+
+.circle {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: blue;
+  border-radius: 50%;
+}
