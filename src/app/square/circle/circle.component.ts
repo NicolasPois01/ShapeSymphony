@@ -8,4 +8,6 @@ import {Circle} from "../../models/circle";
 })
 export class CircleComponent {
   @Input() circle?: Circle;
+
+  
 }

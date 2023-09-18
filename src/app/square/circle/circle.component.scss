@@ -1,7 +1,10 @@
 .circle {
   position: absolute;
-  width: 20px;
-  height: 20px;
-  background-color: blue;
+  display: inline-block;
+  width: 10%;
+  height: 10%;
+  border: 3px solid blue;
   border-radius: 50%;
+  box-sizing: border-box;
+  pointer-events: none;
 }

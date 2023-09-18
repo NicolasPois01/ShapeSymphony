@@ -1,1 +1,1 @@
-<div class="circle" [style.left.px]="circle?.x" [style.top.px]="circle?.y" [style.background-color]="circle?.color"></div>
+<div class="circle" [style.left.%]="(circle?.x ?? 0) * 10" [style.top.%]="(circle?.y ?? 0) * 10" [style.border-color]="circle?.color"></div>
