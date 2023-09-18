@@ -18,4 +18,9 @@ app-square, app-circle-list {
   display: flex;
   justify-content: center;
 }
+.tabs-container {
+  display: flex;
+  flex-direction: column;  /* Stack the children vertically */
+}
+
 

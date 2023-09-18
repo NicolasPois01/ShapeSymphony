@@ -1,10 +1,15 @@
 <div class="container">
-  <div class="d-flex">
-    <app-notes-tab></app-notes-tab>
+  <div class="d-flex flex-wrap">
+    <!-- Group the tabs together -->
+    <div class="tabs-container">
+      <app-instruments-tab></app-instruments-tab>
+      <app-notes-tab></app-notes-tab>
+    </div>
+
     <app-square></app-square>
+
     <div class="circles-list-container">
       <app-circle-list></app-circle-list>
     </div>
   </div>
 </div>
-

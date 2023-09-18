@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {SoundService} from '../services/sound.service';
 
 @Component({
   selector: 'app-notes-tab',
@@ -7,4 +8,8 @@ import { Component } from '@angular/core';
 })
 export class NotesTabComponent {
 
+  notes!: string [];
+  constructor(private soundService: SoundService) {
+    this.notes = this.soundService.notes;
+  }
 }

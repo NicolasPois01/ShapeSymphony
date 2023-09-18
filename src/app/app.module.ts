@@ -6,6 +6,7 @@ import { SquareComponent } from './square/square.component';
 import { CircleComponent } from './square/circle/circle.component';
 import { CircleListComponent } from './circle-list/circle-list.component';
 import { NotesTabComponent } from './notes-tab/notes-tab.component';
+import { InstrumentsTabComponent } from './instruments-tab/instruments-tab.component';
 
 @NgModule({
   declarations: [
@@ -13,7 +14,8 @@ import { NotesTabComponent } from './notes-tab/notes-tab.component';
     SquareComponent,
     CircleComponent,
     CircleListComponent,
-    NotesTabComponent
+    NotesTabComponent,
+    InstrumentsTabComponent
   ],
   imports: [
     BrowserModule
