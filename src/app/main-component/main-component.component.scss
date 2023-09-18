@@ -10,7 +10,7 @@ app-square, app-circle-list {
   max-height: 600px; /* Adjust this value to match the height of your square */
   overflow-y: auto;  /* This makes the list scrollable if it exceeds the max height */
   width: 150px;
-  margin-left: 2rem;
+  margin-left: 1rem;
   margin-top: 0;
   border: 1px solid #000;
 }
