@@ -19,7 +19,6 @@ export class SquareComponent implements OnInit, OnDestroy {
   velocityY: number = 2.6;
 
   squareSize: number = 600;
-  circleSize: number = 1;
   squareUnit: number = 10;
 
   fps: number = 60;
@@ -51,11 +50,12 @@ export class SquareComponent implements OnInit, OnDestroy {
         for (let circle of this.circles) {
           this.circlesService.updatePos(circle, circle.x + (circle.xSpeed/this.fps), circle.y + (circle.ySpeed/this.fps));
 
-          if (circle.x < 0 || circle.x + this.circleSize > this.squareUnit) {
-            this.circlesService.bounceX(circle, circle.x < 0, this.squareUnit - this.circleSize);
+          if (!this.circlesService.inRange(circle.x, this.squareUnit)) {
+            console.log(circle.x);
+            this.circlesService.bounceX(circle, circle.x - this.circlesService.circleRad < -(this.squareUnit/2), this.squareUnit/2 - this.circlesService.circleRad);
           }
-          if (circle.y < 0 || circle.y + this.circleSize > this.squareUnit) {
-            this.circlesService.bounceY(circle, circle.y < 0, this.squareUnit - this.circleSize);
+          if (!this.circlesService.inRange(circle.y, this.squareUnit)) {
+            this.circlesService.bounceY(circle, circle.y - this.circlesService.circleRad < -(this.squareUnit/2), this.squareUnit/2 - this.circlesService.circleRad);
           }
         }
       }, 1000/this.fps);
@@ -78,7 +78,7 @@ export class SquareComponent implements OnInit, OnDestroy {
       x = this.circlesService.getFromMouse(event.offsetX + ((event?.target as HTMLElement)?.parentElement as HTMLElement)?.getBoundingClientRect()?.left, this.squareUnit, this.getSquareSize()); 
       y = this.circlesService.getFromMouse(event.offsetY + ((event?.target as HTMLElement)?.parentElement as HTMLElement)?.getBoundingClientRect()?.top, this.squareUnit, this.getSquareSize());
     }
-    if(x < 0 || y < 0 || x > this.squareUnit - this.circleSize || y > this.squareUnit - this.circleSize) return;
+    if(!this.circlesService.inRange(x, this.squareUnit) || !this.circlesService.inRange(y, this.squareUnit)) return;
     this.circlesService.addCircle(parseFloat(x.toFixed(event.ctrlKey ? 1 : 2)),parseFloat(y.toFixed(event.ctrlKey ? 1 : 2)));
   }
 
