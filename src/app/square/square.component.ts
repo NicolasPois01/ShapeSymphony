@@ -54,27 +54,34 @@ export class SquareComponent implements OnInit, OnDestroy {
   }
 
   onSquareClick(event: MouseEvent) {
-    console.log(event.offsetX, (event?.target as HTMLElement), event.offsetX + (event?.target as HTMLElement)?.getBoundingClientRect().left);
-    if(event.target === this.squareElement.nativeElement)
-      this.circlesService.addCircle(
-        this.circlesService.getFromMouse(event.offsetX, this.squareUnit, this.getSquareSize()), 
-        this.circlesService.getFromMouse(event.offsetY, this.squareUnit, this.getSquareSize()));
-    else
-      this.circlesService.addCircle(
-        this.circlesService.getFromMouse(event.offsetX + ((event?.target as HTMLElement)?.parentElement as HTMLElement)?.getBoundingClientRect()?.left, this.squareUnit, this.getSquareSize()), 
-        this.circlesService.getFromMouse(event.offsetY + ((event?.target as HTMLElement)?.parentElement as HTMLElement)?.getBoundingClientRect()?.top, this.squareUnit, this.getSquareSize()));
+    let x, y = 0;
+    if(event.target === this.squareElement.nativeElement) {
+      x = this.circlesService.getFromMouse(event.offsetX, this.squareUnit, this.getSquareSize()); 
+      y = this.circlesService.getFromMouse(event.offsetY, this.squareUnit, this.getSquareSize());
+    } else {
+      x = this.circlesService.getFromMouse(event.offsetX + ((event?.target as HTMLElement)?.parentElement as HTMLElement)?.getBoundingClientRect()?.left, this.squareUnit, this.getSquareSize()); 
+      y = this.circlesService.getFromMouse(event.offsetY + ((event?.target as HTMLElement)?.parentElement as HTMLElement)?.getBoundingClientRect()?.top, this.squareUnit, this.getSquareSize());
+    }
+    if(x < 0 || y < 0 || x > this.squareUnit - this.circleSize || y > this.squareUnit - this.circleSize) return;
+    this.circlesService.addCircle(parseFloat(x.toFixed(event.ctrlKey ? 1 : 2)),parseFloat(y.toFixed(event.ctrlKey ? 1 : 2)));
   }
 
   onSquareMouseMove(event: MouseEvent) {
-
+    let mousebox = document.querySelector('.mousebox') as HTMLElement;
+    mousebox.style.left = event.pageX+10 + 'px';
+    mousebox.style.top = event.pageY+10 + 'px';
+    mousebox.innerText =  this.circlesService.getFromMouse(event.offsetX, this.squareUnit, this.getSquareSize()).toFixed(event.ctrlKey ? 1 : 2)+";"+
+                          this.circlesService.getFromMouse(event.offsetY, this.squareUnit, this.getSquareSize()).toFixed(event.ctrlKey ? 1 : 2)
   }
 
   onSquareMouseEnter(event: MouseEvent) {
-
+    let mousebox = document.querySelector('.mousebox') as HTMLElement;
+    mousebox.style.display = 'block';
   }
 
   onSquareMouseLeave(event: MouseEvent) {
-
+    let mousebox = document.querySelector('.mousebox') as HTMLElement;
+    mousebox.style.display = 'none';
   }
 
   ngOnDestroy() {
