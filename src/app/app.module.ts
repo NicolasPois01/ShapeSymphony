@@ -8,6 +8,7 @@ import { CircleListComponent } from './circle-list/circle-list.component';
 import { NotesTabComponent } from './notes-tab/notes-tab.component';
 import { InstrumentsTabComponent } from './instruments-tab/instruments-tab.component';
 import { CircleCharacteristicsComponent } from "./circle-characteristics/circle-characteristics.component";
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ZeroPaddingPipe } from './zero-padding.pipe';
 import { TimerComponent } from './timer/timer.component';
 
@@ -24,7 +25,8 @@ import { TimerComponent } from './timer/timer.component';
     TimerComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    NgbModule
   ],
   providers: [],
   bootstrap: [MainComponentComponent]

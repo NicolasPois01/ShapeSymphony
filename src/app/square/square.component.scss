@@ -1,15 +1,8 @@
 .square {
   position: relative;
-  width: 600px;
-  height: 600px;
+  width: calc(100vh - 100px);
+  height: calc(100vh - 100px);
   border: 2px solid black;
+  box-sizing: content-box;
   overflow: hidden;
-}
-
-.circle {
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  background-color: blue;
-  border-radius: 50%;
 }
