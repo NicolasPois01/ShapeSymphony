@@ -11,11 +11,13 @@ export class TimerComponent {
   seconds: number = 0;
   milliseconds: number = 0;
   timer: any;
+  isRunning: boolean = false;
 
   constructor(private timerService: TimerService) {
   }
 
   startTimer(): void {
+    this.isRunning = true;
     this.timerService.start();
     if (!this.timer) {
       this.timer = setInterval(() => {
@@ -33,6 +35,7 @@ export class TimerComponent {
   }
 
   pauseTimer(): void {
+    this.isRunning = false;
     this.timerService.pause();
     if (this.timer) {
       clearInterval(this.timer);

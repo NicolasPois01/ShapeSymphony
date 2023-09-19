@@ -1,19 +1,22 @@
-<div class="container">
-  <h1>Shape Symphony</h1>
-  <div class="d-flex flex-wrap">
-    <!-- Group the tabs together -->
-    <div class="tabs-container">
+<div class="container mt-3"> <!-- Added margin-top for spacing from the top -->
+  <h1 class="text-center mb-4">Shape Symphony</h1> <!-- Added text-center to center text -->
+  <div class="row"> <!-- justify-content-center to center items -->
+
+    <div class="col-2">
       <app-instruments-tab></app-instruments-tab>
       <app-notes-tab></app-notes-tab>
       <app-timer></app-timer>
     </div>
 
-    <app-square></app-square>
+    <div class="col-6">
+      <app-square></app-square>
+    </div>
 
-    <div class="circles-list-container">
+    <div class="col-2">
       <app-circle-list></app-circle-list>
     </div>
-    <div class="circle-characteristics">
+
+    <div class="col-2">
       <app-circle-characteristics-list></app-circle-characteristics-list>
     </div>
   </div>
