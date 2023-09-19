@@ -1,19 +1,17 @@
-<div class="container">
-  <h1>Shape Symphony</h1>
-  <div class="d-flex flex-wrap">
-    <!-- Group the tabs together -->
-    <div class="tabs-container">
-      <app-instruments-tab></app-instruments-tab>
-      <app-notes-tab></app-notes-tab>
-    </div>
+<div class="container-app d-flex flex-column align-stretch">
+  <div class="container-app-row d-flex flex-row">
 
-    <app-square></app-square>
+    <app-square class="square"></app-square>
 
-    <div class="circles-list-container">
+    <div class="col-2">
       <app-circle-list></app-circle-list>
     </div>
     <div class="circle-characteristics">
       <app-circle-characteristics-list></app-circle-characteristics-list>
     </div>
+  </div>
+  <div class="container-bottom">
+    <app-instruments-tab></app-instruments-tab>
+    <app-notes-tab></app-notes-tab>
   </div>
 </div>
