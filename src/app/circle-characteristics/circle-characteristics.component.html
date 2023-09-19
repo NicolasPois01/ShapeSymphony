@@ -1,10 +1,10 @@
 <div *ngIf="selectedCircle" class="title p-2">
-  <div>Caractéristiques de l'entité : Circle {{ selectedCircle.id }}</div>
+  <div>Circle {{ selectedCircle.id }}</div>
   <ul>
-    <li>Position X: {{ selectedCircle.x }}</li>
-    <li>Position Y: {{ selectedCircle.y }}</li>
-    <li>Vitesse X: {{ selectedCircle.xSpeed }}
-    <li>Vitesse Y: {{ selectedCircle.ySpeed }}</li>
+    <li>Position X: {{ selectedCircle.x.toFixed(2) }}</li>
+    <li>Position Y: {{ selectedCircle.y.toFixed(2) }}</li>
+    <li>Vitesse X: {{ selectedCircle.xSpeed.toFixed(2) }}
+    <li>Vitesse Y: {{ selectedCircle.ySpeed.toFixed(2) }}</li>
     <li>Couleur: {{ selectedCircle.color }}</li>
   </ul>
 </div>

@@ -17,4 +17,12 @@ export class CircleListComponent {
   circleClicked(circle: Circle) {
     this.circlesService.setSelectedCircle(circle);
   }
+
+  deleteCircle(circle: Circle): void {
+    const index = this.circlesList.indexOf(circle);
+    if (index > -1) {
+      this.circlesList.splice(index, 1);
+    }
+  }
+
 }

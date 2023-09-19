@@ -2,3 +2,12 @@
 
 /* Importing Bootstrap SCSS file. */
 @import 'bootstrap/scss/bootstrap';
+.highlight-on-hover {
+  transition: background-color 0.3s ease; /* Smooth transition for background color */
+}
+
+.highlight-on-hover:hover {
+  background-color: #e0e0e0; /* A darker shade of gray compared to the previous example */
+}
+
+

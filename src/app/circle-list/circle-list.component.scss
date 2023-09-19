@@ -19,4 +19,17 @@ li {
   margin-left: 1rem;
 }
 
+.cross {
+  cursor: pointer;      /* Make it look clickable */
+  padding: 5px;         /* Add some padding for easier clicking */
+  font-weight: bold;    /* Make the cross a bit bolder */
+  color: #dc3545;       /* A red color similar to Bootstrap's .btn-danger */
+  transition: color 0.3s ease; /* Optional: Smooth color transition on hover */
+}
+
+.cross:hover {
+  color: #c82333;       /* A darker red for hover state */
+}
+
+
 
