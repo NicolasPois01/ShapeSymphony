@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import {CircleService} from "../services/circle.service";
 import {Circle} from "../models/circle";
+import {TimerService} from "../services/timer.service";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-square',
@@ -21,27 +23,43 @@ export class SquareComponent implements OnInit, OnDestroy {
 
   interval: any;
 
-  constructor(private circlesService: CircleService) {
+  private subscriptions: Subscription[] = [];
+
+  constructor(private circlesService: CircleService, private timerService: TimerService) {
     this.circles = circlesService.circleList;
+    this.subscriptions.push(
+      this.timerService.start$.subscribe(() => this.startAnimation()),
+      this.timerService.pause$.subscribe(() => this.pauseAnimation())
+    );
   }
 
   ngOnInit() {
-    this.startAnimation();
+
   }
 
-  startAnimation() {
-    this.interval = setInterval(() => {
-      for (let circle of this.circles) {
-        this.circlesService.updatePos(circle.id, circle.x + circle.xSpeed, circle.y + circle.ySpeed);
 
-        if (circle.x <= 0 || circle.x + this.circleSize >= this.squareSize) {
-          this.circlesService.bounceX(circle.id);
+  startAnimation() {
+    if (!this.interval) {
+      this.interval = setInterval(() => {
+        for (let circle of this.circles) {
+          this.circlesService.updatePos(circle.id, circle.x + circle.xSpeed, circle.y + circle.ySpeed);
+
+          if (circle.x <= 0 || circle.x + this.circleSize >= this.squareSize) {
+            this.circlesService.bounceX(circle.id);
+          }
+          if (circle.y <= 0 || circle.y + this.circleSize >= this.squareSize) {
+            this.circlesService.bounceY(circle.id);
+          }
         }
-        if (circle.y <= 0 || circle.y + this.circleSize >= this.squareSize) {
-          this.circlesService.bounceY(circle.id);
-        }
-      }
-    }, 10);
+      }, 10);
+    }
+  }
+
+  pauseAnimation(): void {
+    if (this.interval) {
+      clearInterval(this.interval);
+      this.interval = null;
+    }
   }
 
   onSquareClick(event: MouseEvent) {
@@ -52,5 +70,6 @@ export class SquareComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     clearInterval(this.interval);
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }

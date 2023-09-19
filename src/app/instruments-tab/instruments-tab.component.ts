@@ -21,5 +21,6 @@ export class InstrumentsTabComponent {
 
   toggleInstrument(instrument: string) {
     this.soundService.setActiveInstrument(instrument);
+    this.activeInstrument = instrument;
   }
 }

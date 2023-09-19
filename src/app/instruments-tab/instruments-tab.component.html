@@ -1,7 +1,9 @@
-<div *ngFor="let instrument of instrumentsList">
-  <div class="toggle-button"
-       [class.active]="isActive(instrument)"
-       (click)="toggleInstrument(instrument)">
+<div class="instrument-container">
+  <button class="toggle-button"
+          *ngFor="let instrument of instrumentsList"
+          [class.active]="isActive(instrument)"
+          (click)="toggleInstrument(instrument)">
     {{ instrument }}
-  </div>
+  </button>
+
 </div>
