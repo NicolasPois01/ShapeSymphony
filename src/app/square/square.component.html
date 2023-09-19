@@ -1,3 +1,7 @@
-<div class="square" (click)="onSquareClick($event)" #square>
+<div class="square" (click)="onSquareClick($event)" 
+                    (mousemove)="onSquareMouseMove($event)" 
+                    (mouseenter)="onSquareMouseEnter($event)" 
+                    (mouseleave)="onSquareMouseLeave($event)" #square>
   <app-circle *ngFor="let element of circles" [circle] = element></app-circle>
+  <div class="mousebox">0;0</div>
 </div>

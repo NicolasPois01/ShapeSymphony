@@ -1,16 +1,7 @@
-<div class="container mt-3"> <!-- Added margin-top for spacing from the top -->
-  <h1 class="text-center mb-4">Shape Symphony</h1> <!-- Added text-center to center text -->
-  <div class="row"> <!-- justify-content-center to center items -->
+<div class="container-app d-flex flex-column align-stretch">
+  <div class="container-app-row d-flex flex-row">
 
-    <div class="col-2">
-      <app-instruments-tab></app-instruments-tab>
-      <app-notes-tab></app-notes-tab>
-      <app-timer></app-timer>
-    </div>
-
-    <div class="col-6">
-      <app-square></app-square>
-    </div>
+    <app-square class="square"></app-square>
 
     <div class="col-2">
       <app-circle-list></app-circle-list>
@@ -19,5 +10,9 @@
     <div class="col-2">
       <app-circle-characteristics-list></app-circle-characteristics-list>
     </div>
+  </div>
+  <div class="container-bottom">
+    <app-instruments-tab></app-instruments-tab>
+    <app-notes-tab></app-notes-tab>
   </div>
 </div>

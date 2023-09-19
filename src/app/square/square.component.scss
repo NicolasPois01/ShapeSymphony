@@ -1,8 +1,23 @@
 .square {
   position: relative;
-  width: calc(100vh - 100px);
-  height: calc(100vh - 100px);
-  border: 2px solid black;
-  box-sizing: content-box;
+  aspect-ratio: 1 / 1;
+  height: calc(100% - 20px);
+  box-shadow: 0 0 2px black;
+  box-sizing: border-box;
   overflow: hidden;
+  pointer-events: auto;
+  margin: auto;
+  width: min-content;
+}
+
+.mousebox {
+  font-size: 15px;
+  font-weight: 700;
+  color: whitesmoke;
+  background-color: rgb(104, 104, 104);
+  border: 2px solid black;
+  position: fixed;
+  padding: 0 5px;
+  display: none;
+  pointer-events: none;
 }
