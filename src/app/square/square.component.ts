@@ -51,7 +51,6 @@ export class SquareComponent implements OnInit, OnDestroy {
           this.circlesService.updatePos(circle, circle.x + (circle.xSpeed/this.fps), circle.y + (circle.ySpeed/this.fps));
 
           if (!this.circlesService.inRange(circle.x, this.squareUnit)) {
-            console.log(circle.x);
             this.circlesService.bounceX(circle, circle.x - this.circlesService.circleRad < -(this.squareUnit/2), this.squareUnit/2 - this.circlesService.circleRad);
           }
           if (!this.circlesService.inRange(circle.y, this.squareUnit)) {
