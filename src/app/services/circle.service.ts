@@ -14,28 +14,30 @@ export class CircleService {
     this.selectedCircle = null;
   }
 
-  updatePos(id: number, x: number, y: number) {
-    const circleIndex = this.circleList.findIndex(circle => circle.id === id);
+  getFromMouse(pos: number, squareUnit: number, squareSize: number): number {
+    return pos * squareUnit / squareSize; 
+  }
 
-    if (circleIndex !== -1) {
-      this.circleList[circleIndex].x = x;
-      this.circleList[circleIndex].y = y;
+  updatePos(circle: any, x: number, y: number) {
+    circle.x = x;
+    circle.y = y;
+  }
+
+  bounceX(circle: any, leftBorder: Boolean, squareSize: number) {
+    circle.xSpeed = -circle.xSpeed;
+    if(leftBorder) {
+      circle.x = -circle.x;
+    } else {
+      circle.x = squareSize - (circle.x - squareSize);
     }
   }
 
-  bounceX(id: number) {
-    const circleIndex = this.circleList.findIndex(circle => circle.id === id);
-
-    if (circleIndex !== -1) {
-      this.circleList[circleIndex].xSpeed = -this.circleList[circleIndex].xSpeed;
-    }
-  }
-
-  bounceY(id: number) {
-    const circleIndex = this.circleList.findIndex(circle => circle.id === id);
-
-    if (circleIndex !== -1) {
-      this.circleList[circleIndex].ySpeed = -this.circleList[circleIndex].ySpeed;
+  bounceY(circle: any, topBorder: Boolean, squareSize: number) {
+    circle.ySpeed = -circle.ySpeed;
+    if(topBorder) {
+      circle.y = -circle.y;
+    } else {
+      circle.y = squareSize - (circle.y - squareSize);
     }
   }
 
