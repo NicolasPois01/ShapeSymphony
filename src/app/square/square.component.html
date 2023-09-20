@@ -3,5 +3,6 @@
                     (mouseenter)="onSquareMouseEnter($event)" 
                     (mouseleave)="onSquareMouseLeave($event)" #square>
   <app-circle *ngFor="let element of circles" [circle] = element></app-circle>
+  <div class="previs" [style.width.px]="this.getSquareSize()/this.squareUnit" [style.height.px]="this.getSquareSize()/this.squareUnit"></div>
   <div class="mousebox">0;0</div>
 </div>

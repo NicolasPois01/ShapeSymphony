@@ -41,7 +41,7 @@ export class SquareComponent implements OnInit, OnDestroy {
   }
 
   getSquareSize() {
-    return this.squareElement.nativeElement.offsetWidth;
+    return this.squareElement?.nativeElement.offsetWidth;
   }
 
   startAnimation() {
@@ -83,20 +83,29 @@ export class SquareComponent implements OnInit, OnDestroy {
 
   onSquareMouseMove(event: MouseEvent) {
     let mousebox = document.querySelector('.mousebox') as HTMLElement;
+    let x = parseFloat(this.circlesService.getFromMouse(event.offsetX, this.squareUnit, this.getSquareSize()).toFixed(event.ctrlKey ? 1 : 2));
+    let y = parseFloat(this.circlesService.getFromMouse(event.offsetY, this.squareUnit, this.getSquareSize()).toFixed(event.ctrlKey ? 1 : 2));
     mousebox.style.left = event.pageX+10 + 'px';
     mousebox.style.top = event.pageY+10 + 'px';
-    mousebox.innerText =  this.circlesService.getFromMouse(event.offsetX, this.squareUnit, this.getSquareSize()).toFixed(event.ctrlKey ? 1 : 2)+";"+
-                          this.circlesService.getFromMouse(event.offsetY, this.squareUnit, this.getSquareSize()).toFixed(event.ctrlKey ? 1 : 2)
+    mousebox.innerText =  x+";"+y;
+
+    let previsualisation = document.querySelector('.previs') as HTMLElement;
+    previsualisation.style.left = (x + (this.squareUnit/2 - this.circlesService.circleRad))*10 + '%';
+    previsualisation.style.top = (y + (this.squareUnit/2 - this.circlesService.circleRad))*10 + '%';
   }
 
   onSquareMouseEnter(event: MouseEvent) {
     let mousebox = document.querySelector('.mousebox') as HTMLElement;
     mousebox.style.display = 'block';
+    let previsualisation = document.querySelector('.previs') as HTMLElement;
+    previsualisation.style.display = 'block';
   }
 
   onSquareMouseLeave(event: MouseEvent) {
     let mousebox = document.querySelector('.mousebox') as HTMLElement;
     mousebox.style.display = 'none';
+    let previsualisation = document.querySelector('.previs') as HTMLElement;
+    previsualisation.style.display = 'none';
   }
 
   ngOnDestroy() {

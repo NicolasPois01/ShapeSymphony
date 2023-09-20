@@ -8,16 +8,29 @@
   pointer-events: auto;
   margin: auto;
   width: min-content;
+
+  &.grid {
+    background-color: red;
+  }
 }
 
 .mousebox {
   font-size: 15px;
   font-weight: 700;
   color: whitesmoke;
-  background-color: rgb(104, 104, 104);
+  background-color: rgba(104, 104, 104, 0.9);
   border: 2px solid black;
+  border-radius: 3px;
   position: fixed;
   padding: 0 5px;
+  display: none;
+  pointer-events: none;
+}
+
+.previs {
+  border-radius: 50%;
+  border: 3px solid rgba(128, 128, 128, 0.5);
+  position: absolute;
   display: none;
   pointer-events: none;
 }
