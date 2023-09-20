@@ -9,8 +9,32 @@
   margin: auto;
   width: min-content;
 
-  &.grid {
-    background-color: red;
+  &.grid .grid {
+    display: block;
+
+    .vertical-grid {
+      width: 0px;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      border-left: 3px dotted grey;
+      pointer-events: none;
+    }
+
+    .horyzontal-grid {
+      width: 100%;
+      height: 0px;
+      position: absolute;
+      left: 0;
+      top: 0;
+      border-top: 3px dotted grey;
+      pointer-events: none;
+    }
+  }
+
+  .grid {
+    display: none;
   }
 }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, Input } from '@angular/core';
 import {CircleService} from "../services/circle.service";
 import {Circle} from "../models/circle";
 import {TimerService} from "../services/timer.service";
@@ -10,6 +10,8 @@ import {Subscription} from "rxjs";
   styleUrls: ['./square.component.scss']
 })
 export class SquareComponent implements OnInit, OnDestroy {
+  @ViewChild('square') squareElement: any;
+
   circles!: Circle[];
 
   circleX: number = 0;
@@ -25,10 +27,16 @@ export class SquareComponent implements OnInit, OnDestroy {
 
   interval: any;
 
-  @ViewChild('square') squareElement: any;
+  @Input() grid: boolean = false;
+
+  circlesService: CircleService
+
+  timerService: TimerService
 
   private subscriptions: Subscription[] = [];
-  constructor(private circlesService: CircleService, private timerService: TimerService) {
+  constructor(circlesService: CircleService, timerService: TimerService) {
+    this.circlesService = circlesService;
+    this.timerService = timerService;
     this.circles = circlesService.circleList;
     this.subscriptions.push(
       this.timerService.start$.subscribe(() => this.startAnimation()),
@@ -41,7 +49,7 @@ export class SquareComponent implements OnInit, OnDestroy {
   }
 
   getSquareSize() {
-    return this.squareElement?.nativeElement.offsetWidth;
+    return this.squareElement?.nativeElement.offsetWidth ?? 0;
   }
 
   startAnimation() {

@@ -1,8 +1,13 @@
-<div class="square" (click)="onSquareClick($event)" 
+<div class="square" (click)="onSquareClick($event)"
                     (mousemove)="onSquareMouseMove($event)" 
                     (mouseenter)="onSquareMouseEnter($event)" 
-                    (mouseleave)="onSquareMouseLeave($event)" #square>
+                    (mouseleave)="onSquareMouseLeave($event)"
+                    [ngClass]="{'grid' : this.grid}" tabindex="0" #square>
+  <div class="grid">
+    <div class="horyzontal-grid" *ngFor="let _ of [].constructor(this.squareUnit-1); let i = index;" [ngStyle]="{'top' : ((100/this.squareUnit) *(i+1))+'%'}"></div>
+    <div class="vertical-grid" *ngFor="let _ of [].constructor(this.squareUnit-1); let i = index;" [ngStyle]="{'left' : ((100/this.squareUnit) *(i+1))+'%'}"></div>
+  </div>
   <app-circle *ngFor="let element of circles" [circle] = element></app-circle>
-  <div class="previs" [style.width.px]="this.getSquareSize()/this.squareUnit" [style.height.px]="this.getSquareSize()/this.squareUnit"></div>
+  <div class="previs" [style.width.%]="(this.circlesService.circleSize/this.squareUnit)*100" [style.height.%]="(this.circlesService.circleSize/this.squareUnit)*100"></div>
   <div class="mousebox">0;0</div>
 </div>
