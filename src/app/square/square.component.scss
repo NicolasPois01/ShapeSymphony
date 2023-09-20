@@ -8,16 +8,53 @@
   pointer-events: auto;
   margin: auto;
   width: min-content;
+
+  &.grid .grid {
+    display: block;
+
+    .vertical-grid {
+      width: 0px;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      border-left: 3px dotted grey;
+      pointer-events: none;
+    }
+
+    .horyzontal-grid {
+      width: 100%;
+      height: 0px;
+      position: absolute;
+      left: 0;
+      top: 0;
+      border-top: 3px dotted grey;
+      pointer-events: none;
+    }
+  }
+
+  .grid {
+    display: none;
+  }
 }
 
 .mousebox {
   font-size: 15px;
   font-weight: 700;
   color: whitesmoke;
-  background-color: rgb(104, 104, 104);
+  background-color: rgba(104, 104, 104, 0.9);
   border: 2px solid black;
+  border-radius: 3px;
   position: fixed;
   padding: 0 5px;
+  display: none;
+  pointer-events: none;
+}
+
+.previs {
+  border-radius: 50%;
+  border: 3px solid rgba(128, 128, 128, 0.5);
+  position: absolute;
   display: none;
   pointer-events: none;
 }

@@ -1,11 +1,14 @@
 import {Injectable} from '@angular/core';
 import {Circle} from "../models/circle";
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, retry} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 export class CircleService {
+
+  circleSize: number = 1;
+  circleRad: number = this.circleSize/2;
 
   circleList: Circle[] = [];
   colors = ["red", "green", "blue", "yellow", "pink", "orange", "purple", "cyan", "magenta", "brown"];
@@ -15,7 +18,14 @@ export class CircleService {
   }
 
   getFromMouse(pos: number, squareUnit: number, squareSize: number): number {
-    return pos * squareUnit / squareSize;
+    let ret: number = (pos * squareUnit / squareSize) - squareUnit / 2;
+    if(ret > squareUnit / 2 - this.circleRad) ret = squareUnit/2 - this.circleRad;
+    else if(ret < -(squareUnit / 2 - this.circleRad)) ret = -(squareUnit/2 - this.circleRad);
+    return ret;
+  }
+
+  inRange(pos: number, squareUnit: number): boolean {
+    return pos + (squareUnit/2) >= this.circleRad && pos <= (squareUnit/2) - this.circleRad;
   }
 
   updatePos(circle: any, x: number, y: number) {
@@ -23,21 +33,21 @@ export class CircleService {
     circle.y = y;
   }
 
-  bounceX(circle: any, leftBorder: Boolean, squareSize: number) {
+  bounceX(circle: any, leftBorder: Boolean, midSquareSize: number) {
     circle.xSpeed = -circle.xSpeed;
     if(leftBorder) {
-      circle.x = -circle.x;
+      circle.x = -(midSquareSize + (circle.x + midSquareSize));
     } else {
-      circle.x = squareSize - (circle.x - squareSize);
+      circle.x = midSquareSize - (circle.x - midSquareSize);
     }
   }
 
-  bounceY(circle: any, topBorder: Boolean, squareSize: number) {
+  bounceY(circle: any, topBorder: Boolean, midSquareSize: number) {
     circle.ySpeed = -circle.ySpeed;
     if(topBorder) {
-      circle.y = -circle.y;
+      circle.y = -(midSquareSize + (circle.y + midSquareSize));
     } else {
-      circle.y = squareSize - (circle.y - squareSize);
+      circle.y = midSquareSize - (circle.y - midSquareSize);
     }
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, Input } from '@angular/core';
 import {CircleService} from "../services/circle.service";
 import {Circle} from "../models/circle";
 import {TimerService} from "../services/timer.service";
@@ -10,6 +10,8 @@ import {Subscription} from "rxjs";
   styleUrls: ['./square.component.scss']
 })
 export class SquareComponent implements OnInit, OnDestroy {
+  @ViewChild('square') squareElement: any;
+
   circles!: Circle[];
 
   circleX: number = 0;
@@ -19,17 +21,22 @@ export class SquareComponent implements OnInit, OnDestroy {
   velocityY: number = 2.6;
 
   squareSize: number = 600;
-  circleSize: number = 1;
   squareUnit: number = 10;
 
   fps: number = 60;
 
   interval: any;
 
-  @ViewChild('square') squareElement: any;
+  @Input() grid: boolean = false;
+
+  circlesService: CircleService
+
+  timerService: TimerService
 
   private subscriptions: Subscription[] = [];
-  constructor(private circlesService: CircleService, private timerService: TimerService) {
+  constructor(circlesService: CircleService, timerService: TimerService) {
+    this.circlesService = circlesService;
+    this.timerService = timerService;
     this.circles = circlesService.circleList;
     this.subscriptions.push(
       this.timerService.start$.subscribe(() => this.startAnimation()),
@@ -42,7 +49,7 @@ export class SquareComponent implements OnInit, OnDestroy {
   }
 
   getSquareSize() {
-    return this.squareElement.nativeElement.offsetWidth;
+    return this.squareElement?.nativeElement.offsetWidth ?? 0;
   }
 
   startAnimation() {
@@ -51,11 +58,11 @@ export class SquareComponent implements OnInit, OnDestroy {
         for (let circle of this.circles) {
           this.circlesService.updatePos(circle, circle.x + (circle.xSpeed/this.fps), circle.y + (circle.ySpeed/this.fps));
 
-          if (circle.x < 0 || circle.x + this.circleSize > this.squareUnit) {
-            this.circlesService.bounceX(circle, circle.x < 0, this.squareUnit - this.circleSize);
+          if (!this.circlesService.inRange(circle.x, this.squareUnit)) {
+            this.circlesService.bounceX(circle, circle.x - this.circlesService.circleRad < -(this.squareUnit/2), this.squareUnit/2 - this.circlesService.circleRad);
           }
-          if (circle.y < 0 || circle.y + this.circleSize > this.squareUnit) {
-            this.circlesService.bounceY(circle, circle.y < 0, this.squareUnit - this.circleSize);
+          if (!this.circlesService.inRange(circle.y, this.squareUnit)) {
+            this.circlesService.bounceY(circle, circle.y - this.circlesService.circleRad < -(this.squareUnit/2), this.squareUnit/2 - this.circlesService.circleRad);
           }
         }
       }, 1000/this.fps);
@@ -78,26 +85,35 @@ export class SquareComponent implements OnInit, OnDestroy {
       x = this.circlesService.getFromMouse(event.offsetX + ((event?.target as HTMLElement)?.parentElement as HTMLElement)?.getBoundingClientRect()?.left, this.squareUnit, this.getSquareSize()); 
       y = this.circlesService.getFromMouse(event.offsetY + ((event?.target as HTMLElement)?.parentElement as HTMLElement)?.getBoundingClientRect()?.top, this.squareUnit, this.getSquareSize());
     }
-    if(x < 0 || y < 0 || x > this.squareUnit - this.circleSize || y > this.squareUnit - this.circleSize) return;
+    if(!this.circlesService.inRange(x, this.squareUnit) || !this.circlesService.inRange(y, this.squareUnit)) return;
     this.circlesService.addCircle(parseFloat(x.toFixed(event.ctrlKey ? 1 : 2)),parseFloat(y.toFixed(event.ctrlKey ? 1 : 2)));
   }
 
   onSquareMouseMove(event: MouseEvent) {
     let mousebox = document.querySelector('.mousebox') as HTMLElement;
+    let x = parseFloat(this.circlesService.getFromMouse(event.offsetX, this.squareUnit, this.getSquareSize()).toFixed(event.ctrlKey ? 1 : 2));
+    let y = parseFloat(this.circlesService.getFromMouse(event.offsetY, this.squareUnit, this.getSquareSize()).toFixed(event.ctrlKey ? 1 : 2));
     mousebox.style.left = event.pageX+10 + 'px';
     mousebox.style.top = event.pageY+10 + 'px';
-    mousebox.innerText =  this.circlesService.getFromMouse(event.offsetX, this.squareUnit, this.getSquareSize()).toFixed(event.ctrlKey ? 1 : 2)+";"+
-                          this.circlesService.getFromMouse(event.offsetY, this.squareUnit, this.getSquareSize()).toFixed(event.ctrlKey ? 1 : 2)
+    mousebox.innerText =  x+";"+y;
+
+    let previsualisation = document.querySelector('.previs') as HTMLElement;
+    previsualisation.style.left = (x + (this.squareUnit/2 - this.circlesService.circleRad))*10 + '%';
+    previsualisation.style.top = (y + (this.squareUnit/2 - this.circlesService.circleRad))*10 + '%';
   }
 
   onSquareMouseEnter(event: MouseEvent) {
     let mousebox = document.querySelector('.mousebox') as HTMLElement;
     mousebox.style.display = 'block';
+    let previsualisation = document.querySelector('.previs') as HTMLElement;
+    previsualisation.style.display = 'block';
   }
 
   onSquareMouseLeave(event: MouseEvent) {
     let mousebox = document.querySelector('.mousebox') as HTMLElement;
     mousebox.style.display = 'none';
+    let previsualisation = document.querySelector('.previs') as HTMLElement;
+    previsualisation.style.display = 'none';
   }
 
   ngOnDestroy() {
