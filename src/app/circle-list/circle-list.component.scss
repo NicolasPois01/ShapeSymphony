@@ -6,14 +6,19 @@ ul {
 li {
   margin: 0.2rem;
 }
+li.circle {
+  display: flex;
+  align-items: center;
+  margin: 0.2rem;
+}
+
 
 .color-box {
   width: 20px;
   height: 20px;
-  display: inline-block;
   margin-right: 10px;
+  margin-left: 10px;
   border: 1px solid #000;  // Optional, to give it a border for visibility
-  vertical-align: middle; /* Aligns the box vertically in line with the text */
 }
 .title {
   margin-left: 1rem;
@@ -29,6 +34,11 @@ li {
 
 .cross:hover {
   color: #c82333;       /* A darker red for hover state */
+}
+
+.active {
+  background-color: #aaa;
+  color: white;
 }
 
 

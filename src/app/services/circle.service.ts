@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Circle} from "../models/circle";
-import {BehaviorSubject, retry} from "rxjs";
+import {BehaviorSubject} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -68,7 +68,14 @@ export class CircleService {
       y: y,
       xSpeed: this.getRandomSpeed(),
       ySpeed: this.getRandomSpeed(),
-      color: this.getRandomColor()
+      color: this.getRandomColor(),
+      startX: x,
+      startY: y,
+      instrument: "Piano",
+      note: "Do",
+      maxBounces: 10,
+      maxTime: 10000,
+      spawnTime: 0
     };
 
     this.circleList.push(circle);

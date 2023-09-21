@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {CircleService} from "../services/circle.service";
 import {Circle} from "../models/circle";
 
@@ -7,11 +7,18 @@ import {Circle} from "../models/circle";
   templateUrl: './circle-list.component.html',
   styleUrls: ['./circle-list.component.scss']
 })
-export class CircleListComponent {
+export class CircleListComponent implements OnInit{
   circlesList!: Circle[];
+  selectedCircle: Circle | null | undefined;
 
   constructor(private circlesService: CircleService) {
     this.circlesList = this.circlesService.circleList;
+  }
+
+  ngOnInit() {
+    this.circlesService.selectedCircle$.subscribe((circle: Circle | null) => {
+      this.selectedCircle = circle;
+    });
   }
 
   circleClicked(circle: Circle) {
@@ -25,4 +32,7 @@ export class CircleListComponent {
     }
   }
 
+  isSelected(circle: Circle) {
+    return circle == this.selectedCircle;
+  }
 }
