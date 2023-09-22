@@ -33,6 +33,14 @@
     }
   }
 
+  &:hover {
+    .mousebox,
+    .previs {
+      display: block;
+    }
+
+  }
+
   .grid {
     display: none;
   }
@@ -57,4 +65,49 @@
   position: absolute;
   display: none;
   pointer-events: none;
+  left: var(--left-mouse-percent);
+  top: var(--top-mouse-percent);
+}
+
+.iconArrow {
+  position: absolute;
+  top: var(--top-mouse-px);
+  left: var(--left-mouse-px);
+  width: 0px;
+  height: 60px;
+  cursor: pointer;
+  transform-origin: center left;
+  transform: translateY(calc(-50% + 2.5px)) rotate(0deg);
+  display: none;
+  pointer-events: none;
+}
+
+.iconArrow .arrow {
+  position: absolute;
+  top: 25px;
+  width: 60%;
+  height: 5px;
+  background-color: #222;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, .2);
+  animation: arrow 700ms linear infinite;
+}
+
+.iconArrow .arrow::after, .iconArrow .arrow::before {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 5px;
+  right: -5px;
+  background-color: #222;
+}
+
+.iconArrow .arrow::after {
+  bottom: calc(50% + 3px);
+  transform: rotate(45deg);
+}
+
+.iconArrow .arrow::before {
+  top: calc(50% + 3px);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, .2);
+  transform: rotate(-45deg);
 }

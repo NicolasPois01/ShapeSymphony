@@ -61,13 +61,13 @@ export class CircleService {
     return Math.random() * 4 - 2;
   }
 
-  addCircle(x: number, y: number) {
+  addCircle(x: number, y: number, vX: number, vY: number) {
     const circle: Circle = {
       id: this.circleList.length, // Assuming unique ids based on list length
       x: x,
       y: y,
-      xSpeed: this.getRandomSpeed(),
-      ySpeed: this.getRandomSpeed(),
+      xSpeed: vX,
+      ySpeed: vY,
       color: this.getRandomColor(),
       startX: x,
       startY: y,
