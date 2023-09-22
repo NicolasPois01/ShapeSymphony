@@ -11,6 +11,8 @@ import { CircleCharacteristicsComponent } from "./circle-characteristics/circle-
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ZeroPaddingPipe } from './zero-padding.pipe';
 import { TimerComponent } from './timer/timer.component';
+import { JsonExportComponent } from './export-json/export-json.component';
+import { ImportJsonComponent } from './import-json/import-json.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +24,9 @@ import { TimerComponent } from './timer/timer.component';
     InstrumentsTabComponent,
     CircleCharacteristicsComponent,
     ZeroPaddingPipe,
-    TimerComponent
+    TimerComponent,
+    JsonExportComponent,
+    ImportJsonComponent
   ],
   imports: [
     BrowserModule,

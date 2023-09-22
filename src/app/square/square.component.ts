@@ -79,10 +79,10 @@ export class SquareComponent implements OnInit, OnDestroy {
   onSquareClick(event: MouseEvent) {
     let x, y = 0;
     if(event.target === this.squareElement.nativeElement) {
-      x = this.circlesService.getFromMouse(event.offsetX, this.squareUnit, this.getSquareSize()); 
+      x = this.circlesService.getFromMouse(event.offsetX, this.squareUnit, this.getSquareSize());
       y = this.circlesService.getFromMouse(event.offsetY, this.squareUnit, this.getSquareSize());
     } else {
-      x = this.circlesService.getFromMouse(event.offsetX + ((event?.target as HTMLElement)?.parentElement as HTMLElement)?.getBoundingClientRect()?.left, this.squareUnit, this.getSquareSize()); 
+      x = this.circlesService.getFromMouse(event.offsetX + ((event?.target as HTMLElement)?.parentElement as HTMLElement)?.getBoundingClientRect()?.left, this.squareUnit, this.getSquareSize());
       y = this.circlesService.getFromMouse(event.offsetY + ((event?.target as HTMLElement)?.parentElement as HTMLElement)?.getBoundingClientRect()?.top, this.squareUnit, this.getSquareSize());
     }
     if(!this.circlesService.inRange(x, this.squareUnit) || !this.circlesService.inRange(y, this.squareUnit)) return;
