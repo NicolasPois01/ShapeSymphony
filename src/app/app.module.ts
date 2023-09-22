@@ -11,6 +11,7 @@ import { CircleCharacteristicsComponent } from "./circle-characteristics/circle-
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ZeroPaddingPipe } from './zero-padding.pipe';
 import { TimerComponent } from './timer/timer.component';
+import {FormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -24,10 +25,11 @@ import { TimerComponent } from './timer/timer.component';
     ZeroPaddingPipe,
     TimerComponent
   ],
-  imports: [
-    BrowserModule,
-    NgbModule
-  ],
+    imports: [
+        BrowserModule,
+        NgbModule,
+        FormsModule
+    ],
   providers: [],
   bootstrap: [MainComponentComponent]
 })

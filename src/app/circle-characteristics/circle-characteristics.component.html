@@ -1,10 +1,20 @@
 <div *ngIf="selectedCircle" class="title p-2">
   <div>Circle {{ selectedCircle.id }}</div>
   <ul>
+    <li>Angle de départ: {{ angleDepart?.toFixed(2) }}°</li>
+    <li>Position X de départ: {{ selectedCircle.startX.toFixed(2) }}</li>
+    <li>Position Y de départ: {{ selectedCircle.startY.toFixed(2) }}</li>
     <li>Position X: {{ selectedCircle.x.toFixed(2) }}</li>
     <li>Position Y: {{ selectedCircle.y.toFixed(2) }}</li>
     <li>Vitesse X: {{ selectedCircle.xSpeed.toFixed(2) }}
     <li>Vitesse Y: {{ selectedCircle.ySpeed.toFixed(2) }}</li>
-    <li>Couleur: {{ selectedCircle.color }}</li>
+    <li>Note: {{ selectedCircle.note }}</li>
+    <li>Nombre de rebond max: {{ selectedCircle.maxBounces }}</li>
+    <li>
+      Couleur:
+      <select [(ngModel)]="selectedColor" (change)="setColor(selectedColor)">
+        <option *ngFor="let color of availableColors" [value]="color">{{ color }}</option>
+      </select>
+    </li>
   </ul>
 </div>

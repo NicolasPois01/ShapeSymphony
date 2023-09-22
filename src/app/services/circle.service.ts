@@ -1,15 +1,15 @@
 import {Injectable} from '@angular/core';
 import {Circle} from "../models/circle";
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, Observable, Subject} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 export class CircleService {
-
   circleSize: number = 1;
   circleRad: number = this.circleSize/2;
-
+  private circleChangedSubject: Subject<Circle> = new Subject<Circle>();
+  circleChanged$: Observable<Circle> = this.circleChangedSubject.asObservable();
   circleList: Circle[] = [];
   colors = ["red", "green", "blue", "yellow", "pink", "orange", "purple", "cyan", "magenta", "brown"];
   selectedCircle: Circle | null;
@@ -86,5 +86,14 @@ export class CircleService {
 
   setSelectedCircle(circle: Circle) {
     this.selectedCircleSubject.next(circle);
+  }
+
+  setColor(color: string | undefined) {
+    if (this.selectedCircle) {
+      if (color != null) {
+        this.selectedCircle.color = color;
+      }
+      this.circleChangedSubject.next(this.selectedCircle);
+    }
   }
 }
