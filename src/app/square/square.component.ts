@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, Input, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, Input, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
 import {CircleService} from "../services/circle.service";
 import {Circle} from "../models/circle";
 import {TimerService} from "../services/timer.service";
@@ -9,7 +9,7 @@ import {Subscription} from "rxjs";
   templateUrl: './square.component.html',
   styleUrls: ['./square.component.scss']
 })
-export class SquareComponent implements OnInit, OnDestroy, AfterViewInit {
+export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
   @ViewChild('square') squareElement: any;
   @ViewChild('arrow') arrow: any;
   @ViewChild('mousebox') mousebox: any;
@@ -34,10 +34,13 @@ export class SquareComponent implements OnInit, OnDestroy, AfterViewInit {
   saveDistance: number = 0;
   saveVx: number = 0;
   saveVy: number = 0;
+  currentPosX: number = 0;
+  currentPosY: number = 0;
 
   interval: any;
 
   @Input() grid: boolean = false;
+  @Input() precisionMode: boolean = false;
 
   circlesService: CircleService
 
@@ -92,37 +95,41 @@ export class SquareComponent implements OnInit, OnDestroy, AfterViewInit {
     let x, y = 0;
     let squareSize = this.getSquareSize();
     if(event.target === this.squareElement.nativeElement) {
-      x = this.circlesService.getFromMouse(this.savePoseX, this.squareUnit, squareSize); 
+      x = this.circlesService.getFromMouse(this.savePoseX, this.squareUnit, squareSize);
       y = this.circlesService.getFromMouse(this.savePoseY, this.squareUnit, squareSize);
     } else {
       x = this.circlesService.getFromMouse(this.savePoseX + ((event?.target as HTMLElement)?.parentElement as HTMLElement)?.getBoundingClientRect()?.left, this.squareUnit, squareSize); 
       y = this.circlesService.getFromMouse(this.savePoseY + ((event?.target as HTMLElement)?.parentElement as HTMLElement)?.getBoundingClientRect()?.top, this.squareUnit, squareSize);
     }
     if(!this.circlesService.inRange(x, this.squareUnit) || !this.circlesService.inRange(y, this.squareUnit)) return;
-    this.circlesService.addCircle(parseFloat(x.toFixed(event.ctrlKey ? 1 : 2)),parseFloat(y.toFixed(event.ctrlKey ? 1 : 2)), (this.saveVx * this.squareUnit) / squareSize, (this.saveVy * this.squareUnit) / squareSize);
+    this.circlesService.addCircle(parseFloat(x.toFixed(this.precisionMode ? 1 : 2)),
+                                  parseFloat(y.toFixed(this.precisionMode ? 1 : 2)), 
+                                  parseFloat(((this.saveVx * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)), 
+                                  parseFloat(((this.saveVy * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)));
   }
 
   onSquareMouseMove(event: MouseEvent) {
+    this.currentPosX = event.offsetX > 0 ? event.offsetX : this.currentPosX;
+    this.currentPosY = event.offsetY > 0 ? event.offsetY : this.currentPosY;
     let squareSize = this.getSquareSize();
-    let x = parseFloat(this.circlesService.getFromMouse(event.offsetX, this.squareUnit, squareSize).toFixed(event.ctrlKey ? 1 : 2));
-    let y = parseFloat(this.circlesService.getFromMouse(event.offsetY, this.squareUnit, squareSize).toFixed(event.ctrlKey ? 1 : 2));
-    this.mousebox.nativeElement.style.left = event.pageX+10 + 'px';
-    this.mousebox.nativeElement.style.top = event.pageY+10 + 'px';
+    let x = parseFloat(this.circlesService.getFromMouse(this.currentPosX, this.squareUnit, squareSize).toFixed(this.precisionMode ? 1 : 2));
+    let y = parseFloat(this.circlesService.getFromMouse(this.currentPosY, this.squareUnit, squareSize).toFixed(this.precisionMode ? 1 : 2));
+    this.mousebox.nativeElement.style.left = this.currentPosX+this.squareElement.nativeElement.getBoundingClientRect().left+10 + 'px';
+    this.mousebox.nativeElement.style.top = this.currentPosY+this.squareElement.nativeElement.getBoundingClientRect().top+10 + 'px';
     if(this.mouseDown) {
-      this.saveVx = parseFloat((event.offsetX - this.savePoseX).toFixed(2));
-      this.saveVy = parseFloat((event.offsetY - this.savePoseY).toFixed(2));
-      this.saveDistance = parseFloat((Math.sqrt(Math.pow(Math.abs(this.saveVx), 2) + Math.pow(Math.abs(this.saveVy), 2))).toFixed(2));
-      this.saveAngle = (360+Math.round(Math.atan2(event.offsetY - this.savePoseY, event.offsetX - this.savePoseX)/Math.PI*180))%360;
-      this.mousebox.nativeElement.innerText = ((this.saveDistance * this.squareUnit) / squareSize).toFixed(2) + " m/s";
+      this.saveVx = parseFloat((this.currentPosX - this.savePoseX).toFixed(this.precisionMode ? 1 : 2));
+      this.saveVy = parseFloat((this.currentPosY - this.savePoseY).toFixed(this.precisionMode ? 1 : 2));
+      this.saveDistance = parseFloat((Math.sqrt(Math.pow(Math.abs(this.saveVx), 2) + Math.pow(Math.abs(this.saveVy), 2))).toFixed(this.precisionMode ? 1 : 2));
+      this.saveAngle = (360+Math.round(Math.atan2(this.saveVy, this.saveVx)/Math.PI*180))%360;
+      this.mousebox.nativeElement.innerHTML = ((this.saveDistance * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2) + " m/s <br/> "+this.saveAngle+" °";
       this.arrow.nativeElement.style.width = this.saveDistance + "px";
       this.arrow.nativeElement.style.transform = "translateY(calc(-50% + 2.5px)) rotate("+this.saveAngle+"deg)";
     } else {
       this.mousebox.nativeElement.innerText =  x+";"+y;
       this.squareElement.nativeElement.style.setProperty("--left-mouse-percent", (x + (this.squareUnit/2 - this.circlesService.circleRad))*10 + '%');
       this.squareElement.nativeElement.style.setProperty("--top-mouse-percent", (y + (this.squareUnit/2 - this.circlesService.circleRad))*10 + '%');
-      this.squareElement.nativeElement.style.setProperty("--left-mouse-px", event.offsetX + 'px');
-      this.squareElement.nativeElement.style.setProperty("--top-mouse-px", event.offsetY + 'px');
-
+      this.squareElement.nativeElement.style.setProperty("--left-mouse-px", this.currentPosX + 'px');
+      this.squareElement.nativeElement.style.setProperty("--top-mouse-px", this.currentPosY + 'px');
     }
   }
 
@@ -131,14 +138,18 @@ export class SquareComponent implements OnInit, OnDestroy, AfterViewInit {
     this.mouseDown = true;
     this.savePoseX = event.offsetX;
     this.savePoseY = event.offsetY;
+    this.saveAngle = 0;
+    this.saveVx = 0;
+    this.saveVy = 0;
+    this.mousebox.nativeElement.innerHTML = "0 m/s <br/> 0°";
   }
 
   onSquareMouseUp(event: MouseEvent) {
     this.arrow.nativeElement.style.display = "none";
     this.arrow.nativeElement.style.width = "0px";
     this.mouseDown = false;
-    let x = parseFloat(this.circlesService.getFromMouse(event.offsetX, this.squareUnit, this.getSquareSize()).toFixed(event.ctrlKey ? 1 : 2));
-    let y = parseFloat(this.circlesService.getFromMouse(event.offsetY, this.squareUnit, this.getSquareSize()).toFixed(event.ctrlKey ? 1 : 2));
+    let x = parseFloat(this.circlesService.getFromMouse(event.offsetX, this.squareUnit, this.getSquareSize()).toFixed(this.precisionMode ? 1 : 2));
+    let y = parseFloat(this.circlesService.getFromMouse(event.offsetY, this.squareUnit, this.getSquareSize()).toFixed(this.precisionMode ? 1 : 2));
     this.mousebox.nativeElement.style.left = event.pageX+10 + 'px';
     this.mousebox.nativeElement.style.top = event.pageY+10 + 'px';
     this.mousebox.nativeElement.innerText =  x+";"+y;
@@ -152,6 +163,10 @@ export class SquareComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onSquareMouseLeave(event: MouseEvent) {
+  }
+
+  ngOnChanges() {
+    this.squareElement?.nativeElement.dispatchEvent(new MouseEvent("mousemove"));
   }
 
   ngOnDestroy() {
