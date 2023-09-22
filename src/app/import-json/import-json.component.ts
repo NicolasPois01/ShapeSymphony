@@ -27,7 +27,7 @@ export class ImportJsonComponent {
       const circles = JSON.parse(jsonString);
       if (Array.isArray(circles)) {
         circles.forEach(circleData => {
-          this.circleService.addCircle(circleData.x, circleData.y);
+          this.circleService.addCircle(circleData.x, circleData.y, circleData.vX, circleData.vY);
           // Note: Ici, nous considérons simplement x et y, mais si vous souhaitez prendre en compte d'autres attributs, vous devrez les intégrer également.
         });
       }
