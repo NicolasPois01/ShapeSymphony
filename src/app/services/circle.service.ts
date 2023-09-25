@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Circle} from "../models/circle";
 import {BehaviorSubject} from "rxjs";
+import {SoundService} from "../services/sound.service";
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class CircleService {
   circleList: Circle[] = [];
   colors = ["red", "green", "blue", "yellow", "pink", "orange", "purple", "cyan", "magenta", "brown"];
   selectedCircle: Circle | null;
-  constructor() {
+  constructor(private soundService : SoundService) {
     this.selectedCircle = null;
   }
 
@@ -71,8 +72,10 @@ export class CircleService {
       color: this.getRandomColor(),
       startX: x,
       startY: y,
-      instrument: "Piano",
-      note: "Do",
+      this.soundService.activeInstrument,
+      this.soundService.activeNote,
+      this.soundService.activeAlteration,
+      this.soundService.activeOctave,
       maxBounces: 10,
       maxTime: 10000,
       spawnTime: 0
