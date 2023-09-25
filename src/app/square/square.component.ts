@@ -45,7 +45,6 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   circlesService: CircleService
 
   timerService: TimerService
-
   private subscriptions: Subscription[] = [];
   constructor(circlesService: CircleService, timerService: TimerService) {
     this.circlesService = circlesService;
@@ -75,9 +74,19 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
 
           if (!this.circlesService.inRange(circle.x, this.squareUnit)) {
             this.circlesService.bounceX(circle, circle.x - this.circlesService.circleRad < -(this.squareUnit/2), this.squareUnit/2 - this.circlesService.circleRad);
+              this.circlesService.collisions.push({x:circle.x, y:circle.y, color: circle.color});
+              setTimeout(() => {
+                this.circlesService.collisions.shift();
+              }, 1000);
           }
           if (!this.circlesService.inRange(circle.y, this.squareUnit)) {
             this.circlesService.bounceY(circle, circle.y - this.circlesService.circleRad < -(this.squareUnit/2), this.squareUnit/2 - this.circlesService.circleRad);
+            this.circlesService.collisions.push({x: circle.x, y: circle.y, color: circle.color});
+
+            setTimeout(() => {
+              this.circlesService.collisions.shift();
+            }, 1000);
+
           }
         }
       }, 1000/this.fps);
@@ -98,7 +107,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
       x = this.circlesService.getFromMouse(this.savePoseX, this.squareUnit, squareSize);
       y = this.circlesService.getFromMouse(this.savePoseY, this.squareUnit, squareSize);
     } else {
-      x = this.circlesService.getFromMouse(this.savePoseX + ((event?.target as HTMLElement)?.parentElement as HTMLElement)?.getBoundingClientRect()?.left, this.squareUnit, squareSize); 
+      x = this.circlesService.getFromMouse(this.savePoseX + ((event?.target as HTMLElement)?.parentElement as HTMLElement)?.getBoundingClientRect()?.left, this.squareUnit, squareSize);
       y = this.circlesService.getFromMouse(this.savePoseY + ((event?.target as HTMLElement)?.parentElement as HTMLElement)?.getBoundingClientRect()?.top, this.squareUnit, squareSize);
     }
     if(!this.circlesService.inRange(x, this.squareUnit) || !this.circlesService.inRange(y, this.squareUnit)) return;
@@ -107,6 +116,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
                                   parseFloat(((this.saveVx * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)), 
                                   parseFloat(((this.saveVy * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)));
   }
+
 
   onSquareMouseMove(event: MouseEvent) {
     this.currentPosX = event.offsetX > 0 ? event.offsetX : this.currentPosX;
