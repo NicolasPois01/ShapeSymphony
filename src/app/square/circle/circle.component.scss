@@ -3,9 +3,24 @@
   display: inline-block;
   width: 10%;
   height: 10%;
-  border: 3px solid blue;
+  border: 3px solid var(--circle-color, blue);  /* Utilisez une variable CSS pour la couleur */
   border-radius: 50%;
   box-sizing: border-box;
   pointer-events: none;
   transform: translateX(-50%) translateY(-50%);
+
+  /* Ajout de l'effet néon */
+  box-shadow:
+    0 0 3px var(--circle-color),
+    0 0 5px var(--circle-color),
+    0 0 8px var(--circle-color),
+    0 0 3px var(--circle-color),
+    0 0 8px var(--circle-color),
+    inset 0 0 3px var(--circle-color),
+    inset 0 0 5px var(--circle-color),
+    inset 0 0 8px var(--circle-color),
+    inset 0 0 3px var(--circle-color),
+    inset 0 0 8px var(--circle-color),
 }
+
+
