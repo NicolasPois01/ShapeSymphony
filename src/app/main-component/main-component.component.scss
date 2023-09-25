@@ -1,10 +1,7 @@
 .circles-list-container {
-  max-height: 600px; /* Adjust this value to match the height of your square */
+  max-height: calc(100vh - 200px); /* Adjust this value to match the height of your square */
   overflow-y: auto;  /* This makes the list scrollable if it exceeds the max height */
-  width: 150px;
-  margin-left: 1rem;
-  margin-top: 0;
-  border: 1px solid #000;
+  display: inline-block;
 }
 
 .container-app {
