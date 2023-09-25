@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import {SoundService} from '../services/sound.service';
 
 @Component({
@@ -7,6 +7,7 @@ import {SoundService} from '../services/sound.service';
   styleUrls: ['./instruments-tab.component.scss']
 })
 export class InstrumentsTabComponent {
+  @Output() instrumentChanged = new EventEmitter<void>();
 
   instrumentsList!: string [];
   activeInstrument!: string;
@@ -21,6 +22,8 @@ export class InstrumentsTabComponent {
 
   toggleInstrument(instrument: string) {
     this.soundService.setActiveInstrument(instrument);
-    this.activeInstrument = instrument;
+    this.activeInstrument = this.soundService.getActiveInstrument();
+    this.instrumentChanged.emit();
   }
+
 }

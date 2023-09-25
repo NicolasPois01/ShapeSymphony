@@ -1,0 +1,75 @@
+.alteration-container {
+  display: flex;
+  flex-direction: column;
+  width: 120px;
+  margin-left: 20px;
+}
+
+.alteration-slider {
+  width: 100%;
+  margin: 10px 0;
+}
+
+.alteration-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.alteration-labels span {
+  text-align: center;
+  width: 33%;
+}
+span {
+  font-size: 1.2em; /* Ajustez la taille selon votre préférence */
+  font-weight: bold;
+  color: #333; /* Une couleur plus sombre pour le texte */
+  margin-right: 10px; /* Un peu d'espace à droite pour le séparer du slider */
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 8px; /* Ajustez selon votre préférence */
+  border-radius: 4px;
+  background: #d3d3d3;
+  outline: none;
+  padding: 0;
+  margin: 0;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px; /* Ajustez selon votre préférence */
+  height: 20px; /* Ajustez selon votre préférence */
+  border-radius: 50%;
+  background: #555; /* Une couleur plus sombre pour le pouce */
+  cursor: pointer;
+  transition: background 0.15s ease-in-out;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover,
+input[type="range"]::-webkit-slider-thumb:active {
+  background: #444; /* Une couleur légèrement plus sombre pour l'état de survol et actif */
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 20px; /* Ajustez selon votre préférence */
+  height: 20px; /* Ajustez selon votre préférence */
+  border: none;
+  border-radius: 50%;
+  background: #555; /* Une couleur plus sombre pour le pouce */
+  cursor: pointer;
+  transition: background 0.15s ease-in-out;
+}
+
+input[type="range"]::-moz-range-thumb:hover,
+input[type="range"]::-moz-range-thumb:active {
+  background: #444; /* Une couleur légèrement plus sombre pour l'état de survol et actif */
+}
+
+.alteration-container {
+  margin-top: 20px; /* Ajustez cette valeur selon l'espace que vous souhaitez ajouter */
+}
+

@@ -2,12 +2,15 @@
   position: relative;
   aspect-ratio: 1 / 1;
   height: calc(100% - 20px);
-  box-shadow: 0 0 2px black;
+  box-shadow: 0 0 15px black;
   box-sizing: border-box;
   overflow: hidden;
   pointer-events: auto;
   margin: auto;
   width: min-content;
+  border: black 1px solid;
+
+
 
   &.grid .grid {
     display: block;

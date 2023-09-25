@@ -17,6 +17,7 @@ export class CircleService {
   constructor(private soundService : SoundService) {
     this.selectedCircle = null;
   }
+  public collisions: { x: number, y: number, color: string }[] = [];
 
   getFromMouse(pos: number, squareUnit: number, squareSize: number): number {
     let ret: number = (pos * squareUnit / squareSize) - squareUnit / 2;
@@ -34,23 +35,24 @@ export class CircleService {
     circle.y = y;
   }
 
-  bounceX(circle: any, leftBorder: Boolean, midSquareSize: number) {
-    circle.xSpeed = -circle.xSpeed;
-    if(leftBorder) {
-      circle.x = -(midSquareSize + (circle.x + midSquareSize));
-    } else {
-      circle.x = midSquareSize - (circle.x - midSquareSize);
-    }
-  }
+    bounceX(circle: any, leftBorder: Boolean, midSquareSize: number) {
+      circle.xSpeed = -circle.xSpeed;
+      if(leftBorder) {
+        circle.x = -(midSquareSize + (circle.x + midSquareSize));
+      } else {
+        circle.x = midSquareSize - (circle.x - midSquareSize);
+      }
 
-  bounceY(circle: any, topBorder: Boolean, midSquareSize: number) {
-    circle.ySpeed = -circle.ySpeed;
-    if(topBorder) {
-      circle.y = -(midSquareSize + (circle.y + midSquareSize));
-    } else {
-      circle.y = midSquareSize - (circle.y - midSquareSize);
     }
-  }
+
+    bounceY(circle: any, topBorder: Boolean, midSquareSize: number) {
+      circle.ySpeed = -circle.ySpeed;
+      if(topBorder) {
+        circle.y = -(midSquareSize + (circle.y + midSquareSize));
+      } else {
+        circle.y = midSquareSize - (circle.y - midSquareSize);
+      }
+    }
 
   getRandomColor(): string {
     const randomIndex = Math.floor(Math.random() * this.colors.length);
