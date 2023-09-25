@@ -25,8 +25,8 @@ export class SoundService {
         for (const note of this.notes) {
           for (const octave of this.octaves) {
             for (const alteration of this.alterations) {
-            const audioFileName = ${instrument}${note}${alteration}${octave}'.aiff';
-            const audioFilePath = 'C:/Users/Lenovo/Desktop/Mines Ales/2ème Année/Web_services/ShapeSymphony/Samples/'${audioFileName};
+            const audioFileName = `${instrument}${note}${alteration}${octave}.aiff`;
+            const audioFilePath = `C:/Users/Lenovo/Desktop/Mines Ales/2ème Année/Web_services/ShapeSymphony/Samples/${audioFileName}`;
             //Vérifie si le fichier audio existe :
             const response = await fetch(audioFilePath, { method: 'HEAD' });
               if (response.ok) {
@@ -42,7 +42,7 @@ export class SoundService {
 
   $scope.playAudio = function(circle : Circle) {
        const audioFileName = Circle.Instrument+Circle.Note+Circle.Alteration+Circle.Octave+'.aiff';
-       const audioFilePath = 'C:/Users/Lenovo/Desktop/Mines Ales/2ème Année/Web_services/ShapeSymphony/Samples/'${audioFileName};
+       const audioFilePath = `C:/Users/Lenovo/Desktop/Mines Ales/2ème Année/Web_services/ShapeSymphony/Samples/${audioFileName}`;
        const audio = new Audio(audioFilePath);
        audio.play();
   };
