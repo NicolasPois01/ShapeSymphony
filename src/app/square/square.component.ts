@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, Input, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, Input, AfterViewInit, OnChanges } from '@angular/core';
 import {CircleService} from "../services/circle.service";
 import {Circle} from "../models/circle";
 import {TimerService} from "../services/timer.service";
@@ -36,30 +36,24 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   saveVy: number = 0;
   currentPosX: number = 0;
   currentPosY: number = 0;
+  timestamp: any = 0;
 
   interval: any;
 
   @Input() grid: boolean = false;
   @Input() precisionMode: boolean = false;
+  @Input() timerService: TimerService|undefined = undefined;
 
-  circlesService: CircleService
-
-  timerService: TimerService
   private subscriptions: Subscription[] = [];
-  constructor(circlesService: CircleService, timerService: TimerService) {
-    this.circlesService = circlesService;
-    this.timerService = timerService;
+  constructor(private circlesService: CircleService) {
     this.circles = circlesService.circleList;
-    this.subscriptions.push(
-      this.timerService.start$.subscribe(() => this.startAnimation()),
-      this.timerService.pause$.subscribe(() => this.pauseAnimation())
-    );
   }
 
   ngOnInit() {
   }
 
   ngAfterViewInit() {
+    this.startAnimation();
   }
 
   getSquareSize() {
@@ -67,10 +61,14 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   }
 
   startAnimation() {
-    if (!this.interval) {
+    if (!this.interval && this.timerService) {
+      console.log(this.timerService?.getTime());
       this.interval = setInterval(() => {
+        let elapsedTime = ((this.timerService?.getTimeStamp()??0) - this.timestamp) / 1000; // elapsed time in seconds
+        this.timestamp = this.timerService?.getTimeStamp();
+        console.log(this.timerService?.getTime());
         for (let circle of this.circles) {
-          this.circlesService.updatePos(circle, circle.x + (circle.xSpeed/this.fps), circle.y + (circle.ySpeed/this.fps));
+          this.circlesService.updatePos(circle, circle.x + (circle.xSpeed*elapsedTime), circle.y + (circle.ySpeed*elapsedTime));
 
           if (!this.circlesService.inRange(circle.x, this.squareUnit)) {
             this.circlesService.bounceX(circle, circle.x - this.circlesService.circleRad < -(this.squareUnit/2), this.squareUnit/2 - this.circlesService.circleRad);
@@ -90,13 +88,6 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
           }
         }
       }, 1000/this.fps);
-    }
-  }
-
-  pauseAnimation(): void {
-    if (this.interval) {
-      clearInterval(this.interval);
-      this.interval = null;
     }
   }
 
@@ -173,6 +164,10 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   }
 
   onSquareMouseLeave(event: MouseEvent) {
+  }
+
+  getCircleSize(): number {
+    return this.circlesService.circleSize;
   }
 
   ngOnChanges() {
