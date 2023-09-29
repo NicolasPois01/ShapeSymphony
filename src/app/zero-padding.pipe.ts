@@ -6,7 +6,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class ZeroPaddingPipe implements PipeTransform {
 
   transform(value: number): string {
-    return ('0' + value).slice(-2);
+    return ((value < 10 ? '0' + value : value) + '').slice(0, 2);
   }
 
 }

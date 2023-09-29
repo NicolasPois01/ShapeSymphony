@@ -10,8 +10,6 @@
   width: min-content;
   border: black 1px solid;
 
-
-
   &.grid .grid {
     display: block;
 
@@ -60,6 +58,7 @@
   padding: 0 5px;
   display: none;
   pointer-events: none;
+  user-select: none;
 }
 
 .previs {
@@ -73,7 +72,7 @@
 }
 
 .iconArrow {
-  position: absolute;
+  position: fixed;
   top: var(--top-mouse-px);
   left: var(--left-mouse-px);
   width: 0px;

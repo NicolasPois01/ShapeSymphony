@@ -19,7 +19,7 @@
 
 
   <!-- Prévisualisation des cercles -->
-  <div class="previs" [style.width.%]="(this.circlesService.circleSize/this.squareUnit)*100" [style.height.%]="(this.circlesService.circleSize/this.squareUnit)*100"></div>
+  <div class="previs" [style.width.%]="(getCircleSize()/this.squareUnit)*100" [style.height.%]="(getCircleSize()/this.squareUnit)*100"></div>
 
   <!-- Affichage des coordonnées de la souris -->
   <div class="mousebox" #mousebox>0;0</div>

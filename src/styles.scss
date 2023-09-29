@@ -11,3 +11,14 @@
 }
 
 
+body.unselectable {
+
+  .container-bottom {
+    user-select: none;
+  }
+
+  .circles-list-container {
+    user-select: none;
+  }
+}
+

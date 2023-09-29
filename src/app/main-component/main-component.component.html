@@ -1,9 +1,9 @@
 <div class="container-app d-flex flex-column align-stretch">
   <div class="container-app-row d-flex flex-row">
 
-    <app-square class="square" [grid]="this.grid" [precisionMode]="this.precisionMode"></app-square>
+    <app-square class="square" [timerService]="this.timerService" [grid]="this.grid" [precisionMode]="this.precisionMode"></app-square>
 
-    <div class="col-2">
+    <div class="col-2 circles-list-container">
       <app-circle-list></app-circle-list>
     </div>
 
@@ -20,7 +20,7 @@
       <app-music></app-music>
     </div>
 
-    <app-timer class="timer"></app-timer>
+    <app-timer class="timer" [timerService]="this.timerService"></app-timer>
   </div>
 
 </div>
