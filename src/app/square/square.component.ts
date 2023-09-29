@@ -62,11 +62,9 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
 
   startAnimation() {
     if (!this.interval && this.timerService) {
-      console.log(this.timerService?.getTime());
       this.interval = setInterval(() => {
         let elapsedTime = ((this.timerService?.getTimeStamp()??0) - this.timestamp) / 1000; // elapsed time in seconds
         this.timestamp = this.timerService?.getTimeStamp();
-        console.log(this.timerService?.getTime());
         for (let circle of this.circles) {
           this.circlesService.updatePos(circle, circle.x + (circle.xSpeed*elapsedTime), circle.y + (circle.ySpeed*elapsedTime));
 
@@ -109,9 +107,9 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   }
 
 
-  onSquareMouseMove(event: MouseEvent) {
-    this.currentPosX = event.offsetX > 0 ? event.offsetX : this.currentPosX;
-    this.currentPosY = event.offsetY > 0 ? event.offsetY : this.currentPosY;
+  onSquareMouseMove(event: MouseEvent, dispatched: boolean = false) {
+    this.currentPosX = !dispatched ? event.offsetX : this.currentPosX;
+    this.currentPosY = !dispatched ? event.offsetY : this.currentPosY;
     let squareSize = this.getSquareSize();
     let x = parseFloat(this.circlesService.getFromMouse(this.currentPosX, this.squareUnit, squareSize).toFixed(this.precisionMode ? 1 : 2));
     let y = parseFloat(this.circlesService.getFromMouse(this.currentPosY, this.squareUnit, squareSize).toFixed(this.precisionMode ? 1 : 2));
@@ -137,8 +135,12 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   onSquareMouseDown(event: MouseEvent) {
     this.arrow.nativeElement.style.display = "block";
     this.mouseDown = true;
-    this.savePoseX = event.offsetX;
-    this.savePoseY = event.offsetY;
+    let demiCircleSize = ((this.getCircleSize()/2) * this.getSquareSize()) / this.squareUnit;
+    this.savePoseX = event.offsetX < demiCircleSize ? demiCircleSize : (event.offsetX > this.getSquareSize() - demiCircleSize ? this.getSquareSize() - demiCircleSize : event.offsetX);
+    this.savePoseY = event.offsetY < demiCircleSize ? demiCircleSize : (event.offsetY > this.getSquareSize() - demiCircleSize ? this.getSquareSize() - demiCircleSize : event.offsetY);
+    this.squareElement.nativeElement.style.setProperty("--left-mouse-px", this.savePoseX + 'px');
+    this.squareElement.nativeElement.style.setProperty("--top-mouse-px", this.savePoseY + 'px');
+    document.body.classList.add("unselectable");
     this.saveAngle = 0;
     this.saveVx = 0;
     this.saveVy = 0;
@@ -149,6 +151,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     this.arrow.nativeElement.style.display = "none";
     this.arrow.nativeElement.style.width = "0px";
     this.mouseDown = false;
+    document.body.classList.remove("unselectable");
     let x = parseFloat(this.circlesService.getFromMouse(event.offsetX, this.squareUnit, this.getSquareSize()).toFixed(this.precisionMode ? 1 : 2));
     let y = parseFloat(this.circlesService.getFromMouse(event.offsetY, this.squareUnit, this.getSquareSize()).toFixed(this.precisionMode ? 1 : 2));
     this.mousebox.nativeElement.style.left = event.pageX+10 + 'px';
@@ -171,7 +174,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   }
 
   ngOnChanges() {
-    this.squareElement?.nativeElement.dispatchEvent(new MouseEvent("mousemove"));
+    if(this.mousebox) this.onSquareMouseMove(new MouseEvent("mousemove"), true );
   }
 
   ngOnDestroy() {
