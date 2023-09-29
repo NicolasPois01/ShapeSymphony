@@ -72,7 +72,7 @@
 }
 
 .iconArrow {
-  position: absolute;
+  position: fixed;
   top: var(--top-mouse-px);
   left: var(--left-mouse-px);
   width: 0px;

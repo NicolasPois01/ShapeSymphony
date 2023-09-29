@@ -127,8 +127,8 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
       this.mousebox.nativeElement.innerText =  x+";"+y;
       this.squareElement.nativeElement.style.setProperty("--left-mouse-percent", (x + (this.squareUnit/2 - this.circlesService.circleRad))*10 + '%');
       this.squareElement.nativeElement.style.setProperty("--top-mouse-percent", (y + (this.squareUnit/2 - this.circlesService.circleRad))*10 + '%');
-      this.squareElement.nativeElement.style.setProperty("--left-mouse-px", this.currentPosX + 'px');
-      this.squareElement.nativeElement.style.setProperty("--top-mouse-px", this.currentPosY + 'px');
+      this.squareElement.nativeElement.style.setProperty("--left-mouse-px", (this.currentPosX+this.squareElement.nativeElement.getBoundingClientRect().left) + 'px');
+      this.squareElement.nativeElement.style.setProperty("--top-mouse-px", (this.currentPosY+this.squareElement.nativeElement.getBoundingClientRect().top) + 'px');
     }
   }
 
@@ -138,8 +138,8 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     let demiCircleSize = ((this.getCircleSize()/2) * this.getSquareSize()) / this.squareUnit;
     this.savePoseX = event.offsetX < demiCircleSize ? demiCircleSize : (event.offsetX > this.getSquareSize() - demiCircleSize ? this.getSquareSize() - demiCircleSize : event.offsetX);
     this.savePoseY = event.offsetY < demiCircleSize ? demiCircleSize : (event.offsetY > this.getSquareSize() - demiCircleSize ? this.getSquareSize() - demiCircleSize : event.offsetY);
-    this.squareElement.nativeElement.style.setProperty("--left-mouse-px", this.savePoseX + 'px');
-    this.squareElement.nativeElement.style.setProperty("--top-mouse-px", this.savePoseY + 'px');
+    this.squareElement.nativeElement.style.setProperty("--left-mouse-px", (this.savePoseX + this.squareElement.nativeElement.getBoundingClientRect().left) + 'px');
+    this.squareElement.nativeElement.style.setProperty("--top-mouse-px", (this.savePoseY + this.squareElement.nativeElement.getBoundingClientRect().top) + 'px');
     document.body.classList.add("unselectable");
     this.saveAngle = 0;
     this.saveVx = 0;
