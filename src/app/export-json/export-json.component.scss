@@ -1,0 +1,23 @@
+.export-container {
+  margin-top: 5px; /* Espacement entre les éléments du menu déroulant */
+}
+
+.export-container button {
+  background-color: #2a1f3d; /* Couleur d'arrière-plan */
+  color: #fff; /* Couleur du texte */
+  padding: 10px 20px; /* Espacement intérieur */
+  border: none; /* Suppression de la bordure */
+  border-radius: 12px; /* Coins arrondis */
+  cursor: pointer; /* Curseur de la main au survol */
+  box-shadow: -3px -3px 7px #36284e, 3px 3px 7px #1e162c; /* Ombre */
+  transition: background-color 0.3s, box-shadow 0.3s; /* Transition en douceur */
+}
+
+.export-container button:hover {
+  box-shadow: -1px -1px 3px #36284e, 1px 1px 3px #1e162c; /* Ombre au survol */
+  background-color: #36284e; /* Changement de couleur d'arrière-plan au survol */
+}
+
+.export-container input[type="file"] {
+  /* Styles pour l'input de type file, si nécessaire */
+}

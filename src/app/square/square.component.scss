@@ -1,60 +1,69 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .square {
   position: relative;
   aspect-ratio: 1 / 1;
   height: calc(100% - 20px);
+  background-color: #3f3550;
+  color: white;
   box-shadow: 0 0 15px black;
   box-sizing: border-box;
   overflow: hidden;
   pointer-events: auto;
   margin: auto;
   width: min-content;
-  border: black 1px solid;
+  border: 1px solid #444;
+}
 
-
-
-  &.grid .grid {
+.square:hover {
+  .mousebox,
+  .previs {
     display: block;
-
-    .vertical-grid {
-      width: 0px;
-      height: 100%;
-      position: absolute;
-      left: 0;
-      top: 0;
-      border-left: 3px dotted grey;
-      pointer-events: none;
-    }
-
-    .horyzontal-grid {
-      width: 100%;
-      height: 0px;
-      position: absolute;
-      left: 0;
-      top: 0;
-      border-top: 3px dotted grey;
-      pointer-events: none;
-    }
   }
+}
 
-  &:hover {
-    .mousebox,
-    .previs {
-      display: block;
-    }
+.square.grid .grid {
+  display: block;
+}
 
-  }
+.grid {
+  display: none;
+}
 
-  .grid {
-    display: none;
-  }
+.grid .vertical-grid, .grid .horyzontal-grid {
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.vertical-grid {
+  width: 0px;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-left: 3px dotted white;
+  pointer-events: none;
+}
+
+.horyzontal-grid {
+  width: 100%;
+  height: 0px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-top: 3px dotted white;
+  pointer-events: none;
 }
 
 .mousebox {
   font-size: 15px;
   font-weight: 700;
-  color: whitesmoke;
-  background-color: rgba(104, 104, 104, 0.9);
-  border: 2px solid black;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.7);
+  border: 2px solid #555;
   border-radius: 3px;
   position: fixed;
   padding: 0 5px;
@@ -90,8 +99,8 @@
   top: 25px;
   width: 60%;
   height: 5px;
-  background-color: #222;
-  box-shadow: 0 3px 5px rgba(0, 0, 0, .2);
+  background-color: #888;
+  box-shadow: 0 3px 5px rgba(255, 255, 255, 0.2);
   animation: arrow 700ms linear infinite;
 }
 
@@ -101,7 +110,7 @@
   width: 20px;
   height: 5px;
   right: -5px;
-  background-color: #222;
+  background-color: #888;
 }
 
 .iconArrow .arrow::after {
@@ -111,6 +120,7 @@
 
 .iconArrow .arrow::before {
   top: calc(50% + 3px);
-  box-shadow: 0 3px 5px rgba(0, 0, 0, .2);
+  box-shadow: 0 3px 5px rgba(255, 255, 255, 0.2);
   transform: rotate(-45deg);
 }
+

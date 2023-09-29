@@ -1,17 +1,26 @@
 .toggle-button {
   display: inline-block;
   padding: 10px 20px;
-  background-color: #ddd;
-  border: 2px solid #ccc;
+  background-color: #2a1f3d;
+  border: none;
+  border-radius: 12px;
+  color: #fff;
   cursor: pointer;
-  transition: background-color 0.3s;
+  box-shadow: -3px -3px 7px #36284e, 3px 3px 7px #1e162c;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  margin-right: 15px; /* Ajoutez une marge à droite pour chaque bouton */
+}
+
+.toggle-button:last-child {
+  margin-right: 0; /* Assurez-vous que le dernier bouton n'a pas de marge à droite */
 }
 
 .toggle-button:hover {
-  background-color: #eee;
+  box-shadow: -1px -1px 3px #36284e, 1px 1px 3px #1e162c;
 }
 
 .toggle-button.active {
-  background-color: #aaa;
+  background-color: #36284e;
+  box-shadow: inset -1px -1px 3px #41305f, inset 1px 1px 3px #1e162c;
   color: white;
 }

@@ -1,1 +1,8 @@
-<button *ngFor="let note of notes" (click)="toggleNote(note)">{{note}}</button>
+<button
+  *ngFor="let note of notes"
+  (click)="toggleNote(note)"
+  class="toggle-button"
+  [class.active]="isActive(note)"
+>
+  {{note}}
+</button>

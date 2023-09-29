@@ -11,6 +11,17 @@ export class OctaveComponent {
   selectedOctave: number = this.soundService.getActiveOctave();
 
   constructor(private soundService: SoundService) {}
+  increaseOctave() {
+    if (this.selectedOctave < 7) {
+      this.selectedOctave++;
+    }
+  }
+
+  decreaseOctave() {
+    if (this.selectedOctave > 1) {
+      this.selectedOctave--;
+    }
+  }
 
   updateOctave(): void {
     this.soundService.setActiveOctave(this.selectedOctave);

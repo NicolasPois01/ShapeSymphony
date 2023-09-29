@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Circle} from "../models/circle";
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -13,10 +13,12 @@ export class CircleService {
   circleList: Circle[] = [];
   colors = ["red", "green", "blue", "yellow", "pink", "orange", "purple", "cyan", "magenta", "brown"];
   selectedCircle: Circle | null;
+
+  private circleListSubject = new BehaviorSubject<Circle[]>([]);
+  circleList$: Observable<Circle[]> = this.circleListSubject.asObservable();
   constructor() {
     this.selectedCircle = null;
   }
-  public collisions: { x: number, y: number, color: string }[] = [];
 
   getFromMouse(pos: number, squareUnit: number, squareSize: number): number {
     let ret: number = (pos * squareUnit / squareSize) - squareUnit / 2;
@@ -84,6 +86,7 @@ export class CircleService {
     };
 
     this.circleList.push(circle);
+    this.circleListSubject.next(this.circleList);
   }
 
   private selectedCircleSubject = new BehaviorSubject<Circle | null>(null);

@@ -1,4 +1,8 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit, OnDestroy } from '@angular/core';
+import { CircleService } from '../services/circle.service';
+import { Circle } from '../models/circle';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-main-component',
@@ -8,10 +12,25 @@ import { Component, HostListener } from '@angular/core';
     '(document:keydown)': 'handleKeyboardEvent($event)'
   }
 })
-export class MainComponentComponent {
+export class MainComponentComponent implements OnInit, OnDestroy {
 
   grid: boolean = false;
   precisionMode: boolean = false;
+  circles: Circle[] = [];
+  private unsubscribe$ = new Subject();
+
+  constructor(private circleService: CircleService) {}
+
+  ngOnInit() {
+    this.circleService.circleList$
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((circles: Circle[]) => this.circles = circles); // Ajoutez le type ici
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe$.next(null); // Ajoutez une valeur ici, même si elle n'est pas utilisée
+    this.unsubscribe$.complete();
+  }
 
   handleKeyboardEvent(event: KeyboardEvent) {
     if(event.key === "Shift") this.grid = !this.grid;
