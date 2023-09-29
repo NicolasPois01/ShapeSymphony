@@ -8,8 +8,10 @@
   box-sizing: border-box;
   pointer-events: none;
   transform: translateX(-50%) translateY(-50%);
+  box-shadow: none;
+}
 
-  /* Ajout de l'effet néon */
+.circle.neon {
   box-shadow:
     0 0 3px var(--circle-color),
     0 0 5px var(--circle-color),

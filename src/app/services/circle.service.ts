@@ -77,7 +77,8 @@ export class CircleService {
       note: "Do",
       maxBounces: 10,
       maxTime: 10000,
-      spawnTime: 0
+      spawnTime: 0,
+      isColliding : false
     };
 
     this.circleList.push(circle);

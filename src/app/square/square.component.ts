@@ -73,19 +73,18 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
           this.circlesService.updatePos(circle, circle.x + (circle.xSpeed/this.fps), circle.y + (circle.ySpeed/this.fps));
 
           if (!this.circlesService.inRange(circle.x, this.squareUnit)) {
+            circle.isColliding = true;
             this.circlesService.bounceX(circle, circle.x - this.circlesService.circleRad < -(this.squareUnit/2), this.squareUnit/2 - this.circlesService.circleRad);
-              this.circlesService.collisions.push({x:circle.x, y:circle.y, color: circle.color});
-              setTimeout(() => {
-                this.circlesService.collisions.shift();
-              }, 1000);
+            setTimeout(() => {
+              circle.isColliding = false;
+            }, 300);
           }
           if (!this.circlesService.inRange(circle.y, this.squareUnit)) {
+            circle.isColliding = true;
             this.circlesService.bounceY(circle, circle.y - this.circlesService.circleRad < -(this.squareUnit/2), this.squareUnit/2 - this.circlesService.circleRad);
-            this.circlesService.collisions.push({x: circle.x, y: circle.y, color: circle.color});
-
             setTimeout(() => {
-              this.circlesService.collisions.shift();
-            }, 1000);
+              circle.isColliding = false;
+            }, 300);
 
           }
         }
@@ -112,8 +111,8 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     }
     if(!this.circlesService.inRange(x, this.squareUnit) || !this.circlesService.inRange(y, this.squareUnit)) return;
     this.circlesService.addCircle(parseFloat(x.toFixed(this.precisionMode ? 1 : 2)),
-                                  parseFloat(y.toFixed(this.precisionMode ? 1 : 2)), 
-                                  parseFloat(((this.saveVx * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)), 
+                                  parseFloat(y.toFixed(this.precisionMode ? 1 : 2)),
+                                  parseFloat(((this.saveVx * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)),
                                   parseFloat(((this.saveVy * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)));
   }
 
