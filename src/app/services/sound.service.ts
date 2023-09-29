@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Circle} from "../models/circle";
-import { Injectable, EventEmitter } from '@angular/core';
+import { EventEmitter } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
@@ -14,9 +14,10 @@ export class SoundService {
   alterations = ["","b","d"];   //Legende : d=dièse, b=bémol.
 
   activeInstrument: string = "Piano";
-  activeNote: string = "Do";
+  activeNote: string = "A";
   activeOctave: number = 3;
-  activeAlteration: string = "";
+  activeAlteration: number = 0;
+  activeAlterationString: string ="";
 
   constructor() { }
 
@@ -26,7 +27,8 @@ export class SoundService {
           for (const octave of this.octaves) {
             for (const alteration of this.alterations) {
             const audioFileName = `${instrument}${note}${alteration}${octave}.aiff`;
-            const audioFilePath = `C:/Users/Lenovo/Desktop/Mines Ales/2ème Année/Web_services/ShapeSymphony/Samples/${audioFileName}`;
+            const audioFilePath = './assets/samples/Piano/PianoA1.mp3';
+            console.log(audioFilePath);
             //Vérifie si le fichier audio existe :
             const response = await fetch(audioFilePath, { method: 'HEAD' });
               if (response.ok) {
@@ -37,23 +39,22 @@ export class SoundService {
           }
         }
       }
-    }
   }
 
-  $scope.playAudio = function(circle : Circle) {
-       const audioFileName = Circle.Instrument+Circle.Note+Circle.Alteration+Circle.Octave+'.aiff';
-       const audioFilePath = `C:/Users/Lenovo/Desktop/Mines Ales/2ème Année/Web_services/ShapeSymphony/Samples/${audioFileName}`;
-       const audio = new Audio(audioFilePath);
+  playAudio = function(circle : Circle) {
+       const audioFileName = circle.instrument+circle.note+circle.alteration+circle.octave+'.aiff';
+       const audioFilePath = `../../Samples/${circle.instrument}/${audioFileName}`;
+       const audio = new Audio('./assets/samples/Piano/PianoA1.mp3');
+       console.log(audioFilePath);
        audio.play();
-  };
+  }
 
-  setActiveInstrument(instrument: string) {
+  setActiveInstrument(instrument: string){
     this.activeInstrument = instrument;
     this.selectionChanged.emit();
   }
 
-
-  getActiveInstrument(): string {
+  getActiveInstrument(){
     return this.activeInstrument;
   }
 
@@ -62,45 +63,44 @@ export class SoundService {
     this.selectionChanged.emit();
   }
 
-  getActiveNote(): string {
+  getActiveNote(){
     return this.activeNote;
   }
 
-  setActiveOctave(octave: number) {
+  setActiveOctave(octave: number){
     this.activeOctave = octave;
     this.selectionChanged.emit();
   }
 
-  getActiveOctave(): number {
+  getActiveOctave(){
     return this.activeOctave;
   }
 
-  setActiveAlteration(alteration: number) {
+  setActiveAlteration(alteration: number){
     this.activeAlteration = alteration;
     this.selectionChanged.emit();
   }
 
-  getActiveAlteration(): number {
+  getActiveAlteration(){
     return this.activeAlteration;
   }
 
-  getCurrentSelection(): string {
+  getCurrentSelection(){
     let alterationSymbol = '';
-    // @ts-ignore
     switch (this.activeAlteration) {
       case -1:
         alterationSymbol = '♭';
+        this.activeAlterationString = 'b';
         break;
       case 1:
         alterationSymbol = '♯';
+        this.activeAlterationString = 'd';
         break;
       default:
         alterationSymbol = '';
+        this.activeAlterationString = '';
         break;
     }
     return `${this.activeInstrument} ${this.activeNote}${alterationSymbol}${this.activeOctave}`;
-
   }
-
-
 }

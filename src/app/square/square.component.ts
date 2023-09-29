@@ -3,6 +3,7 @@ import {CircleService} from "../services/circle.service";
 import {Circle} from "../models/circle";
 import {TimerService} from "../services/timer.service";
 import {Subscription} from "rxjs";
+import {SoundService} from "../services/sound.service";
 
 @Component({
   selector: 'app-square',
@@ -46,10 +47,13 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
 
   timerService: TimerService
 
+  soundService : SoundService
+
   private subscriptions: Subscription[] = [];
-  constructor(circlesService: CircleService, timerService: TimerService) {
+  constructor(circlesService: CircleService, timerService: TimerService, soundService: SoundService) {
     this.circlesService = circlesService;
     this.timerService = timerService;
+    this.soundService = soundService;
     this.circles = circlesService.circleList;
     this.subscriptions.push(
       this.timerService.start$.subscribe(() => this.startAnimation()),
@@ -71,26 +75,23 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     if (!this.interval) {
       this.interval = setInterval(() => {
         for (let circle of this.circles) {
-          this.circlesService.updatePos(circle, circle.x + (circle.xSpeed/this.fps), circle.y + (circle.ySpeed/this.fps));
-
-          if (!this.circlesService.inRange(circle.x, this.squareUnit)) {
-            this.circlesService.bounceX(circle, circle.x - this.circlesService.circleRad < -(this.squareUnit/2), this.squareUnit/2 - this.circlesService.circleRad);
-              this.circlesService.collisions.push({x:circle.x, y:circle.y, color: circle.color});
-              setTimeout(() => {
-                this.circlesService.collisions.shift();
-              }, 1000);
-          }
+          this.circlesService.updatePos(circle, circle.x + (circle.xSpeed / this.fps), circle.y + (circle.ySpeed / this.fps));
+          if (!this.circlesService.inRange(circle.x, this.squareUnit))
+            this.circlesService.bounceX(circle, circle.x - this.circlesService.circleRad < -(this.squareUnit / 2), this.squareUnit / 2 - this.circlesService.circleRad);
+            this.circlesService.collisions.push({x: circle.x, y: circle.y, color: circle.color});
+            setTimeout(() => {
+              this.circlesService.collisions.shift();
+            }, 1000);
           if (!this.circlesService.inRange(circle.y, this.squareUnit)) {
-            this.circlesService.bounceY(circle, circle.y - this.circlesService.circleRad < -(this.squareUnit/2), this.squareUnit/2 - this.circlesService.circleRad);
+            this.circlesService.bounceY(circle, circle.y - this.circlesService.circleRad < -(this.squareUnit / 2), this.squareUnit / 2 - this.circlesService.circleRad);
             this.circlesService.collisions.push({x: circle.x, y: circle.y, color: circle.color});
 
             setTimeout(() => {
               this.circlesService.collisions.shift();
             }, 1000);
-
           }
         }
-      }, 1000/this.fps);
+      }, 1000 / this.fps);
     }
   }
 
