@@ -1,0 +1,19 @@
+import { Component, Output, EventEmitter } from '@angular/core';
+import { SoundService } from '../services/sound.service';
+
+@Component({
+  selector: 'app-alteration',
+  templateUrl: './alteration.component.html',
+  styleUrls: ['./alteration.component.scss']
+})
+export class AlterationComponent {
+  @Output() alterationChanged = new EventEmitter<void>();
+  selectedAlteration: number = this.soundService.getActiveAlteration();
+
+  constructor(private soundService: SoundService) {}
+
+  updateAlteration(): void {
+    this.soundService.setActiveAlteration(this.selectedAlteration);
+    this.alterationChanged.emit();
+  }
+}

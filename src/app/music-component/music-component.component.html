@@ -1,0 +1,6 @@
+<p>
+  <span class="instrument">{{ soundService.activeInstrument }}</span>
+  <span class="note">{{ soundService.activeNote }}</span>
+  <span class="alteration" *ngIf="alterationSymbol">{{ alterationSymbol }}</span>
+  <span class="octave">{{ soundService.activeOctave }}</span>
+</p>

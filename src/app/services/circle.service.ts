@@ -75,6 +75,8 @@ export class CircleService {
       startY: y,
       instrument: "Piano",
       note: "Do",
+      alteration: 0,
+      octave: 3,
       maxBounces: 10,
       maxTime: 10000,
       spawnTime: 0,

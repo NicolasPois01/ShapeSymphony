@@ -9,6 +9,8 @@ export interface Circle {
   startY: number,
   instrument: string,
   note: string,
+  alteration: number,
+  octave: number,
   spawnTime: number,
   maxBounces: number,
   maxTime: number

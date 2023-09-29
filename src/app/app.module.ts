@@ -13,6 +13,10 @@ import { ZeroPaddingPipe } from './zero-padding.pipe';
 import { TimerComponent } from './timer/timer.component';
 import { JsonExportComponent } from './export-json/export-json.component';
 import { ImportJsonComponent } from './import-json/import-json.component';
+import { AlterationComponent } from './alteration/alteration.component';
+import { OctaveComponent } from './octave/octave.component';
+import {FormsModule} from "@angular/forms";
+import {MusicComponent} from './music-component/music-component.component';
 
 @NgModule({
   declarations: [
@@ -26,11 +30,15 @@ import { ImportJsonComponent } from './import-json/import-json.component';
     ZeroPaddingPipe,
     TimerComponent,
     JsonExportComponent,
-    ImportJsonComponent
+    ImportJsonComponent,
+    AlterationComponent,
+    OctaveComponent,
+    MusicComponent
   ],
   imports: [
     BrowserModule,
-    NgbModule
+    NgbModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [MainComponentComponent]
