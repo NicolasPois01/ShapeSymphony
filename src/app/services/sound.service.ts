@@ -8,8 +8,7 @@ import { EventEmitter } from '@angular/core';
 export class SoundService {
   selectionChanged = new EventEmitter<void>();
   instruments = ["Piano", "Batterie", "Guitare", "Violon", "Trompette", "Clavecin"];
-  //notes = ["Do", "Re", "Mi", "Fa", "Sol", "La", "Si"];
-  notes = ["A", "B", "C", "D", "E", "F", "G"];    //Note sous convention universelle
+  notes = ["Do", "Re", "Mi", "Fa", "Sol", "La", "Si"];
   octaves = ["1","2","3","4","5","6","7"];
   alterations = ["","b","d"];   //Legende : d=dièse, b=bémol.
 
@@ -26,8 +25,8 @@ export class SoundService {
         for (const note of this.notes) {
           for (const octave of this.octaves) {
             for (const alteration of this.alterations) {
-            const audioFileName = `${instrument}${note}${alteration}${octave}.aiff`;
-            const audioFilePath = './assets/samples/Piano/PianoA1.mp3';
+            const audioFileName = `${instrument}${note}${alteration}${octave}.mp3`;
+            const audioFilePath = `./assets/samples/${instrument}/${audioFileName}`;
             console.log(audioFilePath);
             //Vérifie si le fichier audio existe :
             const response = await fetch(audioFilePath, { method: 'HEAD' });
@@ -42,9 +41,9 @@ export class SoundService {
   }
 
   playAudio = function(circle : Circle) {
-       const audioFileName = circle.instrument+circle.note+circle.alteration+circle.octave+'.aiff';
-       const audioFilePath = `../../Samples/${circle.instrument}/${audioFileName}`;
-       const audio = new Audio('./assets/samples/Piano/PianoA1.mp3');
+       const audioFileName = circle.instrument+circle.note+circle.alteration+circle.octave+'.mp3';
+       const audioFilePath = `../../samples/${circle.instrument}/${audioFileName}`;
+       const audio = new Audio(audioFilePath);
        console.log(audioFilePath);
        audio.play();
   }
