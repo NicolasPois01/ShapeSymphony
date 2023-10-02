@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Circle} from "../models/circle";
 import {BehaviorSubject} from "rxjs";
+import {SoundService} from "./sound.service";
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +14,11 @@ export class CircleService {
   circleList: Circle[] = [];
   colors = ["red", "green", "blue", "yellow", "pink", "orange", "purple", "cyan", "magenta", "brown"];
   selectedCircle: Circle | null;
-  constructor() {
+  soundService : SoundService;
+
+  constructor(soundService : SoundService) {
     this.selectedCircle = null;
+    this.soundService = soundService;
   }
   public collisions: { x: number, y: number, color: string }[] = [];
 
@@ -35,6 +39,7 @@ export class CircleService {
   }
 
     bounceX(circle: any, leftBorder: Boolean, midSquareSize: number) {
+      this.soundService.playAudio(circle);
       circle.xSpeed = -circle.xSpeed;
       if(leftBorder) {
         circle.x = -(midSquareSize + (circle.x + midSquareSize));
@@ -45,6 +50,7 @@ export class CircleService {
     }
 
     bounceY(circle: any, topBorder: Boolean, midSquareSize: number) {
+      this.soundService.playAudio(circle);
       circle.ySpeed = -circle.ySpeed;
       if(topBorder) {
         circle.y = -(midSquareSize + (circle.y + midSquareSize));
@@ -73,10 +79,10 @@ export class CircleService {
       color: this.getRandomColor(),
       startX: x,
       startY: y,
-      instrument: "Piano",
-      note: "Do",
-      alteration: 0,
-      octave: 3,
+      instrument: this.soundService.activeInstrument,
+      note: this.soundService.activeNote,
+      alteration: this.soundService.activeAlterationString,
+      octave: this.soundService.activeOctave,
       maxBounces: 10,
       maxTime: 10000,
       spawnTime: 0

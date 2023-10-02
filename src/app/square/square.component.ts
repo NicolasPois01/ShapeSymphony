@@ -1,8 +1,9 @@
-import { Component, OnInit, OnDestroy, ViewChild, Input, AfterViewInit, OnChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, Input, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
 import {CircleService} from "../services/circle.service";
 import {Circle} from "../models/circle";
 import {TimerService} from "../services/timer.service";
 import {Subscription} from "rxjs";
+import {SoundService} from "../services/sound.service";
 
 @Component({
   selector: 'app-square',
@@ -44,12 +45,20 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   @Input() precisionMode: boolean = false;
   @Input() timerService: TimerService|undefined = undefined;
 
+  circlesService: CircleService
+
+  timerService: TimerService
   private subscriptions: Subscription[] = [];
   constructor(private circlesService: CircleService) {
     this.circles = circlesService.circleList;
+    this.subscriptions.push(
+      this.timerService.start$.subscribe(() => this.startAnimation()),
+      this.timerService.pause$.subscribe(() => this.pauseAnimation())
+    );
   }
 
   ngOnInit() {
+    this.soundservices.loadAudioFiles();
   }
 
   ngAfterViewInit() {
@@ -76,7 +85,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
               }, 1000);
           }
           if (!this.circlesService.inRange(circle.y, this.squareUnit)) {
-            this.circlesService.bounceY(circle, circle.y - this.circlesService.circleRad < -(this.squareUnit/2), this.squareUnit/2 - this.circlesService.circleRad);
+            this.circlesService.bounceY(circle, circle.y - this.circlesService.circleRad < -(this.squareUnit / 2), this.squareUnit / 2 - this.circlesService.circleRad);
             this.circlesService.collisions.push({x: circle.x, y: circle.y, color: circle.color});
 
             setTimeout(() => {
@@ -86,6 +95,13 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
           }
         }
       }, 1000/this.fps);
+    }
+  }
+
+  pauseAnimation(): void {
+    if (this.interval) {
+      clearInterval(this.interval);
+      this.interval = null;
     }
   }
 
@@ -101,8 +117,8 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     }
     if(!this.circlesService.inRange(x, this.squareUnit) || !this.circlesService.inRange(y, this.squareUnit)) return;
     this.circlesService.addCircle(parseFloat(x.toFixed(this.precisionMode ? 1 : 2)),
-                                  parseFloat(y.toFixed(this.precisionMode ? 1 : 2)), 
-                                  parseFloat(((this.saveVx * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)), 
+                                  parseFloat(y.toFixed(this.precisionMode ? 1 : 2)),
+                                  parseFloat(((this.saveVx * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)),
                                   parseFloat(((this.saveVy * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)));
   }
 

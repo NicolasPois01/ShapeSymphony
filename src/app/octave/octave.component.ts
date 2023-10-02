@@ -8,7 +8,7 @@ import { SoundService } from '../services/sound.service';
 })
 export class OctaveComponent {
   @Output() octaveChanged = new EventEmitter<void>();
-  selectedOctave: number = this.soundService.getActiveOctave();
+  selectedOctave: number = this.soundService.activeOctave;
 
   constructor(private soundService: SoundService) {}
 
