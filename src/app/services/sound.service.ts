@@ -13,7 +13,7 @@ export class SoundService {
   alterations = ["","b","d"];   //Legende : d=dièse, b=bémol.
 
   activeInstrument: string = "Piano";
-  activeNote: string = "A";
+  activeNote: string = "Do";
   activeOctave: number = 3;
   activeAlteration: number = 0;
   activeAlterationString: string ="";
@@ -42,7 +42,7 @@ export class SoundService {
 
   playAudio = function(circle : Circle) {
        const audioFileName = circle.instrument+circle.note+circle.alteration+circle.octave+'.mp3';
-       const audioFilePath = `../../samples/${circle.instrument}/${audioFileName}`;
+       const audioFilePath = `./assets/samples/${circle.instrument}/${audioFileName}`;
        const audio = new Audio(audioFilePath);
        console.log(audioFilePath);
        audio.play();
