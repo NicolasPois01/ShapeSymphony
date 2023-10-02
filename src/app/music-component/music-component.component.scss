@@ -1,36 +1,44 @@
-:host {
+/* CSS pour centrer le texte à l'intérieur du conteneur */
+.container {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: Arial, sans-serif;
-}
-
-p {
-  font-size: 1.5em;
-  color: #D8BFD8;  /* Une teinte de violet assez claire pour le texte */
-  background-color: #2a1f3d;  /* Un violet sombre pour le fond */
-  padding: 10px 20px;
+  width: 100%;  /* Ajustez la largeur du conteneur selon vos besoins */
+  height: auto; /* Ajustez la hauteur du conteneur selon vos besoins */
+  background-color: #2a1f3d; /* Un violet sombre pour le fond, à ajuster selon vos besoins */
   border-radius: 8px;
-  box-shadow: 0 0 15px rgba(104, 56, 123, 0.5);  /* Ombre avec une teinte violette */
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  width: auto;
+  box-shadow: 0 0 15px rgba(104, 56, 123, 0.5); /* Ombre avec une teinte violette */
+  padding: 10px;
+  margin: 10px;
+
 }
 
-p > span.instrument {
+.text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;  /* Espace entre les éléments span */
+}
+
+/* Style pour chaque élément span à l'intérieur du conteneur */
+.text > span {
+  font-size: 2em;
+  padding: 1px;
+}
+
+/* Styles spécifiques pour chaque type de texte, à ajuster selon vos besoins */
+.instrument {
   color: #9351a6;  /* Violet moyen pour l'instrument */
 }
 
-p > span.note {
+.note {
   color: #b084cc;  /* Violet plus clair pour la note */
 }
 
-p > span.alteration {
+.alteration {
   color: #6b3e91;  /* Violet plus sombre pour l'altération */
 }
 
-p > span.octave {
+.octave {
   color: #7d58a9;  /* Violet intermédiaire pour l'octave */
 }
-

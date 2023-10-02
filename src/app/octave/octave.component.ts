@@ -14,17 +14,16 @@ export class OctaveComponent {
   increaseOctave() {
     if (this.selectedOctave < 7) {
       this.selectedOctave++;
+      this.soundService.setActiveOctave(this.selectedOctave);
+      this.octaveChanged.emit();
     }
   }
 
   decreaseOctave() {
     if (this.selectedOctave > 1) {
       this.selectedOctave--;
+      this.soundService.setActiveOctave(this.selectedOctave);
+      this.octaveChanged.emit();
     }
-  }
-
-  updateOctave(): void {
-    this.soundService.setActiveOctave(this.selectedOctave);
-    this.octaveChanged.emit();
   }
 }
