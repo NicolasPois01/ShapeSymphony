@@ -107,4 +107,8 @@ export class CircleService {
       this.circleChangedSubject.next(this.selectedCircle);
     }
   }
+
+  updateCircleSpeed(circle: Circle) {
+    this.selectedCircleSubject.next(circle);
+  }
 }

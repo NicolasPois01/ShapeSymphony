@@ -17,6 +17,7 @@ export class CircleCharacteristicsComponent implements OnInit{
   availableNotes: string[] = this.circlesService.notes;
   newStartX: number | undefined;
   newStartY: number | undefined;
+  newAngle: number | undefined;
 
   constructor(private circlesService: CircleService) {}
 
@@ -33,6 +34,7 @@ export class CircleCharacteristicsComponent implements OnInit{
           this.angleDepart += 2 * Math.PI;
         }
         this.angleDepart = (this.angleDepart * 180) / Math.PI;
+        this.newAngle = this.angleDepart;
         this.vitesseGlobale = Math.sqrt(Math.pow(circle.xSpeed, 2) + Math.pow(circle.ySpeed, 2));
       }
     });
@@ -70,6 +72,16 @@ export class CircleCharacteristicsComponent implements OnInit{
         this.selectedCircle.startX = this.newStartX;
         this.circlesService.updatePos(this.selectedCircle, this.selectedCircle.startX, this.selectedCircle.startY);
       }
+    }
+  }
+  changeAngle(angle: number | undefined) {
+    if (angle !== undefined && this.selectedCircle) {
+      const speed = this.vitesseGlobale || 1;
+      const xSpeed = speed * Math.cos((angle * Math.PI) / 180);
+      const ySpeed = -speed * Math.sin((angle * Math.PI) / 180);
+      this.selectedCircle.xSpeed = xSpeed;
+      this.selectedCircle.ySpeed = ySpeed;
+      this.circlesService.updateCircleSpeed(this.selectedCircle);
     }
   }
   validateStartY(value: number | undefined) {

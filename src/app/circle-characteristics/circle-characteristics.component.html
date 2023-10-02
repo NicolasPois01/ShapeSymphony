@@ -1,7 +1,9 @@
 <div *ngIf="selectedCircle" class="title p-2">
   <div>Circle {{ selectedCircle.id }}</div>
   <ul>
-    <li>Angle de départ: {{ angleDepart?.toFixed(2) }}°</li>
+    <li>
+      <input type="number" [(ngModel)]="newAngle" (change)="changeAngle(newAngle)">°
+    </li>
     <li>Position X de départ:
       <input type="number" [(ngModel)]="newStartX" (change)="validateStartX(newStartX)">
     </li>
