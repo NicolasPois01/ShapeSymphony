@@ -45,20 +45,15 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   @Input() precisionMode: boolean = false;
   @Input() timerService: TimerService|undefined = undefined;
 
-  circlesService: CircleService
-
-  timerService: TimerService
+  private soundService: SoundService|undefined = undefined
   private subscriptions: Subscription[] = [];
+
   constructor(private circlesService: CircleService) {
     this.circles = circlesService.circleList;
-    this.subscriptions.push(
-      this.timerService.start$.subscribe(() => this.startAnimation()),
-      this.timerService.pause$.subscribe(() => this.pauseAnimation())
-    );
   }
 
   ngOnInit() {
-    this.soundservices.loadAudioFiles();
+    this.soundService?.loadAudioFiles();
   }
 
   ngAfterViewInit() {

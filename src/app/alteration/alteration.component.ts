@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, NgModule, Input } from '@angular/core';
 import { SoundService } from '../services/sound.service';
 
 @Component({
