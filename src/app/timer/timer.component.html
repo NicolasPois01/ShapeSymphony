@@ -1,4 +1,4 @@
-<h2>Timer: {{ minutes }}:{{ seconds | zeroPadding }}.{{ milliseconds | zeroPadding }}</h2>
+<h2>Timer: {{ getMinutes() }}:{{ getSecondes() | zeroPadding }}.{{ getMillisecondes() | zeroPadding }}</h2>
 
-<button (click)="startTimer()" *ngIf="!isRunning">Start</button>
-<button (click)="pauseTimer()" *ngIf="isRunning">Pause</button>
+<button (click)="startTimer()" *ngIf="!getIsRunning()">Start</button>
+<button (click)="pauseTimer()" *ngIf="getIsRunning()">Pause</button>
