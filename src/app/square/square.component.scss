@@ -26,15 +26,15 @@
   }
 }
 
+.square .grid, .square .grid {
+  display: none;
+}
+
 .square.grid .grid {
   display: block;
 }
 
-.grid {
-  display: none;
-}
-
-.grid .vertical-grid, .grid .horyzontal-grid {
+.square.grid .grid .vertical-grid, .square.grid  .grid.horyzontal-grid {
   border-color: rgba(255, 255, 255, 0.4);
 }
 
