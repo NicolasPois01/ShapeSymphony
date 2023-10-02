@@ -58,6 +58,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   }
 
   ngOnInit() {
+    this.soundservices.loadAudioFiles();
   }
 
   ngAfterViewInit() {
