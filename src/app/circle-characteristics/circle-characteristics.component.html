@@ -2,13 +2,21 @@
   <div>Circle {{ selectedCircle.id }}</div>
   <ul>
     <li>Angle de départ: {{ angleDepart?.toFixed(2) }}°</li>
-    <li>Position X de départ: {{ selectedCircle.startX.toFixed(2) }}</li>
-    <li>Position Y de départ: {{ selectedCircle.startY.toFixed(2) }}</li>
+    <li>Position X de départ:
+      <input type="number" [(ngModel)]="newStartX" (change)="validateStartX(newStartX)">
+    </li>
+    <li>Position Y de départ:
+      <input type="number" [(ngModel)]="newStartY" (change)="validateStartY(newStartY)">
+    </li>
     <li>Position X: {{ selectedCircle.x.toFixed(2) }}</li>
     <li>Position Y: {{ selectedCircle.y.toFixed(2) }}</li>
-    <li>Vitesse X: {{ selectedCircle.xSpeed.toFixed(2) }}
-    <li>Vitesse Y: {{ selectedCircle.ySpeed.toFixed(2) }}</li>
-    <li>Note: {{ selectedCircle.note }}</li>
+    <li>Vitesse: {{ vitesseGlobale?.toFixed(2) }}</li>
+    <li>
+      Note:
+      <select [(ngModel)]="selectedNote" (change)="setNote(selectedNote)">
+        <option *ngFor="let note of availableNotes" [value]="note">{{ note }}</option>
+      </select>
+    </li>
     <li>Nombre de rebond max: {{ selectedCircle.maxBounces }}</li>
     <li>
       Couleur:

@@ -12,6 +12,7 @@ export class CircleService {
   circleChanged$: Observable<Circle> = this.circleChangedSubject.asObservable();
   circleList: Circle[] = [];
   colors = ["red", "green", "blue", "yellow", "pink", "orange", "purple", "cyan", "magenta", "brown"];
+  notes = ["Do", "Re", "Mi", "Fa", "Sol", "La", "Si"]
   selectedCircle: Circle | null;
   constructor() {
     this.selectedCircle = null;
@@ -31,6 +32,7 @@ export class CircleService {
   updatePos(circle: any, x: number, y: number) {
     circle.x = x;
     circle.y = y;
+    this.circleChangedSubject.next(circle);
   }
 
   bounceX(circle: any, leftBorder: Boolean, midSquareSize: number) {
@@ -92,6 +94,15 @@ export class CircleService {
     if (this.selectedCircle) {
       if (color != null) {
         this.selectedCircle.color = color;
+      }
+      this.circleChangedSubject.next(this.selectedCircle);
+    }
+  }
+
+  setNote(note: string | undefined) {
+    if (this.selectedCircle) {
+      if (note != null) {
+        this.selectedCircle.note = note;
       }
       this.circleChangedSubject.next(this.selectedCircle);
     }
