@@ -14,4 +14,6 @@ export interface Circle {
   spawnTime: number,
   maxBounces: number,
   maxTime: number
+  isColliding: boolean;
+
 }

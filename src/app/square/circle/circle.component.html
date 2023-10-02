@@ -1,1 +1,6 @@
-<div class="circle" [style.left.%]="((circle?.x ?? 0) + 5) * 10" [style.top.%]="((circle?.y ?? 0) + 5) * 10" [style.border-color]="circle?.color"></div>
+<div class="circle"
+     [ngClass]="{'neon': circle?.isColliding}"
+     [style.left.%]="((circle?.x ?? 0) + 5) * 10"
+     [style.top.%]="((circle?.y ?? 0) + 5) * 10"
+     [style.border-color]="circle?.color">
+</div>

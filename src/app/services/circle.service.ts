@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Circle} from "../models/circle";
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, Observable} from "rxjs";
 import {SoundService} from "./sound.service";
 
 @Injectable({
@@ -15,12 +15,13 @@ export class CircleService {
   colors = ["red", "green", "blue", "yellow", "pink", "orange", "purple", "cyan", "magenta", "brown"];
   selectedCircle: Circle | null;
   soundService : SoundService;
+  private circleListSubject = new BehaviorSubject<Circle[]>([]);
+  circleList$: Observable<Circle[]> = this.circleListSubject.asObservable();
 
   constructor(soundService : SoundService) {
     this.selectedCircle = null;
     this.soundService = soundService;
   }
-  public collisions: { x: number, y: number, color: string }[] = [];
 
   getFromMouse(pos: number, squareUnit: number, squareSize: number): number {
     let ret: number = (pos * squareUnit / squareSize) - squareUnit / 2;
@@ -85,10 +86,12 @@ export class CircleService {
       octave: this.soundService.activeOctave,
       maxBounces: 10,
       maxTime: 10000,
-      spawnTime: 0
+      spawnTime: 0,
+      isColliding : false
     };
 
     this.circleList.push(circle);
+    this.circleListSubject.next(this.circleList);
   }
 
   private selectedCircleSubject = new BehaviorSubject<Circle | null>(null);

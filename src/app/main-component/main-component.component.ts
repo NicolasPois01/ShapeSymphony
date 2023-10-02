@@ -1,4 +1,8 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit, OnDestroy } from '@angular/core';
+import { CircleService } from '../services/circle.service';
+import { Circle } from '../models/circle';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { TimerService } from '../services/timer.service';
 
 @Component({
@@ -10,12 +14,24 @@ import { TimerService } from '../services/timer.service';
   },
   providers: [ TimerService ]
 })
-export class MainComponentComponent {
+export class MainComponentComponent implements OnInit, OnDestroy {
 
   grid: boolean = false;
   precisionMode: boolean = false;
-  
-  constructor(public timerService: TimerService) {
+  circles: Circle[] = [];
+  private unsubscribe$ = new Subject();
+
+  constructor(private circleService: CircleService, public timerService: TimerService) {}
+
+  ngOnInit() {
+    this.circleService.circleList$
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((circles: Circle[]) => this.circles = circles); // Ajoutez le type ici
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe$.next(null); // Ajoutez une valeur ici, même si elle n'est pas utilisée
+    this.unsubscribe$.complete();
   }
 
   handleKeyboardEvent(event: KeyboardEvent) {

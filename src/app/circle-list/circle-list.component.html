@@ -1,6 +1,4 @@
-<div class="title">Liste des entités</div>
-<app-json-export [data]="circlesList" filename="circles.json"></app-json-export>
-<app-import-json></app-import-json>
+<div class="title">Liste des entités : </div>
 
 <ul>
   <li *ngFor="let circle of circlesList" (click)="circleClicked(circle)"

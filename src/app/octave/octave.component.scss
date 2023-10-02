@@ -2,43 +2,92 @@
   display: flex;
   align-items: center;
   margin-left: 20px;
+  margin-top: 22px;
+  color: white; /* Changé la couleur du texte en blanc pour mieux contraster avec le fond sombre */
 }
 
 .octave-container span {
   margin-right: 10px;
-  font-size: 16px;
+  font-size: 18px; /* Augmenté la taille du texte pour une meilleure lisibilité */
 }
 
 .octave-spinbox {
   padding: 5px 10px;
-  background-color: #f7f7f7;
-  border: 1px solid #d1d1d1;
-  border-radius: 5px;
-  color: #333;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
+  background-color: #2a1f3d;
+  border: none;
+  border-radius: 12px;
+  color: white; /* Changé la couleur du texte en blanc */
+  font-size: 18px;
+  transition: box-shadow 0.3s;
   width: 60px;
   text-align: center;
-  appearance: textfield; /* This will make sure arrows are always shown on some browsers */
-
-  /* For showing arrows in Chrome, Safari, Edge, and Opera */
-  &::-webkit-inner-spin-button,
-  &::-webkit-outer-spin-button {
-    appearance: inner-spin-button;
-    opacity: 1;  /* This makes sure that the arrows are always visible */
-  }
+  box-shadow: -3px -3px 7px #36284e, 3px 3px 7px #1e162c;
+  appearance: textfield;
 }
 
 .octave-spinbox:hover {
-  background-color: #e1e1e1;
+  box-shadow: -1px -1px 3px #36284e, 1px 1px 3px #1e162c;
 }
 
 .octave-spinbox:focus {
   outline: none;
-  border-color: #666;
+  box-shadow: inset -1px -1px 3px #41305f, inset 1px 1px 3px #1e162c;
 }
 
-/* Only remove the default outline for Firefox */
 .octave-spinbox::-moz-focus-inner {
   border: 0;
 }
+
+/* Pour Chrome */
+.octave-spinbox::-webkit-inner-spin-button,
+.octave-spinbox::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.octave-spinbox {
+  position: relative; /* Nécessaire pour positionner absolument les pseudo-éléments */
+}
+
+.octave-spinbox::-webkit-inner-spin-button,
+.octave-spinbox::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.octave-spinbox:-moz-spinner {
+  -moz-appearance: textfield;
+}
+
+.spinbox-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.octave-spinbox {
+  padding-right: 30px; /* adjust space for buttons */
+}
+
+.spinbox-button {
+  position: absolute;
+  right: 0;
+  width: 20px;
+  height: 15px;
+  border: none;
+  background-color: transparent;
+  color: #B084CC;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.spinbox-button.up {
+  top: 0;
+}
+
+.spinbox-button.down {
+  bottom: 0;
+}
+
+
+

@@ -73,19 +73,18 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
           this.circlesService.updatePos(circle, circle.x + (circle.xSpeed*elapsedTime), circle.y + (circle.ySpeed*elapsedTime));
 
           if (!this.circlesService.inRange(circle.x, this.squareUnit)) {
+            circle.isColliding = true;
             this.circlesService.bounceX(circle, circle.x - this.circlesService.circleRad < -(this.squareUnit/2), this.squareUnit/2 - this.circlesService.circleRad);
-              this.circlesService.collisions.push({x:circle.x, y:circle.y, color: circle.color});
-              setTimeout(() => {
-                this.circlesService.collisions.shift();
-              }, 1000);
+            setTimeout(() => {
+              circle.isColliding = false;
+            }, 300);
           }
           if (!this.circlesService.inRange(circle.y, this.squareUnit)) {
-            this.circlesService.bounceY(circle, circle.y - this.circlesService.circleRad < -(this.squareUnit / 2), this.squareUnit / 2 - this.circlesService.circleRad);
-            this.circlesService.collisions.push({x: circle.x, y: circle.y, color: circle.color});
-
+            circle.isColliding = true;
+            this.circlesService.bounceY(circle, circle.y - this.circlesService.circleRad < -(this.squareUnit/2), this.squareUnit/2 - this.circlesService.circleRad);
             setTimeout(() => {
-              this.circlesService.collisions.shift();
-            }, 1000);
+              circle.isColliding = false;
+            }, 300);
 
           }
         }

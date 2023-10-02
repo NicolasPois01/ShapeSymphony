@@ -10,6 +10,9 @@
   background-color: #e0e0e0; /* A darker shade of gray compared to the previous example */
 }
 
+:root {
+  --bs-body-color: white !important;
+}
 
 body.unselectable {
 

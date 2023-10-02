@@ -2,16 +2,22 @@
   <div class="container-app-row d-flex flex-row">
 
     <app-square class="square" [timerService]="this.timerService" [grid]="this.grid" [precisionMode]="this.precisionMode"></app-square>
+    <div class="file-dropdown">
+      <button class="dropbtn">Fichier</button>
+      <div class="dropdown-content">
+        <app-json-export [data]="circles" filename="circles.json"></app-json-export>
+        <app-import-json></app-import-json>
+      </div>
+    </div>
 
     <div class="col-2 circles-list-container">
       <app-circle-list></app-circle-list>
     </div>
-
     <div class="col-2">
       <app-circle-characteristics-list></app-circle-characteristics-list>
     </div>
   </div>
-  <div class="container-bottom">
+  <div class="controls-container">
     <app-instruments-tab></app-instruments-tab>
     <app-notes-tab></app-notes-tab>
     <div class="controls-wrapper">
@@ -19,8 +25,6 @@
       <app-alteration></app-alteration>
       <app-music></app-music>
     </div>
-
     <app-timer class="timer" [timerService]="this.timerService"></app-timer>
   </div>
-
 </div>
