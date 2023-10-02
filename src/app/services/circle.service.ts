@@ -1,18 +1,19 @@
 import {Injectable} from '@angular/core';
 import {Circle} from "../models/circle";
-import {BehaviorSubject, Observable} from "rxjs";
+import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {SoundService} from "./sound.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class CircleService {
-
   circleSize: number = 1;
   circleRad: number = this.circleSize/2;
-
+  private circleChangedSubject: Subject<Circle> = new Subject<Circle>();
+  circleChanged$: Observable<Circle> = this.circleChangedSubject.asObservable();
   circleList: Circle[] = [];
   colors = ["red", "green", "blue", "yellow", "pink", "orange", "purple", "cyan", "magenta", "brown"];
+  notes = ["Do", "Re", "Mi", "Fa", "Sol", "La", "Si"]
   selectedCircle: Circle | null;
   soundService : SoundService;
   private circleListSubject = new BehaviorSubject<Circle[]>([]);
@@ -37,6 +38,7 @@ export class CircleService {
   updatePos(circle: any, x: number, y: number) {
     circle.x = x;
     circle.y = y;
+    this.circleChangedSubject.next(circle);
   }
 
     bounceX(circle: any, leftBorder: Boolean, midSquareSize: number) {
@@ -98,6 +100,28 @@ export class CircleService {
   selectedCircle$ = this.selectedCircleSubject.asObservable();
 
   setSelectedCircle(circle: Circle) {
+    this.selectedCircleSubject.next(circle);
+  }
+
+  setColor(color: string | undefined) {
+    if (this.selectedCircle) {
+      if (color != null) {
+        this.selectedCircle.color = color;
+      }
+      this.circleChangedSubject.next(this.selectedCircle);
+    }
+  }
+
+  setNote(note: string | undefined) {
+    if (this.selectedCircle) {
+      if (note != null) {
+        this.selectedCircle.note = note;
+      }
+      this.circleChangedSubject.next(this.selectedCircle);
+    }
+  }
+
+  updateCircleSpeed(circle: Circle) {
     this.selectedCircleSubject.next(circle);
   }
 }

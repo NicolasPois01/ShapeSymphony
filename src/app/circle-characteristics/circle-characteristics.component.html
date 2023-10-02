@@ -1,10 +1,30 @@
 <div *ngIf="selectedCircle" class="title p-2">
   <div>Circle {{ selectedCircle.id }}</div>
   <ul>
+    <li>
+      <input type="number" [(ngModel)]="newAngle" (change)="changeAngle(newAngle)">°
+    </li>
+    <li>Position X de départ:
+      <input type="number" [(ngModel)]="newStartX" (change)="validateStartX(newStartX)">
+    </li>
+    <li>Position Y de départ:
+      <input type="number" [(ngModel)]="newStartY" (change)="validateStartY(newStartY)">
+    </li>
     <li>Position X: {{ selectedCircle.x.toFixed(2) }}</li>
     <li>Position Y: {{ selectedCircle.y.toFixed(2) }}</li>
-    <li>Vitesse X: {{ selectedCircle.xSpeed.toFixed(2) }}
-    <li>Vitesse Y: {{ selectedCircle.ySpeed.toFixed(2) }}</li>
-    <li>Couleur: {{ selectedCircle.color }}</li>
+    <li>Vitesse: {{ vitesseGlobale?.toFixed(2) }}</li>
+    <li>
+      Note:
+      <select [(ngModel)]="selectedNote" (change)="setNote(selectedNote)">
+        <option *ngFor="let note of availableNotes" [value]="note">{{ note }}</option>
+      </select>
+    </li>
+    <li>Nombre de rebond max: {{ selectedCircle.maxBounces }}</li>
+    <li>
+      Couleur:
+      <select [(ngModel)]="selectedColor" (change)="setColor(selectedColor)">
+        <option *ngFor="let color of availableColors" [value]="color">{{ color }}</option>
+      </select>
+    </li>
   </ul>
 </div>
