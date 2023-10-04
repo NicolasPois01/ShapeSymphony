@@ -40,7 +40,7 @@ export class CircleCharacteristicsComponent implements OnInit{
         if (this.angleDepart < 0) {
           this.angleDepart += 2 * Math.PI;
         }
-        this.angleDepart = +((this.angleDepart * 180) / Math.PI).toFixed(2);;
+        this.angleDepart = +((this.angleDepart * 180) / Math.PI).toFixed(0);;
         this.newAngle = this.angleDepart;
         this.vitesseGlobale = +Math.sqrt(Math.pow(circle.xSpeed, 2) + Math.pow(circle.ySpeed, 2)).toFixed(2);
       }
