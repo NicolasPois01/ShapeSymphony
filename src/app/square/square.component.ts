@@ -24,9 +24,6 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   velocityY: number = 2.6;
 
   squareSize: number = 600;
-  squareUnit: number = 10;
-
-  fps: number = 60;
 
   mouseDown: boolean = false;
   savePoseX: number = 0;
@@ -44,6 +41,8 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   @Input() grid: boolean = false;
   @Input() precisionMode: boolean = false;
   @Input() timerService: TimerService|undefined = undefined;
+  @Input() fps: number = 60;
+  @Input() squareUnit: number = 10;
 
   private soundService: SoundService|undefined = undefined
   private subscriptions: Subscription[] = [];
@@ -129,10 +128,10 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
       this.saveVx = parseFloat((this.currentPosX - this.savePoseX).toFixed(this.precisionMode ? 1 : 2));
       this.saveVy = parseFloat((this.currentPosY - this.savePoseY).toFixed(this.precisionMode ? 1 : 2));
       this.saveDistance = parseFloat((Math.sqrt(Math.pow(Math.abs(this.saveVx), 2) + Math.pow(Math.abs(this.saveVy), 2))).toFixed(this.precisionMode ? 1 : 2));
-      this.saveAngle = (360+Math.round(Math.atan2(this.saveVy, this.saveVx)/Math.PI*180))%360;
+      this.saveAngle = (360-Math.round(Math.atan2(this.saveVy, this.saveVx)/Math.PI*180))%360;
       this.mousebox.nativeElement.innerHTML = ((this.saveDistance * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2) + " m/s <br/> "+this.saveAngle+" °";
       this.arrow.nativeElement.style.width = this.saveDistance + "px";
-      this.arrow.nativeElement.style.transform = "translateY(calc(-50% + 2.5px)) rotate("+this.saveAngle+"deg)";
+      this.arrow.nativeElement.style.transform = "translateY(calc(-50% + 2.5px)) rotate("+(-this.saveAngle)+"deg)";
     } else {
       this.mousebox.nativeElement.innerText =  x+";"+y;
       this.squareElement.nativeElement.style.setProperty("--left-mouse-percent", (x + (this.squareUnit/2 - this.circlesService.circleRad))*10 + '%');

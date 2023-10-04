@@ -21,6 +21,9 @@ export class MainComponentComponent implements OnInit, OnDestroy {
   circles: Circle[] = [];
   private unsubscribe$ = new Subject();
 
+  fps: number = 60;
+  squareUnit: number = 10;
+
   constructor(private circleService: CircleService, public timerService: TimerService) {}
 
   ngOnInit() {
