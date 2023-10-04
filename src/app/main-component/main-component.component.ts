@@ -4,6 +4,7 @@ import { Circle } from '../models/circle';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { TimerService } from '../services/timer.service';
+import {SoundService} from "../services/sound.service";
 
 @Component({
   selector: 'app-main-component',
@@ -21,12 +22,17 @@ export class MainComponentComponent implements OnInit, OnDestroy {
   circles: Circle[] = [];
   private unsubscribe$ = new Subject();
 
-  constructor(private circleService: CircleService, public timerService: TimerService) {}
+  private soundService: SoundService|undefined = undefined
+
+  constructor(private circleService: CircleService, public timerService: TimerService,  soundService : SoundService) {
+    this.soundService = soundService;
+  }
 
   ngOnInit() {
     this.circleService.circleList$
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe((circles: Circle[]) => this.circles = circles); // Ajoutez le type ici
+    this.soundService?.loadAudioFiles();
   }
 
   ngOnDestroy() {

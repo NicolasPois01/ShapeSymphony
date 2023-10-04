@@ -11,6 +11,7 @@ export interface Circle {
   note: string,
   alteration: string,
   octave: number,
+  volume: number,
   spawnTime: number,
   maxBounces: number,
   maxTime: number

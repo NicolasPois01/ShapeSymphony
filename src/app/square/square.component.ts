@@ -3,7 +3,6 @@ import {CircleService} from "../services/circle.service";
 import {Circle} from "../models/circle";
 import {TimerService} from "../services/timer.service";
 import {Subscription} from "rxjs";
-import {SoundService} from "../services/sound.service";
 
 @Component({
   selector: 'app-square',
@@ -45,7 +44,6 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   @Input() precisionMode: boolean = false;
   @Input() timerService: TimerService|undefined = undefined;
 
-  private soundService: SoundService|undefined = undefined
   private subscriptions: Subscription[] = [];
 
   constructor(private circlesService: CircleService) {
@@ -53,7 +51,6 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   }
 
   ngOnInit() {
-    this.soundService?.loadAudioFiles();
   }
 
   ngAfterViewInit() {

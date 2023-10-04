@@ -86,6 +86,7 @@ export class CircleService {
       note: this.soundService.activeNote,
       alteration: this.soundService.activeAlterationString,
       octave: this.soundService.activeOctave,
+      volume: 1,
       maxBounces: 10,
       maxTime: 10000,
       spawnTime: 0,

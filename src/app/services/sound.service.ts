@@ -32,6 +32,7 @@ export class SoundService {
             const response = await fetch(audioFilePath, { method: 'HEAD' });
               if (response.ok) {
                 const audio = new Audio(audioFilePath);
+                audio.preload;
                 audio.load();   //Chargement des samples audio
               }
             }
@@ -44,7 +45,7 @@ export class SoundService {
        const audioFileName = circle.instrument+circle.note+circle.alteration+circle.octave+'.mp3';
        const audioFilePath = `./assets/samples/${circle.instrument}/${audioFileName}`;
        const audio = new Audio(audioFilePath);
-       console.log(audioFilePath);
+       audio.volume = circle.volume;
        audio.play();
   }
 
