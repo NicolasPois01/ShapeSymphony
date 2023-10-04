@@ -12,16 +12,21 @@ export class CircleService {
   private circleChangedSubject: Subject<Circle> = new Subject<Circle>();
   circleChanged$: Observable<Circle> = this.circleChangedSubject.asObservable();
   circleList: Circle[] = [];
-  colors = ["red", "green", "blue", "yellow", "pink", "orange", "purple", "cyan", "magenta", "brown"];
-  notes = ["Do", "Re", "Mi", "Fa", "Sol", "La", "Si"]
   selectedCircle: Circle | null;
   soundService : SoundService;
+  colors = ["red", "green", "blue", "yellow", "pink", "orange", "purple", "cyan", "magenta", "brown"];
+  notes: string[] = [];
+  alterations: string[] = [];
+  octaves: string[] = [];
   private circleListSubject = new BehaviorSubject<Circle[]>([]);
   circleList$: Observable<Circle[]> = this.circleListSubject.asObservable();
 
   constructor(soundService : SoundService) {
     this.selectedCircle = null;
     this.soundService = soundService;
+    this.notes = this.soundService.notes;
+    this.alterations = this.soundService.alterations;
+    this.octaves = this.soundService.octaves;
   }
 
   getFromMouse(pos: number, squareUnit: number, squareSize: number): number {
@@ -123,5 +128,23 @@ export class CircleService {
 
   updateCircleSpeed(circle: Circle) {
     this.selectedCircleSubject.next(circle);
+  }
+
+  setAlteration(alteration: string | undefined) {
+    if (this.selectedCircle) {
+      if (alteration != null) {
+        this.selectedCircle.alteration = alteration;
+      }
+      this.circleChangedSubject.next(this.selectedCircle);
+    }
+  }
+
+  setOctave(octave: number | undefined) {
+    if (this.selectedCircle) {
+      if (octave != null) {
+        this.selectedCircle.octave = octave;
+      }
+      this.circleChangedSubject.next(this.selectedCircle);
+    }
   }
 }

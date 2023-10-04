@@ -46,6 +46,10 @@ export class TimerService {
     return {'minutes': this.minutes,'secondes': this.seconds,'millisecondes':  this.milliseconds}
   }
 
+  isTimerNotStarted() {
+    return this.minutes === 0 && this.seconds === 0 && this.milliseconds === 0;
+  }
+
   getMinutes(): number {
     return this.minutes;
   }

@@ -1,30 +1,73 @@
 <div *ngIf="selectedCircle" class="title p-2">
-  <div>Circle {{ selectedCircle.id }}</div>
   <ul>
-    <li>
-      <input type="number" [(ngModel)]="newAngle" (change)="changeAngle(newAngle)">°
-    </li>
-    <li>Position X de départ:
-      <input type="number" [(ngModel)]="newStartX" (change)="validateStartX(newStartX)">
-    </li>
-    <li>Position Y de départ:
-      <input type="number" [(ngModel)]="newStartY" (change)="validateStartY(newStartY)">
-    </li>
-    <li>Position X: {{ selectedCircle.x.toFixed(2) }}</li>
-    <li>Position Y: {{ selectedCircle.y.toFixed(2) }}</li>
-    <li>Vitesse: {{ vitesseGlobale?.toFixed(2) }}</li>
-    <li>
-      Note:
-      <select [(ngModel)]="selectedNote" (change)="setNote(selectedNote)">
-        <option *ngFor="let note of availableNotes" [value]="note">{{ note }}</option>
-      </select>
-    </li>
-    <li>Nombre de rebond max: {{ selectedCircle.maxBounces }}</li>
-    <li>
-      Couleur:
-      <select [(ngModel)]="selectedColor" (change)="setColor(selectedColor)">
-        <option *ngFor="let color of availableColors" [value]="color">{{ color }}</option>
-      </select>
-    </li>
+    <ng-container *ngIf="isTimerNotStarted()">
+      <li>
+        Angle:
+        <input type="number" [(ngModel)]="newAngle" (change)="changeAngle(newAngle)" step="0.01"/><span style="margin-left:-3rem;">°</span>
+      </li>
+      <li>Position X de départ:
+        <input type="number" [(ngModel)]="newStartX" (change)="validateStartX(newStartX)">
+      </li>
+      <li>Position Y de départ:
+        <input type="number" [(ngModel)]="newStartY" (change)="validateStartY(newStartY)">
+      </li>
+      <li>Vitesse:
+        <input type="number" [(ngModel)]="vitesseGlobale" (change)="changeSpeed(vitesseGlobale)" step="0.01"/>
+      </li>
+      <li>
+        Note:
+        <select [(ngModel)]="selectedNote" (change)="setNote(selectedNote)">
+          <option *ngFor="let note of availableNotes" [value]="note">{{ note }}</option>
+        </select>
+      </li>
+      <li>
+        Altération:
+        <select [(ngModel)]="selectedAlteration" (change)="setAlteration(selectedAlteration)">
+          <option *ngFor="let alteration of availableAlterations" [value]="alteration">{{ alteration }}</option>
+        </select>
+      </li>
+      <li>
+        Octave:
+        <select [(ngModel)]="selectedOctave" (change)="setOctave(selectedOctave)">
+          <option *ngFor="let octave of availableOctaves" [value]="octave">{{ octave }}</option>
+        </select>
+      </li>
+      <li>
+        Couleur:
+        <select [(ngModel)]="selectedColor" (change)="setColor(selectedColor)">
+          <option *ngFor="let color of availableColors" [value]="color">{{ color }}</option>
+        </select>
+      </li>
+    </ng-container>
+    <ng-container *ngIf="!isTimerNotStarted()">
+      <li>Angle: {{ newAngle }}</li>
+      <li>Position de départ (x,y): ({{ newStartX }},{{newStartY}})</li>
+      <li>Vitesse: {{ vitesseGlobale }}</li>
+      <li>
+        Note:
+        <select [(ngModel)]="selectedNote" (change)="setNote(selectedNote)">
+          <option *ngFor="let note of availableNotes" [value]="note">{{ note }}</option>
+        </select>
+      </li>
+      <li>
+        Altération:
+        <select [(ngModel)]="selectedAlteration" (change)="setAlteration(selectedAlteration)">
+          <option *ngFor="let alteration of availableAlterations" [value]="alteration">{{ alteration }}</option>
+        </select>
+      </li>
+      <li>
+        Octave:
+        <select [(ngModel)]="selectedOctave" (change)="setOctave(selectedOctave)">
+          <option *ngFor="let octave of availableOctaves" [value]="octave">{{ octave }}</option>
+        </select>
+      </li>
+      <li>
+        Couleur:
+        <select [(ngModel)]="selectedColor" (change)="setColor(selectedColor)">
+          <option *ngFor="let color of availableColors" [value]="color">{{ color }}</option>
+        </select>
+      </li>
+      <li>Nombre de rebond max: {{ selectedCircle.maxBounces }}</li>
+    </ng-container>
   </ul>
 </div>
