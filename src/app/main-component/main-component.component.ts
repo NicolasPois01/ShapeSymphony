@@ -38,4 +38,17 @@ export class MainComponentComponent implements OnInit, OnDestroy {
     if(event.key === "Shift") this.grid = !this.grid;
     else if(event.key === "Control") this.precisionMode = !this.precisionMode;
   }
+  clearAll(): void {
+    this.circleService.clearAllCircles();
+    this.timerService.resetTimer();
+  }
+
+  resetGame(): void {
+    this.circleService.saveCircles();  // sauvegarde les cercles actuels
+    this.timerService.resetTimer();  // réinitialise le timer
+    setTimeout(() => {
+      this.circleService.restoreCircles();
+    }, 300);
+
+  }
 }
