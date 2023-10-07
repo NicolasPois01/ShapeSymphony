@@ -4,6 +4,8 @@ export interface Circle {
   y: number,
   xSpeed: number,
   ySpeed: number,
+  xSpeedStart: number,
+  ySpeedStart: number,
   color: string,
   startX: number,
   startY: number,
@@ -15,5 +17,6 @@ export interface Circle {
   maxBounces: number,
   maxTime: number
   isColliding: boolean;
+
 
 }

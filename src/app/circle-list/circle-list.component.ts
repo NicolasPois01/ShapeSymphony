@@ -8,22 +8,32 @@ import { Subscription } from 'rxjs';
   templateUrl: './circle-list.component.html',
   styleUrls: ['./circle-list.component.scss']
 })
-export class CircleListComponent implements OnInit{
+export class CircleListComponent implements OnInit, OnDestroy {  // Ajouter OnDestroy
   circlesList!: Circle[];
   selectedCircle: Circle | null | undefined;
-  circleSubscription: Subscription | undefined;
-  constructor(private circlesService: CircleService) {
-    this.circlesList = this.circlesService.circleList;
-  }
+  private circlesListSubscription!: Subscription;  // Ajouter cette ligne
+
+  constructor(private circlesService: CircleService) {}
 
   ngOnInit() {
+    this.circlesListSubscription = this.circlesService.circleList$
+      .subscribe(circles => this.circlesList = circles);  // S'abonner à circleList$
+
+    this.circlesService.selectedCircle$
+      .subscribe(circle => this.selectedCircle = circle);
+  }
+
+  ngOnDestroy() {
+    if (this.circlesListSubscription) {
+      this.circlesListSubscription.unsubscribe();  // Se désabonner lors de la destruction du composant
+    }
     this.circlesList = this.circlesService.circleList;
 
     this.circlesService.selectedCircle$.subscribe((circle: Circle | null) => {
       this.selectedCircle = circle;
     });
 
-    this.circleSubscription = this.circlesService.circleChanged$.subscribe(
+    this.circlesListSubscription = this.circlesService.circleChanged$.subscribe(
       (updatedCircle: Circle) => {
         const index = this.circlesList.findIndex(
           (circle) => circle.id === updatedCircle.id
@@ -40,19 +50,11 @@ export class CircleListComponent implements OnInit{
   }
 
   deleteCircle(circle: Circle): void {
-    const index = this.circlesList.indexOf(circle);
-    if (index > -1) {
-      this.circlesList.splice(index, 1);
-    }
+    this.circlesService.deleteCircle(circle);  // Mettre à jour pour utiliser la méthode de service
   }
 
   isSelected(circle: Circle) {
     return circle == this.selectedCircle;
   }
 
-  ngOnDestroy() {
-    if (this.circleSubscription) {
-      this.circleSubscription.unsubscribe();
-    }
-  }
 }

@@ -2,6 +2,8 @@ import {Injectable} from '@angular/core';
 import {Circle} from "../models/circle";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {SoundService} from "./sound.service";
+import cloneDeep from 'lodash/cloneDeep'
+
 
 @Injectable({
   providedIn: 'root'
@@ -12,9 +14,11 @@ export class CircleService {
   private circleChangedSubject: Subject<Circle> = new Subject<Circle>();
   circleChanged$: Observable<Circle> = this.circleChangedSubject.asObservable();
   circleList: Circle[] = [];
+  private tempCircleList: Circle[] = [];
+
+  colors = ["red", "green", "blue", "yellow", "pink", "orange", "purple", "cyan", "magenta", "brown"];
   selectedCircle: Circle | null;
   soundService : SoundService;
-  colors = ["red", "green", "blue", "yellow", "pink", "orange", "purple", "cyan", "magenta", "brown"];
   notes: string[] = [];
   alterations: string[] = [];
   octaves: string[] = [];
@@ -40,57 +44,60 @@ export class CircleService {
     return pos + (squareUnit/2) >= this.circleRad && pos <= (squareUnit/2) - this.circleRad;
   }
 
+  clearAllCircles(): void {
+    while(this.circleList.length > 0) {
+      this.deleteCircle(this.circleList[0]);
+    }
+  }
+
   updatePos(circle: any, x: number, y: number) {
     circle.x = x;
     circle.y = y;
     this.circleChangedSubject.next(circle);
   }
 
-    bounceX(circle: any, leftBorder: Boolean, midSquareSize: number) {
-      this.soundService.playAudio(circle);
-      circle.xSpeed = -circle.xSpeed;
-      if(leftBorder) {
-        circle.x = -(midSquareSize + (circle.x + midSquareSize));
-      } else {
-        circle.x = midSquareSize - (circle.x - midSquareSize);
-      }
+  bounceX(circle: any, leftBorder: Boolean, midSquareSize: number) {
+    this.soundService.playAudio(circle);
+    circle.xSpeed = -circle.xSpeed;
+    if(leftBorder) {
+      circle.x = -(midSquareSize + (circle.x + midSquareSize));
+    } else {
+      circle.x = midSquareSize - (circle.x - midSquareSize);
+    }
 
     }
 
-    bounceY(circle: any, topBorder: Boolean, midSquareSize: number) {
-      this.soundService.playAudio(circle);
-      circle.ySpeed = -circle.ySpeed;
-      if(topBorder) {
-        circle.y = -(midSquareSize + (circle.y + midSquareSize));
-      } else {
-        circle.y = midSquareSize - (circle.y - midSquareSize);
-      }
+  bounceY(circle: any, topBorder: Boolean, midSquareSize: number) {
+    this.soundService.playAudio(circle);
+    circle.ySpeed = -circle.ySpeed;
+    if(topBorder) {
+      circle.y = -(midSquareSize + (circle.y + midSquareSize));
+    } else {
+      circle.y = midSquareSize - (circle.y - midSquareSize);
     }
+  }
 
   getRandomColor(): string {
     const randomIndex = Math.floor(Math.random() * this.colors.length);
     return this.colors[randomIndex];
   }
 
-  getRandomSpeed(): number {
-    // Assuming speed range is between -2 and 2.
-    return Math.random() * 4 - 2;
-  }
-
-  addCircle(x: number, y: number, vX: number, vY: number) {
+  addCircle(x: number, y: number, vX: number, vY: number, instrument: string = this.soundService.activeInstrument, note: string = this.soundService.activeNote, alteration: string = this.soundService.activeAlterationString, octave: number = this.soundService.activeOctave, color: string = this.getRandomColor()) {
     const circle: Circle = {
       id: this.circleList.length, // Assuming unique ids based on list length
       x: x,
       y: y,
       xSpeed: vX,
       ySpeed: vY,
-      color: this.getRandomColor(),
+      xSpeedStart: vX,
+      ySpeedStart: vY,
+      color: color,
       startX: x,
       startY: y,
-      instrument: this.soundService.activeInstrument,
-      note: this.soundService.activeNote,
-      alteration: this.soundService.activeAlterationString,
-      octave: this.soundService.activeOctave,
+      instrument: instrument,
+      note: note,
+      alteration: alteration,
+      octave: octave,
       maxBounces: 10,
       maxTime: 10000,
       spawnTime: 0,
@@ -107,6 +114,38 @@ export class CircleService {
   setSelectedCircle(circle: Circle) {
     this.selectedCircleSubject.next(circle);
   }
+
+  deleteCircle(circle: Circle): void {
+    const index = this.circleList.indexOf(circle);
+    if (index > -1) {
+      this.circleList.splice(index, 1);
+      this.circleListSubject.next(this.circleList);  // Notifier le changement
+    }
+  }
+
+  saveCircles(): void {
+    this.tempCircleList = cloneDeep(this.circleList); // deepClone pour copier les objets et non les références
+  }
+
+  restoreCircles(): void {
+    this.clearAllCircles();  // This will clear the current circles
+
+    this.tempCircleList.forEach(circle => {
+      this.addCircle(
+        circle.startX,
+        circle.startY,
+        circle.xSpeedStart,
+        circle.ySpeedStart,
+        circle.instrument,
+        circle.note,
+        circle.alteration,
+        circle.octave,
+        circle.color
+      );
+    });
+  }
+
+
 
   setColor(color: string | undefined) {
     if (this.selectedCircle) {

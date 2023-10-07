@@ -26,5 +26,8 @@
       <app-music></app-music>
     </div>
     <app-timer class="timer" [timerService]="this.timerService"></app-timer>
+    <button (click)="clearAll()">Clear</button>
+    <button (click)="resetGame()">Restore</button>
+
   </div>
 </div>
