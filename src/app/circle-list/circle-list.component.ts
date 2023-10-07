@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './circle-list.component.html',
   styleUrls: ['./circle-list.component.scss']
 })
-export class CircleListComponent implements OnInit, OnDestroy {  // Ajouter OnDestroy
+export class CircleListComponent implements OnInit  {  // Ajouter OnDestroy
   circlesList!: Circle[];
   selectedCircle: Circle | null | undefined;
   private circlesListSubscription!: Subscription;  // Ajouter cette ligne
