@@ -1,14 +1,19 @@
+<div class="file-dropdown">
+  <button class="dropbtn">Fichier</button>
+  <div class="dropdown-content">
+    <app-json-export [data]="circles" filename="circles.json"></app-json-export>
+    <app-import-json></app-import-json>
+  </div>
+</div>
 <div class="container-app d-flex flex-column align-stretch">
-  <div class="container-app-row d-flex flex-row">
 
-    <app-square class="square" [timerService]="this.timerService" [grid]="this.grid" [squareUnit]="this.squareUnit" [fps]="this.fps" [precisionMode]="this.precisionMode"></app-square>
-    <div class="file-dropdown">
-      <button class="dropbtn">Fichier</button>
-      <div class="dropdown-content">
-        <app-json-export [data]="circles" filename="circles.json"></app-json-export>
-        <app-import-json></app-import-json>
-      </div>
+  <div class="container-app-row d-flex flex-row tempo">
+    <div class="tempo">
+      <app-arena-list></app-arena-list>
     </div>
+
+    <app-square class="square tempo" [timerService]="this.timerService" [grid]="this.grid" [squareUnit]="this.squareUnit" [fps]="this.fps" [precisionMode]="this.precisionMode"></app-square>
+
 
     <div class="col-2 circles-list-container">
       <app-circle-list></app-circle-list>

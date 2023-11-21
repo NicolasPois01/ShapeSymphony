@@ -17,6 +17,7 @@ import { AlterationComponent } from './alteration/alteration.component';
 import { OctaveComponent } from './octave/octave.component';
 import {FormsModule} from "@angular/forms";
 import {MusicComponent} from './music-component/music-component.component';
+import { ArenaListComponent } from './arena-list/arena-list.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import {MusicComponent} from './music-component/music-component.component';
     ImportJsonComponent,
     AlterationComponent,
     OctaveComponent,
-    MusicComponent
+    MusicComponent,
+    ArenaListComponent
   ],
   imports: [
     BrowserModule,
