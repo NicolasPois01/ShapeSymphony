@@ -101,7 +101,8 @@ export class CircleService {
       maxBounces: 10,
       maxTime: 10000,
       spawnTime: 0,
-      isColliding : false
+      isColliding : false,
+      contactPoint: null
     };
 
     this.circleList.push(circle);

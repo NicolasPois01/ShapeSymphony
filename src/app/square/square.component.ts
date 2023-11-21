@@ -24,7 +24,6 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   velocityY: number = 2.6;
 
   squareSize: number = 600;
-
   mouseDown: boolean = false;
   savePoseX: number = 0;
   savePoseY: number = 0;
@@ -46,7 +45,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
 
   private soundService: SoundService|undefined = undefined
   private subscriptions: Subscription[] = [];
-
+  offset = 0
   constructor(private circlesService: CircleService) {
     this.circles = circlesService.circleList;
   }
@@ -66,30 +65,36 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   startAnimation() {
     if (!this.interval && this.timerService) {
       this.interval = setInterval(() => {
-        let elapsedTime = ((this.timerService?.getTimeStamp()??0) - this.timestamp) / 1000; // elapsed time in seconds
+        let elapsedTime = ((this.timerService?.getTimeStamp() ?? 0) - this.timestamp) / 1000; // elapsed time in seconds
         this.timestamp = this.timerService?.getTimeStamp();
         for (let circle of this.circles) {
-          this.circlesService.updatePos(circle, circle.x + (circle.xSpeed*elapsedTime), circle.y + (circle.ySpeed*elapsedTime));
+          this.circlesService.updatePos(circle, circle.x + (circle.xSpeed * elapsedTime), circle.y + (circle.ySpeed * elapsedTime));
 
           if (!this.circlesService.inRange(circle.x, this.squareUnit)) {
             circle.isColliding = true;
-            this.circlesService.bounceX(circle, circle.x - this.circlesService.circleRad < -(this.squareUnit/2), this.squareUnit/2 - this.circlesService.circleRad);
+            let adjustedX = circle.xSpeed > 0 ? circle.x + this.circlesService.circleRad - this.offset : circle.x - this.circlesService.circleRad + this.offset;
+            circle.contactPoint = { x: adjustedX, y: circle.y }; // Adjusted point of contact
+            this.circlesService.bounceX(circle, circle.x - this.circlesService.circleRad < -(this.squareUnit / 2), this.squareUnit / 2 - this.circlesService.circleRad);
             setTimeout(() => {
               circle.isColliding = false;
-            }, 300);
+            }, 500);
           }
+
           if (!this.circlesService.inRange(circle.y, this.squareUnit)) {
             circle.isColliding = true;
-            this.circlesService.bounceY(circle, circle.y - this.circlesService.circleRad < -(this.squareUnit/2), this.squareUnit/2 - this.circlesService.circleRad);
+            let adjustedY = circle.ySpeed > 0 ? circle.y + this.circlesService.circleRad - this.offset : circle.y - this.circlesService.circleRad + this.offset;
+            circle.contactPoint = { x: circle.x, y: adjustedY }; // Adjusted point of contact
+            this.circlesService.bounceY(circle, circle.y - this.circlesService.circleRad < -(this.squareUnit / 2), this.squareUnit / 2 - this.circlesService.circleRad);
             setTimeout(() => {
               circle.isColliding = false;
-            }, 300);
-
+            }, 500);
           }
         }
-      }, 1000/this.fps);
+      }, 1000 / this.fps);
     }
   }
+
+
 
   pauseAnimation(): void {
     if (this.interval) {

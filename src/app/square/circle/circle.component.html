@@ -1,3 +1,11 @@
+<!-- Onde de choc -->
+<div *ngIf="circle?.isColliding"
+     class="shockwave"
+     [style.left.%]="(circle?.contactPoint?.x ?? 0) * 10 + 50"
+     [style.top.%]="(circle?.contactPoint?.y ?? 0) * 10 + 50">
+</div>
+
+<!-- Cercle -->
 <div class="circle"
      [ngClass]="{'neon': circle?.isColliding}"
      [style.left.%]="((circle?.x ?? 0) + 5) * 10"

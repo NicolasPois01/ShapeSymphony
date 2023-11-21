@@ -17,6 +17,8 @@ export interface Circle {
   maxBounces: number,
   maxTime: number
   isColliding: boolean;
-
-
+  contactPoint: {
+    x: number;
+    y: number;
+  } | null; // Ajoutez | null si vous voulez qu'il puisse être nul
 }

@@ -7,5 +7,7 @@ import {Circle} from "../../models/circle";
   styleUrls: ['./circle.component.scss']
 })
 export class CircleComponent {
-  @Input() circle?: Circle;
+  @Input() circle?: Circle
+
+
 }

@@ -1,3 +1,4 @@
+/* Styles pour les cercles */
 .circle {
   position: absolute;
   display: inline-block;
@@ -9,6 +10,7 @@
   pointer-events: none;
   transform: translateX(-50%) translateY(-50%);
   box-shadow: none;
+  z-index: 2;
 }
 
 .circle.neon {
@@ -22,7 +24,54 @@
     inset 0 0 5px var(--circle-color),
     inset 0 0 8px var(--circle-color),
     inset 0 0 3px var(--circle-color),
-    inset 0 0 8px var(--circle-color),
+    inset 0 0 8px var(--circle-color);
 }
 
+/* Styles pour l'onde de choc */
+.shockwave {
+  position: absolute;
+  display: inline-block;
+  width: 50%;
+  height: 50%;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0);
+  animation: shockwave-animation 0.8s ease-out; /* Augmenter la durée pour plus de fluidité */
+  z-index: 1;
+  background-image: radial-gradient(circle at center, var(--circle-color, blue), transparent);
+  box-shadow:
+    0 0 5px var(--circle-color, blue),
+    0 0 15px var(--circle-color, blue),
+    0 0 25px var(--circle-color, blue),
+    0 0 35px var(--circle-color, blue);
+  mix-blend-mode: lighten;
+  opacity: 0.9; /* Ajuster l'opacité pour un dégradé plus doux */
+}
+
+@keyframes shockwave-animation {
+  to {
+    transform: translate(-50%, -50%) scale(1.2); /* Ajuster l'échelle pour un effet plus subtil */
+    opacity: 0;
+  }
+}
+
+/* Effet néomorphisme pour l'onde - l'ajuster ou le supprimer si nécessaire */
+.shockwave::before {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  box-shadow:
+    3px 3px 6px rgba(0, 0, 0, 0.2),
+    -3px -3px 6px rgba(255, 255, 255, 0.8);
+  z-index: -1;
+  opacity: 0.2; /* Rend invisible l'effet néomorphisme */
+}
+
+.shockwave::after {
+  content: none; /* Supprime l'onde indésirable */
+}
 
