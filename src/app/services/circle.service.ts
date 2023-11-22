@@ -3,6 +3,7 @@ import {Circle} from "../models/circle";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {SoundService} from "./sound.service";
 import cloneDeep from 'lodash/cloneDeep'
+import {ArenaService} from "./arena.service";
 
 
 @Injectable({
@@ -24,8 +25,11 @@ export class CircleService {
   octaves: string[] = [];
   private circleListSubject = new BehaviorSubject<Circle[]>([]);
   circleList$: Observable<Circle[]> = this.circleListSubject.asObservable();
+  selectedCircleSubject = new BehaviorSubject<Circle | null>(null);
+  selectedCircle$ = this.selectedCircleSubject.asObservable();
 
-  constructor(soundService : SoundService) {
+  constructor(soundService : SoundService,
+              private arenaService: ArenaService) {
     this.selectedCircle = null;
     this.soundService = soundService;
     this.notes = this.soundService.notes;
@@ -82,7 +86,12 @@ export class CircleService {
     return this.colors[randomIndex];
   }
 
-  addCircle(x: number, y: number, vX: number, vY: number, instrument: string = this.soundService.activeInstrument, note: string = this.soundService.activeNote, alteration: string = this.soundService.activeAlterationString, octave: number = this.soundService.activeOctave, color: string = this.getRandomColor()) {
+  addCircleToActiveArena(x: number, y: number, vX: number, vY: number,
+            instrument: string = this.soundService.activeInstrument,
+            note: string = this.soundService.activeNote,
+            alteration: string = this.soundService.activeAlterationString,
+            octave: number = this.soundService.activeOctave,
+            color: string = this.getRandomColor()) {
     const circle: Circle = {
       id: this.circleList.length, // Assuming unique ids based on list length
       x: x,
@@ -107,10 +116,8 @@ export class CircleService {
 
     this.circleList.push(circle);
     this.circleListSubject.next(this.circleList);
+    this.arenaService.addCircleToActiveArena(circle);
   }
-
-  private selectedCircleSubject = new BehaviorSubject<Circle | null>(null);
-  selectedCircle$ = this.selectedCircleSubject.asObservable();
 
   setSelectedCircle(circle: Circle) {
     this.selectedCircleSubject.next(circle);
@@ -132,7 +139,7 @@ export class CircleService {
     this.clearAllCircles();  // This will clear the current circles
 
     this.tempCircleList.forEach(circle => {
-      this.addCircle(
+      this.addCircleToActiveArena(
         circle.startX,
         circle.startY,
         circle.xSpeedStart,
@@ -145,8 +152,6 @@ export class CircleService {
       );
     });
   }
-
-
 
   setColor(color: string | undefined) {
     if (this.selectedCircle) {

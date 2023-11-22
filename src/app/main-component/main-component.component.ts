@@ -1,9 +1,11 @@
-import { Component, HostListener, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CircleService } from '../services/circle.service';
 import { Circle } from '../models/circle';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { TimerService } from '../services/timer.service';
+import {Arena} from "../models/arena";
+import {ArenaService} from "../services/arena.service";
 
 @Component({
   selector: 'app-main-component',
@@ -24,12 +26,19 @@ export class MainComponentComponent implements OnInit, OnDestroy {
   fps: number = 60;
   squareUnit: number = 10;
 
-  constructor(private circleService: CircleService, public timerService: TimerService) {}
+  activeArena!: Arena;
+
+  constructor(private circleService: CircleService,
+              private arenaService: ArenaService,
+              public timerService: TimerService) {}
 
   ngOnInit() {
     this.circleService.circleList$
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe((circles: Circle[]) => this.circles = circles); // Ajoutez le type ici
+    this.arenaService.activeArena$.subscribe(arena => {
+      this.activeArena = arena;
+    })
   }
 
   ngOnDestroy() {
@@ -40,18 +49,5 @@ export class MainComponentComponent implements OnInit, OnDestroy {
   handleKeyboardEvent(event: KeyboardEvent) {
     if(event.key === "Shift") this.grid = !this.grid;
     else if(event.key === "Control") this.precisionMode = !this.precisionMode;
-  }
-  clearAll(): void {
-    this.circleService.clearAllCircles();
-    this.timerService.resetTimer();
-  }
-
-  resetGame(): void {
-    this.circleService.saveCircles();  // sauvegarde les cercles actuels
-    this.timerService.resetTimer();  // réinitialise le timer
-    setTimeout(() => {
-      this.circleService.restoreCircles();
-    }, 300);
-
   }
 }

@@ -24,4 +24,21 @@ export class ArenaListComponent implements OnInit{
       arena => this.activeArena = arena
     )
   }
+
+  addArena() {
+    let newArenaId = this.arenaService.addArena();
+    this.setActiveArena(newArenaId);
+  }
+
+  deleteArena(idArena: number) {
+    this.arenaService.deleteArena(idArena);
+  }
+
+  setActiveArena(idArena: number) {
+    this.arenaService.setActiveArena(idArena);
+  }
+
+  isActiveArena(idArena: number): boolean {
+    return this.arenaService.isActiveArena(idArena);
+  }
 }

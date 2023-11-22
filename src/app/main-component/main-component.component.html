@@ -7,12 +7,16 @@
 </div>
 <div class="container-app d-flex flex-column align-stretch">
 
-  <div class="container-app-row d-flex flex-row tempo">
-    <div class="tempo">
-      <app-arena-list></app-arena-list>
-    </div>
+  <div class="container-app-row d-flex flex-row">
+    <app-arena-list></app-arena-list>
 
-    <app-square class="square tempo" [timerService]="this.timerService" [grid]="this.grid" [squareUnit]="this.squareUnit" [fps]="this.fps" [precisionMode]="this.precisionMode"></app-square>
+    <app-square class="square"
+                [timerService]="this.timerService"
+                [grid]="this.grid"
+                [squareUnit]="this.squareUnit"
+                [fps]="this.fps"
+                [precisionMode]="this.precisionMode"
+                [arena]="activeArena"></app-square>
 
 
     <div class="col-2 circles-list-container">
@@ -31,8 +35,5 @@
       <app-music></app-music>
     </div>
     <app-timer class="timer" [timerService]="this.timerService"></app-timer>
-    <button (click)="clearAll()">Clear</button>
-    <button (click)="resetGame()">Restore</button>
-
   </div>
 </div>

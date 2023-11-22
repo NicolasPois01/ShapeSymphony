@@ -34,7 +34,7 @@ export class ImportJsonComponent {
         this.circleService.clearAllCircles();
         this.timerService.resetTimer();
         circles.forEach(circleData => {
-          this.circleService.addCircle(circleData.startX, circleData.startY, circleData.xSpeedStart, circleData.ySpeedStart, circleData.instrument,  circleData.note, circleData.alteration, circleData.octave, circleData.color); //ajouter les attributs genre instruments ect
+          this.circleService.addCircleToActiveArena(circleData.startX, circleData.startY, circleData.xSpeedStart, circleData.ySpeedStart, circleData.instrument,  circleData.note, circleData.alteration, circleData.octave, circleData.color); //ajouter les attributs genre instruments ect
         });
       }
     } catch (error) {

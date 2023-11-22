@@ -1,4 +1,10 @@
-<h1>Liste des arènes</h1>
-<div *ngFor="let arena of arenaList" class="mini-square">
-
+<div>Liste des arènes</div>
+<button (click)="addArena()">Add arena</button>
+<div *ngFor="let arena of arenaList">
+  <button (click)="deleteArena(arena.id)">X</button>
+  <div class="mini-square"
+    (click)="setActiveArena(arena.id)"
+    [ngClass]="{'active': isActiveArena(arena.id)}">
+  </div>
 </div>
+

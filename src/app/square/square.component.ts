@@ -4,6 +4,7 @@ import {Circle} from "../models/circle";
 import {TimerService} from "../services/timer.service";
 import {Subscription} from "rxjs";
 import {SoundService} from "../services/sound.service";
+import {Arena} from "../models/arena";
 
 @Component({
   selector: 'app-square',
@@ -14,6 +15,13 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   @ViewChild('square') squareElement: any;
   @ViewChild('arrow') arrow: any;
   @ViewChild('mousebox') mousebox: any;
+
+  @Input() grid: boolean = false;
+  @Input() precisionMode: boolean = false;
+  @Input() timerService: TimerService|undefined = undefined;
+  @Input() fps: number = 60;
+  @Input() squareUnit: number = 10;
+  @Input() arena!: Arena;
 
   circles!: Circle[];
 
@@ -36,12 +44,6 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   timestamp: any = 0;
 
   interval: any;
-
-  @Input() grid: boolean = false;
-  @Input() precisionMode: boolean = false;
-  @Input() timerService: TimerService|undefined = undefined;
-  @Input() fps: number = 60;
-  @Input() squareUnit: number = 10;
 
   private soundService: SoundService|undefined = undefined
   private subscriptions: Subscription[] = [];
@@ -114,7 +116,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
       y = this.circlesService.getFromMouse(this.savePoseY + ((event?.target as HTMLElement)?.parentElement as HTMLElement)?.getBoundingClientRect()?.top, this.squareUnit, squareSize);
     }
     if(!this.circlesService.inRange(x, this.squareUnit) || !this.circlesService.inRange(y, this.squareUnit)) return;
-    this.circlesService.addCircle(parseFloat(x.toFixed(this.precisionMode ? 1 : 2)),
+    this.circlesService.addCircleToActiveArena(parseFloat(x.toFixed(this.precisionMode ? 1 : 2)),
                                   parseFloat(y.toFixed(this.precisionMode ? 1 : 2)),
                                   parseFloat(((this.saveVx * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)),
                                   parseFloat(((this.saveVy * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)));
@@ -187,8 +189,11 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     return this.circlesService.circleSize;
   }
 
-  ngOnChanges() {
+  ngOnChanges(changes: SimpleChanges) {
     if(this.mousebox) this.onSquareMouseMove(new MouseEvent("mousemove"), true );
+    if (changes['arena']) {
+      this.circles = this.arena.circleList;
+    }
   }
 
   ngOnDestroy() {
