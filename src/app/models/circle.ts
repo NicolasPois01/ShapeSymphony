@@ -8,6 +8,7 @@ export interface Circle {
   startX: number,
   startY: number,
   instrument: string,
+  percussion:string,
   note: string,
   alteration: string,
   octave: number,

@@ -7,8 +7,9 @@ import { EventEmitter } from '@angular/core';
 })
 export class SoundService {
   selectionChanged = new EventEmitter<void>();
-  instruments = ["Piano", "Batterie", "Guitare", "Violon", "Trompette", "Clavecin"];
+  instruments = ["Piano", "Percussion", "Guitare", "Violon", "Trompette", "Clavecin"];
   notes = ["Do", "Re", "Mi", "Fa", "Sol", "La", "Si"];
+  percussions = ["Clap", "Cowbell", "Cymballe", "Gong", "Guiro", "Hat", "Kick", "Snap", "Snare", "Tambor", "Timballe", "Triangle"];
   octaves = ["1","2","3","4","5","6","7"];
   alterations = ["","b","d"];   //Legende : d=dièse, b=bémol.
 
@@ -22,18 +23,34 @@ export class SoundService {
 
   async loadAudioFiles() {
       for (const instrument of this.instruments) {
-        for (const note of this.notes) {
-          for (const octave of this.octaves) {
-            for (const alteration of this.alterations) {
-            const audioFileName = `${instrument}${note}${alteration}${octave}.mp3`;
+        if(instrument == "Percussion"){
+          for (const percussion of this.percussions) {
+            const audioFileName = `${percussion}.mp3`;
             const audioFilePath = `./assets/samples/${instrument}/${audioFileName}`;
             console.log(audioFilePath);
             //Vérifie si le fichier audio existe :
-            const response = await fetch(audioFilePath, { method: 'HEAD' });
-              if (response.ok) {
-                const audio = new Audio(audioFilePath);
-                audio.preload;
-                audio.load();   //Chargement des samples audio
+            const response = await fetch(audioFilePath, {method: 'HEAD'});
+            if (response.ok) {
+              const audio = new Audio(audioFilePath);
+              audio.preload;
+              audio.load();   //Chargement des samples audio
+            }
+          }
+        }
+        else{
+          for (const note of this.notes) {
+            for (const octave of this.octaves) {
+              for (const alteration of this.alterations) {
+              const audioFileName = `${instrument}${note}${alteration}${octave}.mp3`;
+              const audioFilePath = `./assets/samples/${instrument}/${audioFileName}`;
+              console.log(audioFilePath);
+              //Vérifie si le fichier audio existe :
+              const response = await fetch(audioFilePath, { method: 'HEAD' });
+                if (response.ok) {
+                  const audio = new Audio(audioFilePath);
+                  audio.preload;
+                  audio.load();   //Chargement des samples audio
+                }
               }
             }
           }
@@ -42,11 +59,20 @@ export class SoundService {
   }
 
   playAudio = function(circle : Circle) {
+    if (circle.instrument != "Percussion"){
        const audioFileName = circle.instrument+circle.note+circle.alteration+circle.octave+'.mp3';
        const audioFilePath = `./assets/samples/${circle.instrument}/${audioFileName}`;
        const audio = new Audio(audioFilePath);
        audio.volume = circle.volume;
        audio.play();
+    }
+    else{   //Cas des percussions
+      const audioFileName = circle.percussion+'.mp3';
+      const audioFilePath = `./assets/samples/${circle.instrument}/${audioFileName}`;
+      const audio = new Audio(audioFilePath);
+      audio.volume = circle.volume;
+      audio.play();
+    }
   }
 
   setActiveInstrument(instrument: string){
