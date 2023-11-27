@@ -45,10 +45,9 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
 
   interval: any;
 
-  private soundService: SoundService|undefined = undefined
   private subscriptions: Subscription[] = [];
   offset = 0
-  constructor(private circlesService: CircleService) {
+  constructor(private circlesService: CircleService, private soundService: SoundService) {
     this.circles = circlesService.circleList;
   }
 
@@ -106,6 +105,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   }
 
   onSquareClick(event: MouseEvent) {
+    if(this.soundService === undefined) return;
     let x, y = 0;
     let squareSize = this.getSquareSize();
     if(event.target === this.squareElement.nativeElement) {
@@ -116,10 +116,17 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
       y = this.circlesService.getFromMouse(this.savePoseY + ((event?.target as HTMLElement)?.parentElement as HTMLElement)?.getBoundingClientRect()?.top, this.squareUnit, squareSize);
     }
     if(!this.circlesService.inRange(x, this.squareUnit) || !this.circlesService.inRange(y, this.squareUnit)) return;
-    this.circlesService.addCircleToActiveArena(parseFloat(x.toFixed(this.precisionMode ? 1 : 2)),
-                                  parseFloat(y.toFixed(this.precisionMode ? 1 : 2)),
-                                  parseFloat(((this.saveVx * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)),
-                                  parseFloat(((this.saveVy * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)));
+    let circle = new Circle(this.circlesService.getNewId(),
+                            parseFloat(x.toFixed(this.precisionMode ? 1 : 2)),
+                            parseFloat(y.toFixed(this.precisionMode ? 1 : 2)),
+                            parseFloat(((this.saveVx * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)),
+                            parseFloat(((this.saveVy * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)),  
+                            this.circlesService.getRandomColor(),                   
+                            this.soundService.activeInstrument,
+                            this.soundService.activeNote,
+                            this.soundService.activeAlterationString,
+                            this.soundService.activeOctave);
+    this.circlesService.addCircleToActiveArena(circle);
   }
 
 

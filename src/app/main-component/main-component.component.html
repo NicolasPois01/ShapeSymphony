@@ -27,13 +27,14 @@
     </div>
   </div>
   <div class="controls-container">
-    <app-instruments-tab></app-instruments-tab>
+    <app-instruments-tab ngModel #instrumentsTab></app-instruments-tab>
     <app-notes-tab></app-notes-tab>
     <div class="controls-wrapper">
-      <app-octave></app-octave>
-      <app-alteration></app-alteration>
-      <app-music></app-music>
+      <app-octave *ngIf="!instrumentsTab.percussion"></app-octave>
+      <app-alteration *ngIf="!instrumentsTab.percussion"></app-alteration>
+      <app-music *ngIf="!instrumentsTab.percussion"></app-music>
     </div>
+    <app-percussion-tab *ngIf="instrumentsTab.percussion"></app-percussion-tab>
     <app-timer class="timer" [timerService]="this.timerService"></app-timer>
   </div>
 </div>

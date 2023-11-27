@@ -4,8 +4,8 @@ import { Circle } from '../models/circle';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { TimerService } from '../services/timer.service';
-import {Arena} from "../models/arena";
-import {ArenaService} from "../services/arena.service";
+import { Arena } from "../models/arena";
+import { ArenaService } from "../services/arena.service";
 
 @Component({
   selector: 'app-main-component',
