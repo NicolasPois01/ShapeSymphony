@@ -7,12 +7,14 @@ import { EventEmitter } from '@angular/core';
 })
 export class SoundService {
   selectionChanged = new EventEmitter<void>();
-  instruments = ["Piano", "Batterie", "Guitare", "Violon", "Trompette", "Clavecin"];
+  instruments = ["Piano", "Batterie", "Guitare", "Violon", "Trompette", "Clavecin", "Percussion"];
+  percussions = ["Hat", "Kick", "Snap", "Snare", "Clap", "CowBell", "Cymbale", "Guiro", "Tambor", "Triangle", "Gong", "Timbale"];
   notes = ["Do", "Re", "Mi", "Fa", "Sol", "La", "Si"];
   octaves = ["1","2","3","4","5","6","7"];
   alterations = ["","b","d"];   //Legende : d=dièse, b=bémol.
 
   activeInstrument: string = "Piano";
+  activePercussion: string = "Hat";
   activeNote: string = "Do";
   activeOctave: number = 3;
   activeAlteration: number = 0;
@@ -53,6 +55,15 @@ export class SoundService {
 
   getActiveInstrument(){
     return this.activeInstrument;
+  }
+
+  setActivePercussion(percussion: string){
+    this.activePercussion = percussion;
+    this.selectionChanged.emit();
+  }
+
+  getActivePercussion(){
+    return this.activePercussion;
   }
 
   setActiveNote(note: string) {
