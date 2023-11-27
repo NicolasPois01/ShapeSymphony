@@ -27,7 +27,6 @@ export class SoundService {
             for (const alteration of this.alterations) {
             const audioFileName = `${instrument}${note}${alteration}${octave}.mp3`;
             const audioFilePath = `./assets/samples/${instrument}/${audioFileName}`;
-            console.log(audioFilePath);
             //Vérifie si le fichier audio existe :
             const response = await fetch(audioFilePath, { method: 'HEAD' });
               if (response.ok) {
