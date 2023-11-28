@@ -13,22 +13,26 @@ export class ArenaService {
   private arenaListSubject = new BehaviorSubject<Arena[]>([
     {
       id: 0,
-      circleList: []
+      circleList: [],
+      isMuted: false
     },
     {
       id: 1,
-      circleList: []
+      circleList: [],
+      isMuted: false
     },
     {
       id: 2,
-      circleList: []
+      circleList: [],
+      isMuted: false
     }
   ]);
   arenaList$: Observable<Arena[]> = this.arenaListSubject.asObservable();
 
   activeArenaSubject = new BehaviorSubject<Arena>({
     id: 0,
-    circleList: []
+    circleList: [],
+    isMuted: false
   });
   activeArena$ = this.activeArenaSubject.asObservable();
 
@@ -41,7 +45,8 @@ export class ArenaService {
   addArena(): number {
     const newArena: Arena = {
       id: this.arenaListSubject.getValue().length,
-      circleList: []
+      circleList: [],
+      isMuted: false
     };
 
     const updatedArenas = [...this.arenaListSubject.getValue(), newArena];
@@ -54,6 +59,40 @@ export class ArenaService {
     const arena = this.arenaListSubject.getValue().find(arena => arena.id === idArena);
     if (arena) {
       this.activeArenaSubject.next(arena);
+    }
+  }
+
+  muteArena(idArena: number) {
+    // Get the current list of arenas
+    const arenas = this.arenaListSubject.getValue();
+
+    // Find the arena with the specified ID
+    const arenaToMute = arenas.find(arena => arena.id === idArena);
+
+    // Check if the arena was found
+    if (arenaToMute) {
+      // Toggle the `isMuted` property of the arena
+      arenaToMute.isMuted = true;
+
+      // Update the arena list subject with the modified arena list
+      this.arenaListSubject.next([...arenas]);
+    }
+  }
+
+  unmuteArena (idArena: number) {
+    // Get the current list of arenas
+    const arenas = this.arenaListSubject.getValue();
+
+    // Find the arena with the specified ID
+    const arenaToMute = arenas.find(arena => arena.id === idArena);
+
+    // Check if the arena was found
+    if (arenaToMute) {
+      // Toggle the `isMuted` property of the arena
+      arenaToMute.isMuted = false;
+
+      // Update the arena list subject with the modified arena list
+      this.arenaListSubject.next([...arenas]);
     }
   }
 
@@ -123,7 +162,7 @@ export class ArenaService {
 
     arenas.forEach(arena => {
       arena.circleList.forEach(circle => {
-        this.circleService.calculatePos(elapsedTime, circle, squareUnit, offSet);
+        this.circleService.calculatePos(elapsedTime, circle, squareUnit, offSet, arena.isMuted);
       });
     });
 

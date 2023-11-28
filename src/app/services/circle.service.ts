@@ -61,7 +61,7 @@ export class CircleService {
     this.circleChangedSubject.next(circle);
   }
 
-  calculatePos(elapsedTime: number, circle: Circle, squareUnit: number, offSet: number) {
+  calculatePos(elapsedTime: number, circle: Circle, squareUnit: number, offSet: number, isArenaMuted: boolean) {
     // Update the circle's position based on its speed and elapsed time
     circle.x += circle.xSpeed * elapsedTime;
     circle.y += circle.ySpeed * elapsedTime;
@@ -72,7 +72,8 @@ export class CircleService {
       circle.isColliding = true;
       let adjustedX = circle.xSpeed > 0 ? circle.x + this.circleRad - offSet : circle.x - this.circleRad + offSet;
       circle.contactPoint = { x: adjustedX, y: circle.y };
-      this.bounceX(circle, circle.x - this.circleRad < -(squareUnit / 2), squareUnit / 2 - this.circleRad)
+      this.bounceX(circle, circle.x - this.circleRad < -(squareUnit / 2),
+        squareUnit / 2 - this.circleRad, isArenaMuted)
       setTimeout(() => {
         circle.isColliding = false;
       }, 500);
@@ -83,7 +84,8 @@ export class CircleService {
       circle.isColliding = true;
       let adjustedY = circle.ySpeed > 0 ? circle.y + this.circleRad - offSet : circle.y - this.circleRad + offSet;
       circle.contactPoint = {x: circle.x, y: adjustedY};
-      this.bounceY(circle, circle.y - this.circleRad < -(squareUnit / 2), squareUnit / 2 - this.circleRad);
+      this.bounceY(circle, circle.y - this.circleRad < -(squareUnit / 2),
+        squareUnit / 2 - this.circleRad, isArenaMuted);
       setTimeout(() => {
         circle.isColliding = false;
       }, 500);
@@ -92,8 +94,10 @@ export class CircleService {
     this.circleChangedSubject.next(circle);
   }
 
-  bounceX(circle: any, leftBorder: Boolean, midSquareSize: number) {
-    this.soundService.playAudio(circle);
+  bounceX(circle: any, leftBorder: Boolean, midSquareSize: number, isArenaMuted: boolean) {
+    if (!isArenaMuted) {
+      this.soundService.playAudio(circle);
+    }
     circle.xSpeed = -circle.xSpeed;
     if(leftBorder) {
       circle.x = -(midSquareSize + (circle.x + midSquareSize));
@@ -103,8 +107,10 @@ export class CircleService {
 
     }
 
-  bounceY(circle: any, topBorder: Boolean, midSquareSize: number) {
-    this.soundService.playAudio(circle);
+  bounceY(circle: any, topBorder: Boolean, midSquareSize: number, isArenaMuted: boolean) {
+    if (!isArenaMuted) {
+      this.soundService.playAudio(circle);
+    }
     circle.ySpeed = -circle.ySpeed;
     if(topBorder) {
       circle.y = -(midSquareSize + (circle.y + midSquareSize));

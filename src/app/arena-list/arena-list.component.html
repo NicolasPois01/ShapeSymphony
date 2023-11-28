@@ -2,6 +2,8 @@
 <button (click)="addArena()">Add arena</button>
 <div *ngFor="let arena of arenaList">
   <button (click)="deleteArena(arena.id)">X</button>
+  <button *ngIf="!arena.isMuted" (click)="muteArena(arena.id)">Mute</button>
+  <button *ngIf="arena.isMuted" (click)="unmuteArena(arena.id)">Unmute</button>
   <div class="mini-square"
     (click)="setActiveArena(arena.id)"
     [ngClass]="{'active': isActiveArena(arena.id)}">

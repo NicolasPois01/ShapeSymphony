@@ -41,4 +41,12 @@ export class ArenaListComponent implements OnInit{
   isActiveArena(idArena: number): boolean {
     return this.arenaService.isActiveArena(idArena);
   }
+
+  muteArena(idArena: number) {
+    this.arenaService.muteArena(idArena);
+  }
+
+  unmuteArena (idArena: number) {
+    this.arenaService.unmuteArena(idArena);
+  }
 }
