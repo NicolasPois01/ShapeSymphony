@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {Arena} from "../models/arena";
 import {BehaviorSubject, Observable} from "rxjs";
 import {Circle} from "../models/circle";
+import {CircleService} from "./circle.service";
 
 
 @Injectable({
@@ -31,7 +32,11 @@ export class ArenaService {
   });
   activeArena$ = this.activeArenaSubject.asObservable();
 
-  constructor() {}
+  constructor(private circleService: CircleService) {
+    this.circleService.newCircleSubject.subscribe(circle => {
+      this.addCircleToActiveArena(circle);
+    })
+  }
 
   addArena(): number {
     const newArena: Arena = {
@@ -84,6 +89,18 @@ export class ArenaService {
     const arenas = this.arenaListSubject.getValue();
     const arenaIndex = arenas.findIndex(a => a.id === activeArena.id);
     arenas[arenaIndex] = updatedArena;
+    this.arenaListSubject.next(arenas);
+  }
+
+  updateArenas(elapsedTime: number, squareUnit: number, offSet: number) {
+    const arenas = this.arenaListSubject.getValue();
+
+    arenas.forEach(arena => {
+      arena.circleList.forEach(circle => {
+        this.circleService.calculatePos(elapsedTime, circle, squareUnit, offSet);
+      });
+    });
+
     this.arenaListSubject.next(arenas);
   }
 }
