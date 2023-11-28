@@ -3,6 +3,7 @@ import {CircleService} from "../services/circle.service";
 import {Circle} from "../models/circle";
 import { Subscription } from 'rxjs';
 import {ArenaService} from "../services/arena.service";
+import {Arena} from "../models/arena";
 
 @Component({
   selector: 'app-circle-list',
@@ -11,6 +12,7 @@ import {ArenaService} from "../services/arena.service";
 })
 export class CircleListComponent implements OnInit  {  // Ajouter OnDestroy
   circlesList!: Circle[];
+  activeArena!: Arena;
   selectedCircle: Circle | null | undefined;
   private circlesListSubscription!: Subscription;  // Ajouter cette ligne
 
@@ -19,7 +21,10 @@ export class CircleListComponent implements OnInit  {  // Ajouter OnDestroy
 
   ngOnInit() {
     this.circlesListSubscription = this.arenaService.activeArena$
-      .subscribe(arena => this.circlesList = arena.circleList);  // S'abonner à circleList de l'activeArena$
+      .subscribe(arena => {
+        this.activeArena = arena;
+        this.circlesList = arena.circleList
+      });  // S'abonner à circleList de l'activeArena$
 
     this.circlesService.selectedCircle$
       .subscribe(circle => this.selectedCircle = circle);
@@ -52,7 +57,7 @@ export class CircleListComponent implements OnInit  {  // Ajouter OnDestroy
   }
 
   deleteCircle(circle: Circle): void {
-    this.circlesService.deleteCircle(circle);  // Mettre à jour pour utiliser la méthode de service
+    this.arenaService.deleteCircleFromActiveArena(circle);  // Mettre à jour pour utiliser la méthode de service
   }
 
   isSelected(circle: Circle) {

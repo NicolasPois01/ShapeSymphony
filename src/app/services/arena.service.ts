@@ -92,6 +92,32 @@ export class ArenaService {
     this.arenaListSubject.next(arenas);
   }
 
+  deleteCircleFromActiveArena(circle: Circle) {
+    // Get the current active arena
+    const activeArena = this.activeArenaSubject.getValue();
+
+    // Filter out the circle to be deleted from the circleList
+    const updatedCircleList = activeArena.circleList.filter(c => c.id !== circle.id);
+
+    // Create an updated arena without the deleted circle
+    const updatedArena = { ...activeArena, circleList: updatedCircleList };
+
+    // Update the active arena subject with the updated arena
+    this.activeArenaSubject.next(updatedArena);
+
+    // Update the arena list as well (if needed)
+    const arenas = this.arenaListSubject.getValue();
+    const arenaIndex = arenas.findIndex(a => a.id === activeArena.id);
+
+    if (arenaIndex !== -1) {
+      // Update the arena in the list with the updated arena
+      arenas[arenaIndex] = updatedArena;
+
+      // Update the arena list subject with the updated list of arenas
+      this.arenaListSubject.next(arenas);
+    }
+  }
+
   updateArenas(elapsedTime: number, squareUnit: number, offSet: number) {
     const arenas = this.arenaListSubject.getValue();
 
