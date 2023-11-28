@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {CircleService} from "../services/circle.service";
 import {Circle} from "../models/circle";
 import { Subscription } from 'rxjs';
+import {ArenaService} from "../services/arena.service";
 
 @Component({
   selector: 'app-circle-list',
@@ -13,11 +14,12 @@ export class CircleListComponent implements OnInit  {  // Ajouter OnDestroy
   selectedCircle: Circle | null | undefined;
   private circlesListSubscription!: Subscription;  // Ajouter cette ligne
 
-  constructor(private circlesService: CircleService) {}
+  constructor(private circlesService: CircleService,
+              private arenaService: ArenaService) {}
 
   ngOnInit() {
-    this.circlesListSubscription = this.circlesService.circleList$
-      .subscribe(circles => this.circlesList = circles);  // S'abonner à circleList$
+    this.circlesListSubscription = this.arenaService.activeArena$
+      .subscribe(arena => this.circlesList = arena.circleList);  // S'abonner à circleList de l'activeArena$
 
     this.circlesService.selectedCircle$
       .subscribe(circle => this.selectedCircle = circle);
