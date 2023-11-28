@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CircleService } from '../services/circle.service';
 import { TimerService } from '../services/timer.service';
+import { Circle } from '../models/circle';
 
 @Component({
   selector: 'app-import-json',
@@ -34,7 +35,8 @@ export class ImportJsonComponent {
         this.circleService.clearAllCircles();
         this.timerService.resetTimer();
         circles.forEach(circleData => {
-          this.circleService.addCircleToActiveArena(circleData.startX, circleData.startY, circleData.xSpeedStart, circleData.ySpeedStart, circleData.instrument,  circleData.note, circleData.alteration, circleData.octave, circleData.color); //ajouter les attributs genre instruments ect
+          let circle = new Circle(circleData.id, circleData.startX, circleData.startY, circleData.xSpeed, circleData.ySpeed, circleData.color, circleData.instrument,  circleData.note, circleData.alteration, circleData.octave)
+          this.circleService.addCircleToActiveArena(circle);
         });
       }
     } catch (error) {

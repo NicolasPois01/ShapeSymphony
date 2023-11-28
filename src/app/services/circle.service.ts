@@ -24,6 +24,7 @@ export class CircleService {
   notes: string[] = [];
   alterations: string[] = [];
   octaves: string[] = [];
+  highestId: number = 0;
   circleListSubject = new BehaviorSubject<Circle[]>([]);
   circleList$: Observable<Circle[]> = this.circleListSubject.asObservable();
   selectedCircleSubject = new BehaviorSubject<Circle | null>(null);
@@ -117,34 +118,11 @@ export class CircleService {
     return this.colors[randomIndex];
   }
 
-  addCircleToActiveArena(x: number, y: number, vX: number, vY: number,
-            instrument: string = this.soundService.activeInstrument,
-            note: string = this.soundService.activeNote,
-            alteration: string = this.soundService.activeAlterationString,
-            octave: number = this.soundService.activeOctave,
-            color: string = this.getRandomColor()) {
-    const circle: Circle = {
-      id: this.circleList.length, // Assuming unique ids based on list length
-      x: x,
-      y: y,
-      xSpeed: vX,
-      ySpeed: vY,
-      xSpeedStart: vX,
-      ySpeedStart: vY,
-      color: color,
-      startX: x,
-      startY: y,
-      instrument: instrument,
-      note: note,
-      alteration: alteration,
-      octave: octave,
-      maxBounces: 10,
-      maxTime: 10000,
-      spawnTime: 0,
-      isColliding : false,
-      contactPoint: null
-    };
+  getNewId(): number {
+    return this.highestId++;
+  }
 
+  addCircleToActiveArena(circle: Circle) {
     this.circleList.push(circle);
     this.circleListSubject.next(this.circleList);
     this.newCircleSubject.next(circle);
@@ -170,17 +148,7 @@ export class CircleService {
     this.clearAllCircles();  // This will clear the current circles
 
     this.tempCircleList.forEach(circle => {
-      this.addCircleToActiveArena(
-        circle.startX,
-        circle.startY,
-        circle.xSpeedStart,
-        circle.ySpeedStart,
-        circle.instrument,
-        circle.note,
-        circle.alteration,
-        circle.octave,
-        circle.color
-      );
+      this.addCircleToActiveArena(circle);
     });
   }
 

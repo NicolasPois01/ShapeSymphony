@@ -1,0 +1,32 @@
+.toggle-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #2a1f3d;
+  border: none;
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+  box-shadow: -5px -5px 10px #36284e, 5px 5px 10px #1e162c;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.toggle-button:hover {
+  box-shadow: -2px -2px 5px #36284e, 2px 2px 5px #1e162c;
+}
+
+.toggle-button.active {
+  background-color: #36284e;
+  box-shadow: inset -2px -2px 5px #41305f, inset 2px 2px 5px #1e162c;
+  color: white;
+}
+
+.percussion-container {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+  max-width: calc(100vw - 600px);
+  overflow-y: visible;
+  overflow-x: auto;
+  padding-top: 10px;
+  padding: 10px;
+}
