@@ -9,7 +9,7 @@ export class SoundService {
   selectionChanged = new EventEmitter<void>();
   instruments = ["Piano", "Percussion", "Guitare", "Violon", "Trompette", "Clavecin"];
   notes = ["Do", "Re", "Mi", "Fa", "Sol", "La", "Si"];
-  percussions = ["Clap", "Cowbell", "Cymballe", "Gong", "Guiro", "Hat", "Kick", "Snap", "Snare", "Tambor", "Timballe", "Triangle"];
+  percussions = ["Clap", "Cowbell", "Cymbale", "Gong", "Guiro", "Hat", "Kick", "Snap", "Snare", "Tambour", "Timbale", "Triangle"];
   octaves = ["1","2","3","4","5","6","7"];
   alterations = ["","b","d"];   //Legende : d=dièse, b=bémol.
 
