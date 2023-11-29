@@ -3,7 +3,6 @@ import {Circle} from "../models/circle";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {SoundService} from "./sound.service";
 import cloneDeep from 'lodash/cloneDeep'
-import {ArenaService} from "./arena.service";
 
 
 @Injectable({
@@ -12,10 +11,12 @@ import {ArenaService} from "./arena.service";
 export class CircleService {
   circleSize: number = 1;
   circleRad: number = this.circleSize/2;
-  private circleChangedSubject: Subject<Circle> = new Subject<Circle>();
+  circleChangedSubject: Subject<Circle> = new Subject<Circle>();
   circleChanged$: Observable<Circle> = this.circleChangedSubject.asObservable();
+  newCircleSubject: Subject<Circle> = new Subject<Circle>();
+  newCircle$ = this.newCircleSubject.asObservable();
   circleList: Circle[] = [];
-  private tempCircleList: Circle[] = [];
+  tempCircleList: Circle[] = [];
 
   colors = ["red", "green", "blue", "yellow", "pink", "orange", "purple", "cyan", "magenta", "brown"];
   selectedCircle: Circle | null;
@@ -24,13 +25,12 @@ export class CircleService {
   alterations: string[] = [];
   octaves: string[] = [];
   highestId: number = 0;
-  private circleListSubject = new BehaviorSubject<Circle[]>([]);
+  circleListSubject = new BehaviorSubject<Circle[]>([]);
   circleList$: Observable<Circle[]> = this.circleListSubject.asObservable();
   selectedCircleSubject = new BehaviorSubject<Circle | null>(null);
   selectedCircle$ = this.selectedCircleSubject.asObservable();
 
-  constructor(soundService : SoundService,
-              private arenaService: ArenaService) {
+  constructor(soundService : SoundService) {
     this.selectedCircle = null;
     this.soundService = soundService;
     this.notes = this.soundService.notes;
@@ -61,8 +61,43 @@ export class CircleService {
     this.circleChangedSubject.next(circle);
   }
 
-  bounceX(circle: any, leftBorder: Boolean, midSquareSize: number) {
-    this.soundService.playAudio(circle);
+  calculatePos(elapsedTime: number, circle: Circle, squareUnit: number, offSet: number, isArenaMuted: boolean) {
+    // Update the circle's position based on its speed and elapsed time
+    circle.x += circle.xSpeed * elapsedTime;
+    circle.y += circle.ySpeed * elapsedTime;
+    this.updatePos(circle, circle.x, circle.y);
+
+    // Collides x
+    if (!this.inRange(circle.x, squareUnit)) {
+      circle.isColliding = true;
+      let adjustedX = circle.xSpeed > 0 ? circle.x + this.circleRad - offSet : circle.x - this.circleRad + offSet;
+      circle.contactPoint = { x: adjustedX, y: circle.y };
+      this.bounceX(circle, circle.x - this.circleRad < -(squareUnit / 2),
+        squareUnit / 2 - this.circleRad, isArenaMuted)
+      setTimeout(() => {
+        circle.isColliding = false;
+      }, 500);
+    }
+
+    // Collides y
+    if (!this.inRange(circle.y, squareUnit)) {
+      circle.isColliding = true;
+      let adjustedY = circle.ySpeed > 0 ? circle.y + this.circleRad - offSet : circle.y - this.circleRad + offSet;
+      circle.contactPoint = {x: circle.x, y: adjustedY};
+      this.bounceY(circle, circle.y - this.circleRad < -(squareUnit / 2),
+        squareUnit / 2 - this.circleRad, isArenaMuted);
+      setTimeout(() => {
+        circle.isColliding = false;
+      }, 500);
+    }
+
+    this.circleChangedSubject.next(circle);
+  }
+
+  bounceX(circle: any, leftBorder: Boolean, midSquareSize: number, isArenaMuted: boolean) {
+    if (!isArenaMuted) {
+      this.soundService.playAudio(circle);
+    }
     circle.xSpeed = -circle.xSpeed;
     if(leftBorder) {
       circle.x = -(midSquareSize + (circle.x + midSquareSize));
@@ -72,8 +107,10 @@ export class CircleService {
 
     }
 
-  bounceY(circle: any, topBorder: Boolean, midSquareSize: number) {
-    this.soundService.playAudio(circle);
+  bounceY(circle: any, topBorder: Boolean, midSquareSize: number, isArenaMuted: boolean) {
+    if (!isArenaMuted) {
+      this.soundService.playAudio(circle);
+    }
     circle.ySpeed = -circle.ySpeed;
     if(topBorder) {
       circle.y = -(midSquareSize + (circle.y + midSquareSize));
@@ -94,7 +131,7 @@ export class CircleService {
   addCircleToActiveArena(circle: Circle) {
     this.circleList.push(circle);
     this.circleListSubject.next(this.circleList);
-    this.arenaService.addCircleToActiveArena(circle);
+    this.newCircleSubject.next(circle);
   }
 
   setSelectedCircle(circle: Circle) {

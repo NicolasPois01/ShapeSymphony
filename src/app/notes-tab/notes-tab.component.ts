@@ -9,11 +9,13 @@ import {SoundService} from '../services/sound.service';
 export class NotesTabComponent {
   @Output() noteChanged = new EventEmitter<void>();
   activeNote!: string;
+  activeInstrument!: string;
 
   notes!: string[];
 
   constructor(private soundService: SoundService) {
     this.notes = this.soundService.notes;
+    this.activeInstrument = this.soundService.activeInstrument;
   }
 
   isActive(instrument: string) {
@@ -23,6 +25,10 @@ export class NotesTabComponent {
     this.soundService.setActiveNote(note);
     this.activeNote = note; // Assurez-vous que cette ligne est présente pour mettre à jour la note active
     this.noteChanged.emit();
+  }
+
+  isPercussion(instrument: string): boolean {
+    return this.soundService.isPercussion(instrument);
   }
 
 }
