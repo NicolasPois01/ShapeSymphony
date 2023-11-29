@@ -208,4 +208,9 @@ export class ArenaService {
     });
     this.arenaListSubject.next(this.tempoArenaList);
   }
+
+  setArenaList(arenaList: Arena[]) {
+    this.arenaListSubject.next(arenaList);
+    this.activeArenaSubject.next(arenaList[0]);
+  }
 }
