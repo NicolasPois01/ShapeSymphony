@@ -1,0 +1,8 @@
+<div class="percussion-container">
+  <button class="toggle-button"
+          *ngFor="let percussion of percussionsList"
+          [class.active]="isActive(percussion)"
+          (click)="togglePercussion(percussion)">
+    {{ percussion }}
+  </button>
+</div>

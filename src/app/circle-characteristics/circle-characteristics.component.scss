@@ -6,4 +6,40 @@ ul {
   list-style-type: none; /* Removes bullet points */
 }
 
+li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px; /* Ajoutez une marge en bas pour séparer les éléments */
+}
 
+li input {
+  margin-left: 1rem;
+  width: 7rem;
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #2a1f3d;
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: -3px -3px 7px #36284e, 3px 3px 7px #1e162c;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  margin-right: 15px; /* Ajoutez une marge à droite pour chaque élément */
+}
+
+/* Supprimez la marge à droite pour le dernier <li> contenant un <input> de type nombre */
+li:last-child input {
+  margin-right: 0;
+}
+
+/* Style au survol du curseur */
+li input:hover {
+  box-shadow: -1px -1px 3px #36284e, 1px 1px 3px #1e162c;
+}
+
+/* Style pour un <input> de type nombre actif */
+li input.active {
+  background-color: #36284e;
+  box-shadow: inset -1px -1px 3px #41305f, inset 1px 1px 3px #1e162c;
+  color: white;
+}

@@ -27,12 +27,9 @@
 .timer {
   /* TEMP set right bottom */
   position: fixed;
-  right: 100px;
+  right: 20px;
+  width: 250px;
   bottom: 20px;
-}
-
-.app-instruments-tab {
-  margin-right: 20px; /* Cela ajoutera de l'espace à droite de l'élément "Instrument" */
 }
 
 .controls-container {
@@ -40,6 +37,8 @@
   flex-direction: column;
   align-items: center;
   gap: 10px; /* Ajustez cette valeur pour l'espacement entre les éléments */
+  height: 200px;
+  min-height: 200px;
 }
 
 .controls-wrapper {
@@ -92,4 +91,12 @@
 .dropdown-content app-json-export:hover,
 .dropdown-content app-import-json:hover {
   background-color:#36284E;
+}
+
+app-arena-list {
+  margin-top: 5rem;
+}
+
+.tempo {
+  border: solid black;
 }

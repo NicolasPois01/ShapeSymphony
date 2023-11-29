@@ -7,6 +7,7 @@ import { CircleComponent } from './square/circle/circle.component';
 import { CircleListComponent } from './circle-list/circle-list.component';
 import { NotesTabComponent } from './notes-tab/notes-tab.component';
 import { InstrumentsTabComponent } from './instruments-tab/instruments-tab.component';
+import { PercussionTabComponent } from './percussion-tab/percussion-tab.component';
 import { CircleCharacteristicsComponent } from "./circle-characteristics/circle-characteristics.component";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ZeroPaddingPipe } from './zero-padding.pipe';
@@ -15,8 +16,9 @@ import { JsonExportComponent } from './export-json/export-json.component';
 import { ImportJsonComponent } from './import-json/import-json.component';
 import { AlterationComponent } from './alteration/alteration.component';
 import { OctaveComponent } from './octave/octave.component';
-import {FormsModule} from "@angular/forms";
-import {MusicComponent} from './music-component/music-component.component';
+import { FormsModule } from "@angular/forms";
+import { MusicComponent} from './music-component/music-component.component';
+import { ArenaListComponent } from './arena-list/arena-list.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +28,7 @@ import {MusicComponent} from './music-component/music-component.component';
     CircleListComponent,
     NotesTabComponent,
     InstrumentsTabComponent,
+    PercussionTabComponent,
     CircleCharacteristicsComponent,
     ZeroPaddingPipe,
     TimerComponent,
@@ -33,7 +36,8 @@ import {MusicComponent} from './music-component/music-component.component';
     ImportJsonComponent,
     AlterationComponent,
     OctaveComponent,
-    MusicComponent
+    MusicComponent,
+    ArenaListComponent
   ],
   imports: [
     BrowserModule,

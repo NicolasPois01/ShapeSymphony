@@ -3,6 +3,9 @@ import {CircleService} from "../services/circle.service";
 import {Circle} from "../models/circle";
 import {TimerService} from "../services/timer.service";
 import {Subscription} from "rxjs";
+import {SoundService} from "../services/sound.service";
+import {Arena} from "../models/arena";
+import {ArenaService} from "../services/arena.service";
 
 @Component({
   selector: 'app-square',
@@ -13,6 +16,13 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   @ViewChild('square') squareElement: any;
   @ViewChild('arrow') arrow: any;
   @ViewChild('mousebox') mousebox: any;
+
+  @Input() grid: boolean = false;
+  @Input() precisionMode: boolean = false;
+  @Input() timerService: TimerService|undefined = undefined;
+  @Input() fps: number = 60;
+  @Input() squareUnit: number = 10;
+  @Input() arena!: Arena;
 
   circles!: Circle[];
 
@@ -40,17 +50,16 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
 
   interval: any;
 
-  @Input() grid: boolean = false;
-  @Input() precisionMode: boolean = false;
-  @Input() timerService: TimerService|undefined = undefined;
-
-  private subscriptions: Subscription[] = [];
-
-  constructor(private circlesService: CircleService) {
+  subscriptions: Subscription[] = [];
+  offset = 0
+  constructor(private circlesService: CircleService,
+              private soundService: SoundService,
+              private arenaService: ArenaService) {
     this.circles = circlesService.circleList;
   }
 
   ngOnInit() {
+    this.soundService?.loadAudioFiles();
   }
 
   ngAfterViewInit() {
@@ -64,28 +73,33 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   startAnimation() {
     if (!this.interval && this.timerService) {
       this.interval = setInterval(() => {
-        let elapsedTime = ((this.timerService?.getTimeStamp()??0) - this.timestamp) / 1000; // elapsed time in seconds
+        let elapsedTime = ((this.timerService?.getTimeStamp() ?? 0) - this.timestamp) / 1000; // elapsed time in seconds
         this.timestamp = this.timerService?.getTimeStamp();
-        for (let circle of this.circles) {
-          this.circlesService.updatePos(circle, circle.x + (circle.xSpeed*elapsedTime), circle.y + (circle.ySpeed*elapsedTime));
-
-          if (!this.circlesService.inRange(circle.x, this.squareUnit)) {
-            circle.isColliding = true;
-            this.circlesService.bounceX(circle, circle.x - this.circlesService.circleRad < -(this.squareUnit/2), this.squareUnit/2 - this.circlesService.circleRad);
-            setTimeout(() => {
-              circle.isColliding = false;
-            }, 300);
-          }
-          if (!this.circlesService.inRange(circle.y, this.squareUnit)) {
-            circle.isColliding = true;
-            this.circlesService.bounceY(circle, circle.y - this.circlesService.circleRad < -(this.squareUnit/2), this.squareUnit/2 - this.circlesService.circleRad);
-            setTimeout(() => {
-              circle.isColliding = false;
-            }, 300);
-
-          }
-        }
-      }, 1000/this.fps);
+        this.arenaService.updateArenas(elapsedTime, this.squareUnit, this.offset);
+        // for (let circle of this.circles) {
+        //   this.circlesService.updatePos(circle, circle.x + (circle.xSpeed * elapsedTime), circle.y + (circle.ySpeed * elapsedTime));
+        //
+        //   if (!this.circlesService.inRange(circle.x, this.squareUnit)) {
+        //     circle.isColliding = true;
+        //      let adjustedX = circle.xSpeed > 0 ? circle.x + this.circlesService.circleRad - this.offset : circle.x - this.circlesService.circleRad + this.offset;
+        //     circle.contactPoint = { x: adjustedX, y: circle.y }; // Adjusted point of contact
+        //     this.circlesService.bounceX(circle, circle.x - this.circlesService.circleRad < -(this.squareUnit / 2), this.squareUnit / 2 - this.circlesService.circleRad);
+        //     setTimeout(() => {
+        //       circle.isColliding = false;
+        //     }, 500);
+        //   }
+        //
+        //   if (!this.circlesService.inRange(circle.y, this.squareUnit)) {
+        //     circle.isColliding = true;
+        //     let adjustedY = circle.ySpeed > 0 ? circle.y + this.circlesService.circleRad - this.offset : circle.y - this.circlesService.circleRad + this.offset;
+        //     circle.contactPoint = { x: circle.x, y: adjustedY }; // Adjusted point of contact
+        //     this.circlesService.bounceY(circle, circle.y - this.circlesService.circleRad < -(this.squareUnit / 2), this.squareUnit / 2 - this.circlesService.circleRad);
+        //     setTimeout(() => {
+        //       circle.isColliding = false;
+        //     }, 500);
+        //   }
+        // }
+      }, 1000 / this.fps);
     }
   }
 
@@ -97,6 +111,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   }
 
   onSquareClick(event: MouseEvent) {
+    if(this.soundService === undefined) return;
     let x, y = 0;
     let squareSize = this.getSquareSize();
     if(event.target === this.squareElement.nativeElement) {
@@ -107,10 +122,17 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
       y = this.circlesService.getFromMouse(this.savePoseY + ((event?.target as HTMLElement)?.parentElement as HTMLElement)?.getBoundingClientRect()?.top, this.squareUnit, squareSize);
     }
     if(!this.circlesService.inRange(x, this.squareUnit) || !this.circlesService.inRange(y, this.squareUnit)) return;
-    this.circlesService.addCircle(parseFloat(x.toFixed(this.precisionMode ? 1 : 2)),
-                                  parseFloat(y.toFixed(this.precisionMode ? 1 : 2)),
-                                  parseFloat(((this.saveVx * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)),
-                                  parseFloat(((this.saveVy * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)));
+    let circle = new Circle(this.circlesService.getNewId(),
+                            parseFloat(x.toFixed(this.precisionMode ? 1 : 2)),
+                            parseFloat(y.toFixed(this.precisionMode ? 1 : 2)),
+                            parseFloat(((this.saveVx * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)),
+                            parseFloat(((this.saveVy * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)),
+                            this.circlesService.getRandomColor(),
+                            this.soundService.activeInstrument,
+                            this.soundService.activeNote,
+                            this.soundService.activeAlterationString,
+                            this.soundService.activeOctave);
+    this.circlesService.addCircleToActiveArena(circle);
   }
 
 
@@ -126,10 +148,10 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
       this.saveVx = parseFloat((this.currentPosX - this.savePoseX).toFixed(this.precisionMode ? 1 : 2));
       this.saveVy = parseFloat((this.currentPosY - this.savePoseY).toFixed(this.precisionMode ? 1 : 2));
       this.saveDistance = parseFloat((Math.sqrt(Math.pow(Math.abs(this.saveVx), 2) + Math.pow(Math.abs(this.saveVy), 2))).toFixed(this.precisionMode ? 1 : 2));
-      this.saveAngle = (360+Math.round(Math.atan2(this.saveVy, this.saveVx)/Math.PI*180))%360;
+      this.saveAngle = (360-Math.round(Math.atan2(this.saveVy, this.saveVx)/Math.PI*180))%360;
       this.mousebox.nativeElement.innerHTML = ((this.saveDistance * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2) + " m/s <br/> "+this.saveAngle+" °";
       this.arrow.nativeElement.style.width = this.saveDistance + "px";
-      this.arrow.nativeElement.style.transform = "translateY(calc(-50% + 2.5px)) rotate("+this.saveAngle+"deg)";
+      this.arrow.nativeElement.style.transform = "translateY(calc(-50% + 2.5px)) rotate("+(-this.saveAngle)+"deg)";
     } else {
       this.mousebox.nativeElement.innerText =  x+";"+y;
       this.squareElement.nativeElement.style.setProperty("--left-mouse-percent", (x + (this.squareUnit/2 - this.circlesService.circleRad))*10 + '%');
@@ -180,8 +202,11 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     return this.circlesService.circleSize;
   }
 
-  ngOnChanges() {
+  ngOnChanges(changes: SimpleChanges) {
     if(this.mousebox) this.onSquareMouseMove(new MouseEvent("mousemove"), true );
+    if (changes['arena']) {
+      this.circles = this.arena.circleList;
+    }
   }
 
   ngOnDestroy() {

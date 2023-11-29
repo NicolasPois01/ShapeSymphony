@@ -14,6 +14,7 @@ export class SoundService {
   alterations = ["","b","d"];   //Legende : d=dièse, b=bémol.
 
   activeInstrument: string = "Piano";
+  activePercussion: string = "Hat";
   activeNote: string = "Do";
   activeOctave: number = 3;
   activeAlteration: number = 0;
@@ -82,6 +83,15 @@ export class SoundService {
 
   getActiveInstrument(){
     return this.activeInstrument;
+  }
+
+  setActivePercussion(percussion: string){
+    this.activePercussion = percussion;
+    this.selectionChanged.emit();
+  }
+
+  getActivePercussion(){
+    return this.activePercussion;
   }
 
   setActiveNote(note: string) {

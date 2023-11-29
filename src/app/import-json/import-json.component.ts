@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { CircleService } from '../services/circle.service';
+import { TimerService } from '../services/timer.service';
+import { Circle } from '../models/circle';
 
 @Component({
   selector: 'app-import-json',
@@ -8,7 +10,7 @@ import { CircleService } from '../services/circle.service';
 })
 export class ImportJsonComponent {
 
-  constructor(private circleService: CircleService) { }
+  constructor(private circleService: CircleService, private timerService: TimerService) { }
 
   handleFileInput(event: any): void {
     const file = event.target.files[0];
@@ -19,15 +21,22 @@ export class ImportJsonComponent {
         this.playCirclesFromJson(jsonString);
       };
       reader.readAsText(file);
+
+      // Réinitialiser la valeur de l'input pour permettre l'importation du même fichier
+      event.target.value = '';
     }
   }
+
 
   playCirclesFromJson(jsonString: string): void {
     try {
       const circles = JSON.parse(jsonString);
       if (Array.isArray(circles)) {
+        this.circleService.clearAllCircles();
+        this.timerService.resetTimer();
         circles.forEach(circleData => {
-          this.circleService.addCircle(circleData.startX, circleData.startY, circleData.xSpeed, circleData.ySpeed ); //ajouter les attributs genre instruments ect
+          let circle = new Circle(circleData.id, circleData.startX, circleData.startY, circleData.xSpeed, circleData.ySpeed, circleData.color, circleData.instrument,  circleData.note, circleData.alteration, circleData.octave)
+          this.circleService.addCircleToActiveArena(circle);
         });
       }
     } catch (error) {

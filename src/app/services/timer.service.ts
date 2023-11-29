@@ -32,6 +32,16 @@ export class TimerService {
     }
   }
 
+  // Ajouter cette méthode dans TimerService
+  resetTimer(): void {
+    this.pause();
+    this.elapsedTime = 0;
+    this.minutes = 0;
+    this.seconds = 0;
+    this.milliseconds = 0;
+  }
+
+
   pause(): void {
     if (this.isRunning) {
       this.isRunning = false;
@@ -44,6 +54,10 @@ export class TimerService {
 
   getTime(): object {
     return {'minutes': this.minutes,'secondes': this.seconds,'millisecondes':  this.milliseconds}
+  }
+
+  isTimerNotStarted() {
+    return this.minutes === 0 && this.seconds === 0 && this.milliseconds === 0;
   }
 
   getMinutes(): number {

@@ -1,10 +1,11 @@
-import { Component, HostListener, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CircleService } from '../services/circle.service';
 import { Circle } from '../models/circle';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { TimerService } from '../services/timer.service';
-import {SoundService} from "../services/sound.service";
+import { Arena } from "../models/arena";
+import { ArenaService } from "../services/arena.service";
 
 @Component({
   selector: 'app-main-component',
@@ -22,17 +23,22 @@ export class MainComponentComponent implements OnInit, OnDestroy {
   circles: Circle[] = [];
   private unsubscribe$ = new Subject();
 
-  private soundService: SoundService|undefined = undefined
+  fps: number = 60;
+  squareUnit: number = 10;
 
-  constructor(private circleService: CircleService, public timerService: TimerService,  soundService : SoundService) {
-    this.soundService = soundService;
-  }
+  activeArena!: Arena;
+
+  constructor(private circleService: CircleService,
+              private arenaService: ArenaService,
+              public timerService: TimerService) {}
 
   ngOnInit() {
     this.circleService.circleList$
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe((circles: Circle[]) => this.circles = circles); // Ajoutez le type ici
-    this.soundService?.loadAudioFiles();
+    this.arenaService.activeArena$.subscribe(arena => {
+      this.activeArena = arena;
+    })
   }
 
   ngOnDestroy() {
