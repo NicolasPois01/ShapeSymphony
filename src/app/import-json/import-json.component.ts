@@ -35,7 +35,27 @@ export class ImportJsonComponent {
         this.circleService.clearAllCircles();
         this.timerService.resetTimer();
         circles.forEach(circleData => {
-          let circle = new Circle(circleData.id, circleData.startX, circleData.startY, circleData.xSpeed, circleData.ySpeed, circleData.color, circleData.instrument,  circleData.note, circleData.alteration, circleData.octave)
+          //let circle = new Circle(circleData.id, circleData.startX, circleData.startY, circleData.xSpeed, circleData.ySpeed, circleData.color, circleData.instrument,  circleData.note, circleData.alteration, circleData.octave)
+          let circle: Circle = {
+            id: circleData.id,
+            x: circleData.startX,
+            y: circleData.startY,
+            xSpeed: circleData.xSpeed,
+            ySpeed: circleData.ySpeed,
+            color: circleData.color,
+            startX: circleData.startX,
+            startY: circleData.startY,
+            instrument: circleData.instrument,
+            note: circleData.note,
+            alteration: circleData.alteration,
+            octave: circleData.octave,
+            volume: circleData.volume,
+            spawnTime: circleData.spawnTime,
+            maxBounces: circleData.maxBounces,
+            maxTime: circleData.maxTime,
+            isColliding: false,
+            contactPoint: {x: -1, y: -1}
+          }
           this.circleService.addCircleToActiveArena(circle);
         });
       }
