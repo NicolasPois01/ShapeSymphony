@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { CircleService } from '../services/circle.service';
 import { TimerService } from '../services/timer.service';
 import { Circle } from '../models/circle';
+import {ArenaService} from "../services/arena.service";
+import {Arena} from "../models/arena";
 
 @Component({
   selector: 'app-import-json',
@@ -10,7 +12,9 @@ import { Circle } from '../models/circle';
 })
 export class ImportJsonComponent {
 
-  constructor(private circleService: CircleService, private timerService: TimerService) { }
+  constructor(private circleService: CircleService,
+              private timerService: TimerService,
+              private arenaService: ArenaService) { }
 
   handleFileInput(event: any): void {
     const file = event.target.files[0];
@@ -18,7 +22,7 @@ export class ImportJsonComponent {
       const reader = new FileReader();
       reader.onload = (e: any) => {
         const jsonString = e.target.result;
-        this.playCirclesFromJson(jsonString);
+        this.initArenasFromJson(jsonString);
       };
       reader.readAsText(file);
 
@@ -27,6 +31,52 @@ export class ImportJsonComponent {
     }
   }
 
+  initArenasFromJson(jsonString: string) {
+    const arenas = JSON.parse(jsonString);
+
+    if (Array.isArray(arenas)) {
+      this.arenaService.clearAll();
+      this.timerService.resetTimer();
+
+      let arenaList: Arena [] = [];
+      let circleList: Circle [] = [];
+      arenas.forEach(arenaData => {
+        circleList = [];
+        let circleListData = arenaData.circleList;
+        circleListData.forEach((circleData: Circle) => {
+          let circle: Circle = {
+            id: circleData.id,
+            x: circleData.startX,
+            y: circleData.startY,
+            xSpeed: circleData.xSpeed,
+            ySpeed: circleData.ySpeed,
+            color: circleData.color,
+            startX: circleData.startX,
+            startY: circleData.startY,
+            startXSpeed: circleData.startXSpeed,
+            startYSpeed: circleData.startYSpeed,
+            instrument: circleData.instrument,
+            note: circleData.note,
+            alteration: circleData.alteration,
+            octave: circleData.octave,
+            volume: circleData.volume,
+            spawnTime: circleData.spawnTime,
+            maxBounces: circleData.maxBounces,
+            maxTime: circleData.maxTime,
+            isColliding: false,
+            contactPoint: {x: -1, y: -1}
+          }
+          circleList.push(circle);
+        })
+        arenaList.push({
+          id: arenaData.id,
+          circleList: circleList,
+          isMuted: arenaData.isMuted
+        });
+        this.arenaService.setArenaList(arenaList);
+      })
+    }
+  }
 
   playCirclesFromJson(jsonString: string): void {
     try {
@@ -35,7 +85,28 @@ export class ImportJsonComponent {
         this.circleService.clearAllCircles();
         this.timerService.resetTimer();
         circles.forEach(circleData => {
-          let circle = new Circle(circleData.id, circleData.startX, circleData.startY, circleData.xSpeed, circleData.ySpeed, circleData.color, circleData.instrument,  circleData.note, circleData.alteration, circleData.octave)
+          let circle: Circle = {
+            id: circleData.id,
+            x: circleData.startX,
+            y: circleData.startY,
+            xSpeed: circleData.xSpeed,
+            ySpeed: circleData.ySpeed,
+            color: circleData.color,
+            startX: circleData.startX,
+            startY: circleData.startY,
+            startXSpeed: circleData.startXSpeed,
+            startYSpeed: circleData.startYSpeed,
+            instrument: circleData.instrument,
+            note: circleData.note,
+            alteration: circleData.alteration,
+            octave: circleData.octave,
+            volume: circleData.volume,
+            spawnTime: circleData.spawnTime,
+            maxBounces: circleData.maxBounces,
+            maxTime: circleData.maxTime,
+            isColliding: false,
+            contactPoint: {x: -1, y: -1}
+          }
           this.circleService.addCircleToActiveArena(circle);
         });
       }

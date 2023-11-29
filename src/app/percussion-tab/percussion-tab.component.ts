@@ -10,19 +10,19 @@ export class PercussionTabComponent {
   @Output() percussionChanged = new EventEmitter<void>();
 
   percussionsList!: string [];
-  activePercussion!: string;
+  activeInstrument!: string;
   constructor(private soundService: SoundService) {
     this.percussionsList = this.soundService.percussions;
-    this.activePercussion = this.soundService.activePercussion;
+    this.activeInstrument = this.soundService.activeInstrument;
   }
 
   isActive(percussion: string) {
-    return percussion == this.activePercussion;
+    return percussion == this.activeInstrument;
   }
 
   togglePercussion(percussion: string) {
-    this.soundService.setActivePercussion(percussion);
-    this.activePercussion = this.soundService.getActivePercussion();
+    this.soundService.setActiveInstrument(percussion);
+    this.activeInstrument = this.soundService.getActiveInstrument();
     this.percussionChanged.emit();
   }
 

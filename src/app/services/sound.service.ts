@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Circle} from "../models/circle";
 import { EventEmitter } from '@angular/core';
+import {Percussions} from "../models/percussionEnum";
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,6 @@ export class SoundService {
   alterations = ["","b","d"];   //Legende : d=dièse, b=bémol.
 
   activeInstrument: string = "Piano";
-  activePercussion: string = "Hat";
   activeNote: string = "Do";
   activeOctave: number = 3;
   activeAlteration: number = 0;
@@ -59,16 +59,22 @@ export class SoundService {
       }
   }
 
+  isPercussion (instrument: string): boolean {
+    return Object.values(Percussions).includes(instrument as Percussions)
+  }
+
   playAudio = function(circle : Circle) {
-    if (circle.instrument != "Percussion"){
-       const audioFileName = circle.instrument+circle.note+circle.alteration+circle.octave+'.mp3';
-       const audioFilePath = `./assets/samples/${circle.instrument}/${audioFileName}`;
-       const audio = new Audio(audioFilePath);
-       audio.volume = circle.volume;
-       audio.play();
+    //Cas des percussions
+    if (Object.values(Percussions).includes(circle.instrument as Percussions)){
+      const audioFileName = circle.instrument+'.mp3';
+      const audioFilePath = `./assets/samples/Percussion/${audioFileName}`;
+      const audio = new Audio(audioFilePath);
+      audio.volume = circle.volume;
+      audio.play();
     }
-    else{   //Cas des percussions
-      const audioFileName = circle.percussion+'.mp3';
+    // les autres
+    else {
+      const audioFileName = circle.instrument+circle.note+circle.alteration+circle.octave+'.mp3';
       const audioFilePath = `./assets/samples/${circle.instrument}/${audioFileName}`;
       const audio = new Audio(audioFilePath);
       audio.volume = circle.volume;
@@ -83,15 +89,6 @@ export class SoundService {
 
   getActiveInstrument(){
     return this.activeInstrument;
-  }
-
-  setActivePercussion(percussion: string){
-    this.activePercussion = percussion;
-    this.selectionChanged.emit();
-  }
-
-  getActivePercussion(){
-    return this.activePercussion;
   }
 
   setActiveNote(note: string) {
