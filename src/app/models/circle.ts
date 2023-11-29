@@ -19,6 +19,7 @@ export class Circle {
   public isColliding: boolean = false;
   public contactPoint: { x: number; y: number } | null = null;
 
+
   constructor(
     id: number,
     startX: number,
