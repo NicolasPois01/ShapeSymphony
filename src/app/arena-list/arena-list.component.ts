@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Arena} from "../models/arena";
 import {ArenaService} from "../services/arena.service";
-import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-arena-list',
@@ -10,14 +9,12 @@ import {Subscription} from "rxjs";
 })
 export class ArenaListComponent implements OnInit{
   arenaList!: Arena[];
-  arenaListSubscription!: Subscription;
-
   activeArena!: Arena;
 
   constructor(private arenaService: ArenaService) {}
 
   ngOnInit() {
-    this.arenaListSubscription = this.arenaService.arenaList$.subscribe(
+    this.arenaService.arenaList$.subscribe(
       arenas => this.arenaList = arenas
     );
     this.arenaService.activeArena$.subscribe(

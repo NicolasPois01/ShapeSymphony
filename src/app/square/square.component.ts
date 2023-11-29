@@ -52,7 +52,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   constructor(private circlesService: CircleService,
               private soundService: SoundService,
               private arenaService: ArenaService) {
-    this.circles = circlesService.circleList;
+    arenaService.activeArenaSubject.subscribe(arena => this.circles = arena.circleList);
   }
 
   ngOnInit() {
@@ -107,6 +107,8 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
       color: this.circlesService.getRandomColor(),
       startX: parseFloat(((this.saveVx * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)),
       startY: parseFloat(((this.saveVy * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)),
+      startXSpeed: parseFloat(((this.saveVx * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)),
+      startYSpeed: parseFloat(((this.saveVy * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)),
       instrument: this.soundService.activeInstrument,
       note: this.soundService.activeNote,
       alteration: this.soundService.activeAlterationString,

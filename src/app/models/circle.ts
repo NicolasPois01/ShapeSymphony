@@ -7,6 +7,8 @@ export interface Circle {
   color: string,
   startX: number,
   startY: number,
+  startXSpeed: number,
+  startYSpeed: number,
   instrument: string,
   note: string,
   alteration: string,

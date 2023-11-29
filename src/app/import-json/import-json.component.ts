@@ -45,6 +45,8 @@ export class ImportJsonComponent {
             color: circleData.color,
             startX: circleData.startX,
             startY: circleData.startY,
+            startXSpeed: circleData.startXSpeed,
+            startYSpeed: circleData.startYSpeed,
             instrument: circleData.instrument,
             note: circleData.note,
             alteration: circleData.alteration,

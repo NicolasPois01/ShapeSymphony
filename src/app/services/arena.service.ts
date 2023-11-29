@@ -3,6 +3,7 @@ import {Arena} from "../models/arena";
 import {BehaviorSubject, Observable} from "rxjs";
 import {Circle} from "../models/circle";
 import {CircleService} from "./circle.service";
+import cloneDeep from "lodash/cloneDeep";
 
 
 @Injectable({
@@ -15,16 +16,6 @@ export class ArenaService {
       id: 0,
       circleList: [],
       isMuted: false
-    },
-    {
-      id: 1,
-      circleList: [],
-      isMuted: false
-    },
-    {
-      id: 2,
-      circleList: [],
-      isMuted: false
     }
   ]);
   arenaList$: Observable<Arena[]> = this.arenaListSubject.asObservable();
@@ -35,6 +26,8 @@ export class ArenaService {
     isMuted: false
   });
   activeArena$ = this.activeArenaSubject.asObservable();
+
+  tempoArenaList!: Arena [];
 
   constructor(private circleService: CircleService) {
     this.circleService.newCircleSubject.subscribe(circle => {
@@ -167,5 +160,52 @@ export class ArenaService {
     });
 
     this.arenaListSubject.next(arenas);
+  }
+
+  clearAll() {
+    const currentArenas = this.arenaListSubject.getValue();
+
+    currentArenas[0].circleList = [];
+
+    const updatedArenas = [currentArenas[0]];
+
+    this.arenaListSubject.next(updatedArenas);
+    this.tempoArenaList = updatedArenas;
+    this.activeArenaSubject.next(updatedArenas[0]);
+  }
+
+  clearActiveArena() {
+    const activeArena = this.activeArenaSubject.getValue();
+    // Empty the circle list of the active arena
+    activeArena.circleList = [];
+    // Update the active arena subject with the modified active arena
+    this.activeArenaSubject.next(activeArena);
+    // Update the arena list as well
+    const arenas = this.arenaListSubject.getValue();
+    const arenaIndex = arenas.findIndex(a => a.id === activeArena.id);
+
+    if (arenaIndex !== -1) {
+      // Update the arena in the list with the modified active arena
+      arenas[arenaIndex] = activeArena;
+      // Update the arena list subject with the updated list of arenas
+      this.arenaListSubject.next([...arenas]);
+    }
+  }
+
+  saveArenas() {
+    this.tempoArenaList = cloneDeep(this.arenaListSubject.getValue());
+  }
+
+  restoreArenas() {
+    this.clearAll();
+    this.tempoArenaList.forEach(arena => {
+      arena.circleList.forEach(circle => {
+        circle.x = circle.startX;
+        circle.y = circle.startY;
+        circle.xSpeed = circle.startXSpeed;
+        circle.ySpeed = circle.startYSpeed;
+      });
+    });
+    this.arenaListSubject.next(this.tempoArenaList);
   }
 }
