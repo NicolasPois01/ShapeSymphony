@@ -9,7 +9,7 @@ import {BehaviorSubject} from "rxjs";
 })
 export class SoundService {
   selectionChanged = new EventEmitter<void>();
-  instruments = ["Piano", "Percussion", "Guitare", "Violon", "Trompette", "Clavecin"];
+  instruments = ["Piano", "Batterie", "Guitare", "Violon", "Trompette", "Clavecin"];
   notes = ["Do", "Re", "Mi", "Fa", "Sol", "La", "Si"];
   percussions = ["Clap", "Cowbell", "Cymbale", "Gong", "Guiro", "Hat", "Kick", "Snap", "Snare", "Tambour", "Timbale", "Triangle"];
   octaves = ["1","2","3","4","5","6","7"];
@@ -37,7 +37,6 @@ export class SoundService {
           for (const percussion of this.percussions) {
             const audioFileName = `${percussion}.mp3`;
             const audioFilePath = `./assets/samples/${instrument}/${audioFileName}`;
-            console.log(audioFilePath);
             //Vérifie si le fichier audio existe :
             const response = await fetch(audioFilePath, {method: 'HEAD'});
             if (response.ok) {
@@ -53,7 +52,6 @@ export class SoundService {
               for (const alteration of this.alterations) {
               const audioFileName = `${instrument}${note}${alteration}${octave}.mp3`;
               const audioFilePath = `./assets/samples/${instrument}/${audioFileName}`;
-              console.log(audioFilePath);
               //Vérifie si le fichier audio existe :
               const response = await fetch(audioFilePath, { method: 'HEAD' });
                 if (response.ok) {

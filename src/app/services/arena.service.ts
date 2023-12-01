@@ -155,7 +155,9 @@ export class ArenaService {
 
     arenas.forEach(arena => {
       arena.circleList.forEach(circle => {
-        this.circleService.calculatePos(elapsedTime, circle, squareUnit, offSet, arena.isMuted);
+        if(circle.showable) {
+          this.circleService.calculatePos(elapsedTime, circle, squareUnit, offSet, arena.isMuted);
+        }
       });
     });
 
@@ -197,16 +199,20 @@ export class ArenaService {
   }
 
   restoreArenas() {
-    this.clearAll();
+    this.saveArenas();
     this.tempoArenaList.forEach(arena => {
       arena.circleList.forEach(circle => {
         circle.x = circle.startX;
         circle.y = circle.startY;
         circle.xSpeed = circle.startXSpeed;
         circle.ySpeed = circle.startYSpeed;
+        circle.nbBounces = 0;
+        circle.showable = true;
+        circle.isColliding = false;
+        circle.contactPoint = {x: -1, y: -1};
       });
     });
-    this.arenaListSubject.next(this.tempoArenaList);
+    this.setArenaList(this.tempoArenaList);
   }
 
   setArenaList(arenaList: Arena[]) {

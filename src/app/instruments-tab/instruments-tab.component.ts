@@ -18,8 +18,7 @@ export class InstrumentsTabComponent {
   }
 
   isActive(instrument: string) {
-    return (instrument == this.activeInstrument) ||
-      (this.soundService.isPercussion(this.activeInstrument) && instrument === "Percussion");
+    return instrument == this.activeInstrument;
   }
 
   toggleInstrument(instrument: string) {
