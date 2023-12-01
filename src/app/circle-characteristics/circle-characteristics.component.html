@@ -1,69 +1,108 @@
 <div *ngIf="selectedCircle" class="title p-2">
   <ul>
     <ng-container *ngIf="isTimerNotStarted()">
+      <!-- Spinbox Angle -->
       <li>
-        Angle:
-        <input type="number" [(ngModel)]="newAngle" (change)="changeAngle(newAngle)" step="0.01"/><span style="margin-left:-3rem;">°</span>
+        <div class="angle-container">
+          <span>Angle:</span>
+          <div class="spinbox-container">
+            <input class="angle-spinbox" type="number" [(ngModel)]="newAngle" min="0" max="360">
+            <button class="spinbox-button up" (click)="changeAngle(newAngle ?? 0 + 1)">▲</button>
+            <button class="spinbox-button down" (click)="changeAngle(newAngle ?? 0 - 1)">▼</button>
+          </div>
+        </div>
       </li>
-      <li>Position X de départ:
-        <input type="number" [(ngModel)]="newStartX" (change)="validateStartX(newStartX)">
-      </li>
-      <li>Position Y de départ:
-        <input type="number" [(ngModel)]="newStartY" (change)="validateStartY(newStartY)">
-      </li>
-      <li>Vitesse:
-        <input type="number" [(ngModel)]="vitesseGlobale" (change)="changeSpeed(vitesseGlobale)" step="0.01"/>
-      </li>
+
+      <!-- Spinbox Position X de départ -->
       <li>
-        Note:
+        <div class="startx-container">
+          <span>Position X de départ:</span>
+          <div class="spinbox-container">
+            <input class="startx-spinbox" type="number" [(ngModel)]="newStartX">
+            <button class="spinbox-button up" (click)="validateStartX(newStartX ?? 0 + 1)">▲</button>
+            <button class="spinbox-button down" (click)="validateStartX(newStartX ?? 0 - 1)">▼</button>
+          </div>
+        </div>
+      </li>
+
+      <!-- Spinbox Position Y de départ -->
+      <li>
+        <div class="starty-container">
+          <span>Position Y de départ:</span>
+          <div class="spinbox-container">
+            <input class="starty-spinbox" type="number" [(ngModel)]="newStartY">
+            <button class="spinbox-button up" (click)="validateStartY(newStartY ?? 0 + 1)">▲</button>
+            <button class="spinbox-button down" (click)="validateStartY(newStartY ?? 0 - 1)">▼</button>
+          </div>
+        </div>
+      </li>
+
+      <!-- Spinbox Vitesse -->
+      <li>
+        <div class="speed-container">
+          <span>Vitesse:</span>
+          <div class="spinbox-container">
+            <input class="speed-spinbox" type="number" [(ngModel)]="vitesseGlobale" step="0.01">
+            <button class="spinbox-button up" (click)="changeSpeed(vitesseGlobale ?? 0 + 0.01)">▲</button>
+            <button class="spinbox-button down" (click)="changeSpeed(vitesseGlobale ?? 0 - 0.01)">▼</button>
+          </div>
+        </div>
+      </li>
+
+      <!-- Sélections des attributs -->
+      <li>
+        <span>Note:</span>
         <select [(ngModel)]="selectedNote" (change)="setNote(selectedNote)">
           <option *ngFor="let note of availableNotes" [value]="note">{{ note }}</option>
         </select>
       </li>
       <li>
-        Altération:
+        <span>Altération:</span>
         <select [(ngModel)]="selectedAlteration" (change)="setAlteration(selectedAlteration)">
           <option *ngFor="let alteration of availableAlterations" [value]="alteration">{{ alteration }}</option>
         </select>
       </li>
       <li>
-        Octave:
+        <span>Octave:</span>
         <select [(ngModel)]="selectedOctave" (change)="setOctave(selectedOctave)">
           <option *ngFor="let octave of availableOctaves" [value]="octave">{{ octave }}</option>
         </select>
       </li>
       <li>
-        Couleur:
+        <span>Couleur:</span>
         <select [(ngModel)]="selectedColor" (change)="setColor(selectedColor)">
           <option *ngFor="let color of availableColors" [value]="color">{{ color }}</option>
         </select>
       </li>
     </ng-container>
+
+    <!-- Affichage des valeurs lorsque le timer est lancé -->
     <ng-container *ngIf="!isTimerNotStarted()">
       <li>Angle: {{ newAngle }}</li>
       <li>Position de départ (x,y): ({{ newStartX }},{{newStartY}})</li>
       <li>Vitesse: {{ vitesseGlobale }}</li>
+      <!-- Les mêmes sélecteurs que ci-dessus pour la cohérence -->
       <li>
-        Note:
-        <select [(ngModel)]="selectedNote" (change)="setNote(selectedNote)">
+        <span>Note:</span>
+        <select [(ngModel)]="selectedNote">
           <option *ngFor="let note of availableNotes" [value]="note">{{ note }}</option>
         </select>
       </li>
       <li>
-        Altération:
-        <select [(ngModel)]="selectedAlteration" (change)="setAlteration(selectedAlteration)">
-          <option *ngFor="let alteration of availableAlterations" [value]="alteration">{{ alteration }}</option>
+        <span>Altération:</span>
+        <select [(ngModel)]="selectedAlteration">
+          <option *ngFor="let alteration of availableAlterations" [value]="alteration" >{{ alteration }}</option>
         </select>
       </li>
       <li>
-        Octave:
-        <select [(ngModel)]="selectedOctave" (change)="setOctave(selectedOctave)">
+        <span>Octave:</span>
+        <select [(ngModel)]="selectedOctave">
           <option *ngFor="let octave of availableOctaves" [value]="octave">{{ octave }}</option>
         </select>
       </li>
       <li>
-        Couleur:
-        <select [(ngModel)]="selectedColor" (change)="setColor(selectedColor)">
+        <span>Couleur:</span>
+        <select [(ngModel)]="selectedColor">
           <option *ngFor="let color of availableColors" [value]="color">{{ color }}</option>
         </select>
       </li>

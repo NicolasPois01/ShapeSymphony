@@ -28,7 +28,7 @@ export class MusicComponent implements OnInit, OnDestroy {
     switch (this.soundService.activeAlteration) {
       case -1: return '♭';
       case 1: return '♯';
-      default: return '';
+      default: return '♮';
     }
   }
 

@@ -12,7 +12,7 @@ export class SoundService {
   notes = ["Do", "Re", "Mi", "Fa", "Sol", "La", "Si"];
   percussions = ["Clap", "Cowbell", "Cymballe", "Gong", "Guiro", "Hat", "Kick", "Snap", "Snare", "Tambour", "Timballe", "Triangle"];
   octaves = ["1","2","3","4","5","6","7"];
-  alterations = ["","b","d"];   //Legende : d=dièse, b=bémol.
+  alterations = ["♮","♭","#"];
 
   activeInstrument: string = "Piano";
   activeNote: string = "Do";
@@ -70,10 +70,11 @@ export class SoundService {
       const audioFilePath = `./assets/samples/Percussion/${audioFileName}`;
       const audio = new Audio(audioFilePath);
       audio.volume = circle.volume;
-      audio.play();
+      audio.play().then(r => console.log(r));
     }
     // les autres
     else {
+      console.log("alteration =" +circle.alteration);
       const audioFileName = circle.instrument+circle.note+circle.alteration+circle.octave+'.mp3';
       const audioFilePath = `./assets/samples/${circle.instrument}/${audioFileName}`;
       const audio = new Audio(audioFilePath);
@@ -81,7 +82,6 @@ export class SoundService {
       audio.play();
     }
   }
-
   setActiveInstrument(instrument: string){
     this.activeInstrument = instrument;
     this.selectionChanged.emit();
@@ -130,7 +130,7 @@ export class SoundService {
         this.activeAlterationString = 'd';
         break;
       default:
-        alterationSymbol = '';
+        alterationSymbol = '♮';
         this.activeAlterationString = '';
         break;
     }

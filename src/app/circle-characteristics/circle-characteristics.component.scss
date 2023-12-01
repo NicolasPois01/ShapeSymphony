@@ -1,45 +1,166 @@
-.title {
-  margin-left: 0.5rem;
-  border: 1px solid #000;
-}
-ul {
-  list-style-type: none; /* Removes bullet points */
+/* Styles pour les labels et les symboles degré */
+li label {
+  margin-right: 5px;
 }
 
-li {
-  display: flex;
-  align-items: center;
-  margin-bottom: 15px; /* Ajoutez une marge en bas pour séparer les éléments */
+li span {
+  font-size: 18px; /* Augmenté la taille du texte pour une meilleure lisibilité */
 }
 
-li input {
-  margin-left: 1rem;
-  width: 7rem;
-  display: inline-block;
-  padding: 10px 20px;
+/* Styles pour les éléments de type number (spinbox) */
+li .spinbox-container input[type="number"] {
+  padding: 5px 10px;
   background-color: #2a1f3d;
   border: none;
   border-radius: 12px;
-  color: #fff;
-  cursor: pointer;
+  color: white;
+  font-size: 18px; /* Augmenté la taille du texte pour une meilleure lisibilité */
+  transition: box-shadow 0.3s;
+  width: 60px;
+  text-align: center;
   box-shadow: -3px -3px 7px #36284e, 3px 3px 7px #1e162c;
-  transition: background-color 0.3s, box-shadow 0.3s;
-  margin-right: 15px; /* Ajoutez une marge à droite pour chaque élément */
+  appearance: textfield;
 }
 
-/* Supprimez la marge à droite pour le dernier <li> contenant un <input> de type nombre */
-li:last-child input {
-  margin-right: 0;
-}
-
-/* Style au survol du curseur */
-li input:hover {
+li .spinbox-container input[type="number"]:hover {
   box-shadow: -1px -1px 3px #36284e, 1px 1px 3px #1e162c;
 }
 
-/* Style pour un <input> de type nombre actif */
-li input.active {
-  background-color: #36284e;
+li .spinbox-container input[type="number"]:focus {
+  outline: none;
   box-shadow: inset -1px -1px 3px #41305f, inset 1px 1px 3px #1e162c;
+}
+
+/* Styles pour les sélecteurs */
+li select {
+  width: 100%;
+  padding: 5px;
+  background-color: #2a1f3d;
+  border: none;
+  border-radius: 12px;
   color: white;
+  font-size: 18px; /* Augmenté la taille du texte pour une meilleure lisibilité */
+  transition: box-shadow 0.3s;
+  text-align: center;
+  box-shadow: -3px -3px 7px #36284e, 3px 3px 7px #1e162c;
+  appearance: textfield;
+}
+
+/* Styles pour les options des sélecteurs */
+li select option {
+  background-color: #2a1f3d;
+}
+
+/* Styles pour les sélecteurs lors du survol */
+li select:hover {
+  box-shadow: -1px -1px 3px #36284e, 1px 1px 3px #1e162c;
+}
+
+/* Styles pour les sélecteurs lors du focus */
+li select:focus {
+  outline: none;
+  box-shadow: inset -1px -1px 3px #41305f, inset 1px 1px 3px #1e162c;
+}
+
+/* Styles pour les conteneurs et boutons des spinbox */
+li .spinbox-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  appearance: textfield;
+
+
+}
+
+li .value-display {
+  padding: 5px 10px;
+  background-color: #2A1F3D; /* Couleur de fond sombre */
+  border-radius: 12px;
+  color: white;
+  font-size: 18px;
+  text-align: center;
+  box-shadow: inset -3px -3px 7px #36284e, inset 3px 3px 7px #1e162c;
+  margin-right: 25px; /* Espace à droite pour les boutons */
+}
+
+/* Ajustement de la position des boutons pour éviter qu'ils chevauchent le texte */
+li .spinbox-button {
+  position: absolute;
+  right: 5px; /* Décale légèrement vers la droite */
+  width: 20px;
+  height: 15px;
+  border: none;
+  background-color: transparent;
+  color: #B084CC;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+li .spinbox-button.up {
+  top: 0;
+}
+
+li .spinbox-button.down {
+  bottom: 0;
+}
+
+/* Styles pour les boutons "up" et "down" des spinbox */
+li .spinbox-button.up, li .spinbox-button.down {
+  position: absolute;
+  right: 0;
+  width: 20px;
+  height: 15px;
+  border: none;
+  background-color: transparent;
+  color: #B084CC;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+/* Position spécifique pour le bouton "up" */
+li .spinbox-button.up {
+  top: 0;
+}
+
+/* Position spécifique pour le bouton "down" */
+li .spinbox-button.down {
+  bottom: 0;
+}
+
+/* Éventuellement, d'autres styles spécifiques pour votre application */
+/* ... */
+
+/* Styles globaux pour le conteneur */
+li {
+  margin-bottom: 10px; /* Espace entre chaque élément de liste */
+  color: white; /* Couleur du texte pour tous les éléments de liste */
+}
+
+/* Styles pour assurer une bonne lisibilité et esthétique */
+ul {
+  padding: 0;
+  list-style: none; /* Enlève les puces des listes */
+}
+
+/* Styles pour le conteneur principal */
+.title {
+  /* Styles pour le conteneur titre, si nécessaire */
+  /* ... */
+}
+
+/* Styles additionnels pour les autres éléments de votre interface, si nécessaire */
+/* ... */
+/* Pour les navigateurs WebKit comme Chrome et Safari */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Pour Firefox */
+input[type="number"]::-moz-focus-inner {
+  border: 0;
+}
+input[type="number"]:-moz-spinner {
+  -moz-appearance: textfield;
 }

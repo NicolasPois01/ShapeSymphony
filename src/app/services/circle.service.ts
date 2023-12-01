@@ -3,7 +3,7 @@ import {Circle} from "../models/circle";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {SoundService} from "./sound.service";
 import cloneDeep from 'lodash/cloneDeep'
-
+import {ExportMp3Service} from "./exportmp3.service";
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +30,8 @@ export class CircleService {
   selectedCircleSubject = new BehaviorSubject<Circle | null>(null);
   selectedCircle$ = this.selectedCircleSubject.asObservable();
 
-  constructor(soundService : SoundService) {
+  constructor(soundService : SoundService,
+              private ExportMp3Service: ExportMp3Service) {
     this.selectedCircle = null;
     this.soundService = soundService;
     this.notes = this.soundService.notes;
@@ -74,6 +75,8 @@ export class CircleService {
       circle.contactPoint = { x: adjustedX, y: circle.y };
       this.bounceX(circle, circle.x - this.circleRad < -(squareUnit / 2),
         squareUnit / 2 - this.circleRad, isArenaMuted)
+      this.ExportMp3Service.exportMp3(circle);
+
       setTimeout(() => {
         circle.isColliding = false;
       }, 500);
@@ -85,7 +88,9 @@ export class CircleService {
       let adjustedY = circle.ySpeed > 0 ? circle.y + this.circleRad - offSet : circle.y - this.circleRad + offSet;
       circle.contactPoint = {x: circle.x, y: adjustedY};
       this.bounceY(circle, circle.y - this.circleRad < -(squareUnit / 2),
-        squareUnit / 2 - this.circleRad, isArenaMuted);
+      squareUnit / 2 - this.circleRad, isArenaMuted);
+      this.ExportMp3Service.exportMp3(circle);
+
       setTimeout(() => {
         circle.isColliding = false;
       }, 500);

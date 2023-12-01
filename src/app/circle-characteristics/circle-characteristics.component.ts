@@ -34,7 +34,15 @@ export class CircleCharacteristicsComponent implements OnInit{
         this.newStartY = circle.startY;
         this.selectedColor = circle.color;
         this.selectedNote = circle.note;
-        this.selectedAlteration = circle.alteration;
+        if (circle.alteration === '') {
+          this.selectedAlteration = '♮';
+        }
+        else if (circle.alteration === 'b') {
+          this.selectedAlteration = '♭';
+        }
+        else if (circle.alteration === '#') {
+          this.selectedAlteration = '♯';
+        }
         this.selectedOctave = circle.octave;
         this.angleDepart = Math.atan2(-circle.ySpeed, circle.xSpeed);
         if (this.angleDepart < 0) {
@@ -99,6 +107,7 @@ export class CircleCharacteristicsComponent implements OnInit{
   }
   changeAngle(angle: number | undefined) {
     if (angle !== undefined && this.selectedCircle) {
+      this.newAngle = angle;
       const speed = this.vitesseGlobale || 1;
       const xSpeed = speed * Math.cos((angle * Math.PI) / 180);
       const ySpeed = -speed * Math.sin((angle * Math.PI) / 180);
@@ -124,7 +133,7 @@ export class CircleCharacteristicsComponent implements OnInit{
     }
   }
   isTimerNotStarted() {
-   return this.timerService.isTimerNotStarted();
+    return this.timerService.isTimerNotStarted();
   }
 
   changeSpeed(NewSpeed: number | undefined) {
