@@ -72,7 +72,6 @@ export class SoundService {
     }
     // les autres
     else {
-      console.log("alteration =" +circle.alteration);
       const audioFileName = circle.instrument+circle.note+circle.alteration+circle.octave+'.mp3';
       const audioFilePath = `./assets/samples/${circle.instrument}/${audioFileName}`;
       const audio = new Audio(audioFilePath);

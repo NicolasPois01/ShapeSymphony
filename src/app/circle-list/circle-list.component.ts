@@ -17,6 +17,7 @@ export class CircleListComponent implements OnInit  {
   private arenaSubscription!: Subscription;
   private circlesListSubscription!: Subscription;
 
+
   constructor(private circlesService: CircleService,
               private arenaService: ArenaService) {}
 
@@ -32,7 +33,7 @@ export class CircleListComponent implements OnInit  {
           const index = this.circlesList.findIndex(
             (circle) => circle.id === updatedCircle.id
           );
-          console.log(index)
+
           if (index !== -1) {
             this.circlesList[index] = updatedCircle;
           }
@@ -45,6 +46,7 @@ export class CircleListComponent implements OnInit  {
       this.selectedCircle = circle;
     });
   }
+
 
   ngOnDestroy() {
     if (this.circlesListSubscription) {

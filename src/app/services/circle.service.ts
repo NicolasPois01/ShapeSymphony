@@ -22,7 +22,6 @@ export class CircleService {
   colors = ["red", "green", "blue", "yellow", "pink", "orange", "purple", "cyan", "magenta", "brown"];
   selectedCircle: Circle | null;
   soundService : SoundService;
-  timerService: TimerService;
   notes: string[] = [];
   alterations: string[] = [];
   octaves: string[] = [];
@@ -65,6 +64,7 @@ export class CircleService {
   }
 
   calculatePos(elapsedTime: number, circle: Circle, squareUnit: number, offSet: number, isArenaMuted: boolean) {
+    console.log("ça calcule ou quoi")
     // Update the circle's position based on its speed and elapsed time
     circle.x += circle.xSpeed * elapsedTime;
     circle.y += circle.ySpeed * elapsedTime;
