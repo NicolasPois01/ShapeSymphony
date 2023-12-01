@@ -9,7 +9,7 @@ import {BehaviorSubject} from "rxjs";
 })
 export class SoundService {
   selectionChanged = new EventEmitter<void>();
-  instruments = ["Piano", "Batterie", "Guitare", "Violon", "Trompette", "Clavecin"];
+  instruments = ["Piano", "Percussion", "Guitare", "Violon", "Trompette", "Clavecin"];
   notes = ["Do", "Re", "Mi", "Fa", "Sol", "La", "Si"];
   percussions = ["Clap", "Cowbell", "Cymbale", "Gong", "Guiro", "Hat", "Kick", "Snap", "Snare", "Tambour", "Timbale", "Triangle"];
   octaves = ["1","2","3","4","5","6","7"];
