@@ -22,7 +22,7 @@ export class InstrumentsTabComponent {
   }
 
   toggleInstrument(instrument: string) {
-    this.percussion = (instrument === "Percussion");
+    this.percussion = (instrument === "Batterie");
     this.soundService.setActiveInstrument(instrument);
     this.activeInstrument = this.soundService.getActiveInstrument();
     this.instrumentChanged.emit();

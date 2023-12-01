@@ -3,7 +3,7 @@ import {Circle} from "../models/circle";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {SoundService} from "./sound.service";
 import cloneDeep from 'lodash/cloneDeep'
-
+import { TimerService } from './timer.service';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +21,7 @@ export class CircleService {
   colors = ["red", "green", "blue", "yellow", "pink", "orange", "purple", "cyan", "magenta", "brown"];
   selectedCircle: Circle | null;
   soundService : SoundService;
+  timerService: TimerService;
   notes: string[] = [];
   alterations: string[] = [];
   octaves: string[] = [];
@@ -30,9 +31,10 @@ export class CircleService {
   selectedCircleSubject = new BehaviorSubject<Circle | null>(null);
   selectedCircle$ = this.selectedCircleSubject.asObservable();
 
-  constructor(soundService : SoundService) {
+  constructor(soundService : SoundService, timerService: TimerService) {
     this.selectedCircle = null;
     this.soundService = soundService;
+    this.timerService = timerService;
     this.notes = this.soundService.notes;
     this.alterations = this.soundService.alterations;
     this.octaves = this.soundService.octaves;
@@ -70,6 +72,7 @@ export class CircleService {
     // Collides x
     if (!this.inRange(circle.x, squareUnit)) {
       circle.isColliding = true;
+      circle.nbBounces += 1;
       let adjustedX = circle.xSpeed > 0 ? circle.x + this.circleRad - offSet : circle.x - this.circleRad + offSet;
       circle.contactPoint = { x: adjustedX, y: circle.y };
       this.bounceX(circle, circle.x - this.circleRad < -(squareUnit / 2),
@@ -82,6 +85,7 @@ export class CircleService {
     // Collides y
     if (!this.inRange(circle.y, squareUnit)) {
       circle.isColliding = true;
+      circle.nbBounces += 1;
       let adjustedY = circle.ySpeed > 0 ? circle.y + this.circleRad - offSet : circle.y - this.circleRad + offSet;
       circle.contactPoint = {x: circle.x, y: adjustedY};
       this.bounceY(circle, circle.y - this.circleRad < -(squareUnit / 2),
@@ -89,6 +93,9 @@ export class CircleService {
       setTimeout(() => {
         circle.isColliding = false;
       }, 500);
+    }
+    if(circle.maxBounces != 0 && circle.nbBounces >= circle.maxBounces) {
+      circle.showable = false;
     }
 
     this.circleChangedSubject.next(circle);
@@ -136,6 +143,8 @@ export class CircleService {
 
   setSelectedCircle(circle: Circle) {
     this.selectedCircleSubject.next(circle);
+    console.log(JSON.stringify(this.selectedCircleSubject.getValue()));
+    this.selectedCircle = this.selectedCircleSubject.getValue();
   }
 
   deleteCircle(circle: Circle): void {
@@ -176,6 +185,14 @@ export class CircleService {
     }
   }
 
+  setMaxBounces(maxBounces: number) {
+    console.log(JSON.stringify(this.selectedCircle));
+    if (this.selectedCircle) {
+      this.selectedCircle.maxBounces = maxBounces;
+      this.circleChangedSubject.next(this.selectedCircle);
+    }
+  }
+
   updateCircleSpeed(circle: Circle) {
     this.selectedCircleSubject.next(circle);
   }
@@ -196,5 +213,17 @@ export class CircleService {
       }
       this.circleChangedSubject.next(this.selectedCircle);
     }
+  }
+
+  resetCircles(): void {
+    this.circleList.forEach(circle => {
+      circle.x = circle.startX;
+      circle.y = circle.startY;
+      circle.xSpeed = circle.startXSpeed;
+      circle.ySpeed = circle.startYSpeed;
+      circle.nbBounces = 0;
+      circle.showable = true;
+    });
+    this.circleListSubject.next(this.circleList);
   }
 }
