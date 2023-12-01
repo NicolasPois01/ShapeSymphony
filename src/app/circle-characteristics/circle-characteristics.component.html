@@ -74,6 +74,9 @@
           <option *ngFor="let color of availableColors" [value]="color">{{ color }}</option>
         </select>
       </li>
+      <li>Nombre de rebonds max:
+        <input type="number" [(ngModel)]="maxBounces" (change)="setMaxBounces(maxBounces)" step="1" min="0"/>
+      </li>
     </ng-container>
 
     <!-- Affichage des valeurs lorsque le timer est lancé -->
@@ -106,7 +109,7 @@
           <option *ngFor="let color of availableColors" [value]="color">{{ color }}</option>
         </select>
       </li>
-      <li>Nombre de rebond max: {{ selectedCircle.maxBounces }}</li>
+      <li>Nombre de rebonds max: {{ maxBounces }}</li>
     </ng-container>
   </ul>
 </div>

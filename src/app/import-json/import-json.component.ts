@@ -63,6 +63,8 @@ export class ImportJsonComponent {
             spawnTime: circleData.spawnTime,
             maxBounces: circleData.maxBounces,
             maxTime: circleData.maxTime,
+            nbBounces: circleData.nbBounces,
+            showable: circleData.showable,
             isColliding: false,
             contactPoint: {x: -1, y: -1}
           }
@@ -104,6 +106,8 @@ export class ImportJsonComponent {
             spawnTime: circleData.spawnTime,
             maxBounces: circleData.maxBounces,
             maxTime: circleData.maxTime,
+            nbBounces: circleData.nbBounces,
+            showable: circleData.showable,
             isColliding: false,
             contactPoint: {x: -1, y: -1}
           }

@@ -50,11 +50,8 @@ export class TimerComponent {
   }
 
   resetGame(): void {
-    this.arenaService.saveArenas()  // sauvegarde les arènes actuelles
     this.timerService?.resetTimer();  // réinitialise le timer
-    setTimeout(() => {
-      //this.arenaService.restoreArenas();
-    }, 300);
+    this.arenaService.restoreArenas();  // réinitialise les cercles
   }
 
 }

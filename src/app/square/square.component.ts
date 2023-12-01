@@ -73,7 +73,8 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         console.log("la");
         let elapsedTime = ((this.timerService?.getTimeStamp() ?? 0) - this.timestamp) / 1000; // elapsed time in seconds
         this.timestamp = this.timerService?.getTimeStamp();
-        this.arenaService.updateArenas(elapsedTime, this.squareUnit, this.offset);
+        if(this.timerService?.getIsRunning())
+          this.arenaService.updateArenas(elapsedTime, this.squareUnit, this.offset);
       }, 1000 / this.fps);
     }
   }
@@ -106,8 +107,8 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
       xSpeed: parseFloat(((this.saveVx * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)),
       ySpeed: parseFloat(((this.saveVy * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)),
       color: this.circlesService.getRandomColor(),
-      startX: parseFloat(((this.saveVx * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)),
-      startY: parseFloat(((this.saveVy * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)),
+      startX: parseFloat(x.toFixed(this.precisionMode ? 1 : 2)),
+      startY: parseFloat(y.toFixed(this.precisionMode ? 1 : 2)),
       startXSpeed: parseFloat(((this.saveVx * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)),
       startYSpeed: parseFloat(((this.saveVy * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)),
       instrument: this.soundService.activeInstrument,
@@ -116,8 +117,10 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
       octave: this.soundService.activeOctave,
       volume: 1,
       spawnTime: spawnTimeValue,
-      maxBounces: -1, // default value
-      maxTime: -1, // default value
+      maxBounces: 0,
+      maxTime: 0,
+      nbBounces: 0,
+      showable: true,
       contactPoint: {x: -1, y: -1},
       isColliding: false
     }
