@@ -25,6 +25,8 @@ export class SoundService {
   activeOctaveSubject = new BehaviorSubject<number>(3);
   activeOctave$ = this.activeOctaveSubject.asObservable();
   activeAlteration: number = 0;
+  activeAlterationSubject = new BehaviorSubject<number>(0);
+  activeAlteration$ = this.activeAlterationSubject.asObservable();
   activeAlterationString: string ="";
 
   constructor() { }
