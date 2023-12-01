@@ -138,4 +138,18 @@ export class CircleCharacteristicsComponent implements OnInit{
       this.circlesService.updateCircleSpeed(this.selectedCircle);
     }
   }
+
+  increaseOctave() {
+    if (this.selectedOctave && this.selectedOctave < 7) {
+      this.selectedOctave++;
+      this.circlesService.setOctave(this.selectedOctave);
+    }
+  }
+
+  decreaseOctave() {
+    if (this.selectedOctave &&this.selectedOctave > 1) {
+      this.selectedOctave--;
+      this.circlesService.setOctave(this.selectedOctave);
+    }
+  }
 }

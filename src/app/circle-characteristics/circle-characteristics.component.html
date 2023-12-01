@@ -1,4 +1,4 @@
-<div *ngIf="selectedCircle" class="title p-2">
+<div *ngIf="selectedCircle" class="title p-1 scroll-container" >
   <ul>
     <ng-container *ngIf="isTimerNotStarted()">
       <li>
@@ -22,15 +22,23 @@
       </li>
       <li>
         Altération:
-        <select [(ngModel)]="selectedAlteration" (change)="setAlteration(selectedAlteration)">
-          <option *ngFor="let alteration of availableAlterations" [value]="alteration">{{ alteration }}</option>
-        </select>
+        <div class="alteration-container">
+          <div class="alteration-labels">
+            ♭
+            <input class="alteration-slider" type="range" min="-1" max="1" step="1" [(ngModel)]="selectedAlteration" (change)="setAlteration(selectedAlteration)">
+            ♯
+          </div>
+        </div>
       </li>
       <li>
-        Octave:
-        <select [(ngModel)]="selectedOctave" (change)="setOctave(selectedOctave)">
-          <option *ngFor="let octave of availableOctaves" [value]="octave">{{ octave }}</option>
-        </select>
+        <li>
+          Octave :
+          <div class="spinbox-container">
+            <input class="octave-spinbox" type="number" [(ngModel)]="selectedOctave" min="1" max="7">
+            <button class="spinbox-button up" (click)="increaseOctave()">▲</button>
+            <button class="spinbox-button down" (click)="decreaseOctave()">▼</button>
+          </div>
+        <li>
       </li>
       <li>
         Couleur:
@@ -43,24 +51,18 @@
       <li>Angle: {{ newAngle }}</li>
       <li>Position de départ (x,y): ({{ newStartX }},{{newStartY}})</li>
       <li>Vitesse: {{ vitesseGlobale }}</li>
-      <li>
-        Note:
-        <select [(ngModel)]="selectedNote" (change)="setNote(selectedNote)">
-          <option *ngFor="let note of availableNotes" [value]="note">{{ note }}</option>
-        </select>
-      </li>
+      <li>Note: {{ selectedNote }}</li>
       <li>
         Altération:
-        <select [(ngModel)]="selectedAlteration" (change)="setAlteration(selectedAlteration)">
-          <option *ngFor="let alteration of availableAlterations" [value]="alteration">{{ alteration }}</option>
-        </select>
+        <div class="alteration-container">
+          <div class="alteration-labels">
+            ♭
+            <input class="alteration-slider" type="range" min="-1" max="1" step="1" disabled=true [(ngModel)]="selectedAlteration" (change)="setAlteration(selectedAlteration)">
+            ♯
+          </div>
+        </div>
       </li>
-      <li>
-        Octave:
-        <select [(ngModel)]="selectedOctave" (change)="setOctave(selectedOctave)">
-          <option *ngFor="let octave of availableOctaves" [value]="octave">{{ octave }}</option>
-        </select>
-      </li>
+      <li>Octave: {{ selectedOctave }}</li>
       <li>
         Couleur:
         <select [(ngModel)]="selectedColor" (change)="setColor(selectedColor)">
