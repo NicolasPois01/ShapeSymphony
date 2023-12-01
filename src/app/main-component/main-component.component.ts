@@ -6,6 +6,7 @@ import { takeUntil } from 'rxjs/operators';
 import { TimerService } from '../services/timer.service';
 import { Arena } from "../models/arena";
 import { ArenaService } from "../services/arena.service";
+import {SoundService} from "../services/sound.service";
 
 @Component({
   selector: 'app-main-component',
@@ -27,10 +28,12 @@ export class MainComponentComponent implements OnInit, OnDestroy {
   squareUnit: number = 10;
 
   activeArena!: Arena;
+  activeInstrument!: string;
 
   constructor(private circleService: CircleService,
               private arenaService: ArenaService,
-              public timerService: TimerService) {}
+              public timerService: TimerService,
+              private soundService: SoundService) {}
 
   ngOnInit() {
     this.circleService.circleList$
@@ -39,6 +42,7 @@ export class MainComponentComponent implements OnInit, OnDestroy {
     this.arenaService.activeArena$.subscribe(arena => {
       this.activeArena = arena;
     })
+    this.soundService.activeInstrument$.subscribe(instru => this.activeInstrument = instru)
   }
 
   ngOnDestroy() {
@@ -49,5 +53,9 @@ export class MainComponentComponent implements OnInit, OnDestroy {
   handleKeyboardEvent(event: KeyboardEvent) {
     if(event.key === "Shift") this.grid = !this.grid;
     else if(event.key === "Control") this.precisionMode = !this.precisionMode;
+  }
+
+  isPercussion (instrument: string): boolean {
+    return this.soundService.isPercussion(instrument);
   }
 }

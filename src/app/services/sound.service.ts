@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {Circle} from "../models/circle";
 import { EventEmitter } from '@angular/core';
 import {Percussions} from "../models/percussionEnum";
+import {BehaviorSubject} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +16,14 @@ export class SoundService {
   alterations = ["","b","d"];   //Legende : d=dièse, b=bémol.
 
   activeInstrument: string = "Piano";
+  activeInstrumentSubject = new BehaviorSubject<string>("Piano");
+  activeInstrument$ = this.activeInstrumentSubject.asObservable();
   activeNote: string = "Do";
+  activeNoteSubject = new BehaviorSubject<string>("Do");
+  activeNote$ = this.activeNoteSubject.asObservable();
   activeOctave: number = 3;
+  activeOctaveSubject = new BehaviorSubject<number>(3);
+  activeOctave$ = this.activeOctaveSubject.asObservable();
   activeAlteration: number = 0;
   activeAlterationString: string ="";
 
@@ -83,21 +90,21 @@ export class SoundService {
   }
 
   setActiveInstrument(instrument: string){
-    this.activeInstrument = instrument;
-    this.selectionChanged.emit();
+    //this.activeInstrument = instrument;
+    this.activeInstrumentSubject.next(instrument)
+    //this.selectionChanged.emit();
   }
 
   getActiveInstrument(){
-    return this.activeInstrument;
+    return this.activeInstrumentSubject.getValue();
   }
 
   setActiveNote(note: string) {
-    this.activeNote = note;
-    this.selectionChanged.emit();
+    this.activeNoteSubject.next(note);
   }
 
   getActiveNote(){
-    return this.activeNote;
+    return this.activeNoteSubject.getValue();
   }
 
   setActiveOctave(octave: number){

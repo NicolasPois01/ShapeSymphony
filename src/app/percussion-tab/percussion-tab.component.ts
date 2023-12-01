@@ -13,7 +13,8 @@ export class PercussionTabComponent {
   activeInstrument!: string;
   constructor(private soundService: SoundService) {
     this.percussionsList = this.soundService.percussions;
-    this.activeInstrument = this.soundService.activeInstrument;
+    //this.activeInstrument = this.soundService.activeInstrument;
+    this.soundService.activeInstrument$.subscribe(activeInstrument => this.activeInstrument = activeInstrument)
   }
 
   isActive(percussion: string) {
@@ -25,5 +26,4 @@ export class PercussionTabComponent {
     this.activeInstrument = this.soundService.getActiveInstrument();
     this.percussionChanged.emit();
   }
-
 }
