@@ -197,16 +197,18 @@ export class ArenaService {
   }
 
   restoreArenas() {
-    this.clearAll();
-    this.tempoArenaList.forEach(arena => {
+    const restoredArenas = cloneDeep(this.tempoArenaList).map(arena => {
       arena.circleList.forEach(circle => {
         circle.x = circle.startX;
         circle.y = circle.startY;
         circle.xSpeed = circle.startXSpeed;
         circle.ySpeed = circle.startYSpeed;
+        // Add any other properties that need to be reset to initial values
       });
+      return arena;
     });
-    this.arenaListSubject.next(this.tempoArenaList);
+
+    this.setArenaList(restoredArenas);
   }
 
   setArenaList(arenaList: Arena[]) {

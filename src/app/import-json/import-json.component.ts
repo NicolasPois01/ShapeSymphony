@@ -77,41 +77,4 @@ export class ImportJsonComponent {
       })
     }
   }
-
-  playCirclesFromJson(jsonString: string): void {
-    try {
-      const circles = JSON.parse(jsonString);
-      if (Array.isArray(circles)) {
-        this.circleService.clearAllCircles();
-        this.timerService.resetTimer();
-        circles.forEach(circleData => {
-          let circle: Circle = {
-            id: circleData.id,
-            x: circleData.startX,
-            y: circleData.startY,
-            xSpeed: circleData.xSpeed,
-            ySpeed: circleData.ySpeed,
-            color: circleData.color,
-            startX: circleData.startX,
-            startY: circleData.startY,
-            startXSpeed: circleData.startXSpeed,
-            startYSpeed: circleData.startYSpeed,
-            instrument: circleData.instrument,
-            note: circleData.note,
-            alteration: circleData.alteration,
-            octave: circleData.octave,
-            volume: circleData.volume,
-            spawnTime: circleData.spawnTime,
-            maxBounces: circleData.maxBounces,
-            maxTime: circleData.maxTime,
-            isColliding: false,
-            contactPoint: {x: -1, y: -1}
-          }
-          this.circleService.addCircleToActiveArena(circle);
-        });
-      }
-    } catch (error) {
-      console.error("Erreur lors de la lecture du fichier JSON.", error);
-    }
-  }
 }

@@ -32,7 +32,6 @@ export class TimerService {
     }
   }
 
-  // Ajouter cette méthode dans TimerService
   resetTimer(): void {
     this.pause();
     this.elapsedTime = 0;
@@ -40,7 +39,6 @@ export class TimerService {
     this.seconds = 0;
     this.milliseconds = 0;
   }
-
 
   pause(): void {
     if (this.isRunning) {
