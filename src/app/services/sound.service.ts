@@ -28,6 +28,8 @@ export class SoundService {
   activeAlterationSubject = new BehaviorSubject<number>(0);
   activeAlteration$ = this.activeAlterationSubject.asObservable();
   activeAlterationString: string ="";
+  activeAlterationStringSubject = new BehaviorSubject<string>("");
+  activeAlterationString$ = this.activeAlterationStringSubject.asObservable();
 
   constructor() { }
 
@@ -108,8 +110,7 @@ export class SoundService {
   }
 
   setActiveOctave(octave: number){
-    this.activeOctave = octave;
-    this.selectionChanged.emit();
+    this.activeOctaveSubject.next(octave);
   }
 
   getActiveOctave(){
@@ -127,18 +128,21 @@ export class SoundService {
 
   getCurrentSelection(){
     let alterationSymbol = '';
-    switch (this.activeAlteration) {
+    switch (this.activeAlterationSubject.getValue()) {
       case -1:
         alterationSymbol = '♭';
         this.activeAlterationString = 'b';
+        this.activeAlterationStringSubject.next('b');
         break;
       case 1:
         alterationSymbol = '♯';
         this.activeAlterationString = 'd';
+        this.activeAlterationStringSubject.next('d');
         break;
       default:
         alterationSymbol = '';
         this.activeAlterationString = '';
+        this.activeAlterationStringSubject.next('');
         break;
     }
     return `${this.activeInstrument} ${this.activeNote}${alterationSymbol}${this.activeOctave}`;

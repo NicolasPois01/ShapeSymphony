@@ -29,7 +29,6 @@ export class NotesTabComponent {
   }
 
   isPercussion(instrument: string): boolean {
-    console.log(instrument, this.soundService.isPercussion(instrument), this.activeInstrument);
     return this.soundService.isPercussion(instrument);
   }
 
