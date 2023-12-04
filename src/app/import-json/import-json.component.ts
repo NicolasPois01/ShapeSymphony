@@ -40,9 +40,13 @@ export class ImportJsonComponent {
 
       let arenaList: Arena [] = [];
       let circleList: Circle [] = [];
+      let arenaActiveId: number = 0;
       arenas.forEach(arenaData => {
         circleList = [];
         let circleListData = arenaData.circleList;
+        if(arenaActiveId === 0) {
+          arenaActiveId = arenaData.id;
+        }
         circleListData.forEach((circleData: Circle) => {
           let circle: Circle = {
             id: circleData.id,
@@ -75,7 +79,7 @@ export class ImportJsonComponent {
           circleList: circleList,
           isMuted: arenaData.isMuted
         });
-        this.arenaService.setArenaList(arenaList);
+        this.arenaService.setArenaList(arenaList, arenaActiveId);
       })
     }
   }

@@ -201,7 +201,11 @@ export class ArenaService {
 
   restoreArenas() {
     this.saveArenas();
+    let arenaActiveId = 0;
     this.tempoArenaList.forEach(arena => {
+      if(this.activeArenaSubject.getValue().id === arena.id) {
+        arenaActiveId = arena.id;
+      }
       arena.circleList.forEach(circle => {
         circle.x = circle.startX;
         circle.y = circle.startY;
@@ -213,11 +217,11 @@ export class ArenaService {
         circle.contactPoint = {x: -1, y: -1};
       });
     });
-    this.setArenaList(this.tempoArenaList);
+    this.setArenaList(this.tempoArenaList, arenaActiveId);
   }
 
-  setArenaList(arenaList: Arena[]) {
+  setArenaList(arenaList: Arena[], arenaActiveId: number) {
     this.arenaListSubject.next(arenaList);
-    this.activeArenaSubject.next(arenaList[0]);
+    this.activeArenaSubject.next(arenaList[arenaActiveId]);
   }
 }
