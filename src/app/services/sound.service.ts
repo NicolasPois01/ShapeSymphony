@@ -7,7 +7,7 @@ import { EventEmitter } from '@angular/core';
 })
 export class SoundService {
   selectionChanged = new EventEmitter<void>();
-  instruments = ["Piano", "Percussion", "Guitare", "Violon", "Trompette", "Clavecin"];
+  instruments = ["Piano", "Percussion", "Xylophone", "Bass"];
   notes = ["Do", "Re", "Mi", "Fa", "Sol", "La", "Si"];
   percussions = ["Clap", "Cowbell", "Cymballe", "Gong", "Guiro", "Hat", "Kick", "Snap", "Snare", "Tambor", "Timballe", "Triangle"];
   octaves = ["1","2","3","4","5","6","7"];
