@@ -143,7 +143,6 @@ export class CircleService {
 
   setSelectedCircle(circle: Circle) {
     this.selectedCircleSubject.next(circle);
-    console.log(JSON.stringify(this.selectedCircleSubject.getValue()));
     this.selectedCircle = this.selectedCircleSubject.getValue();
   }
 
@@ -186,7 +185,6 @@ export class CircleService {
   }
 
   setMaxBounces(maxBounces: number) {
-    console.log(JSON.stringify(this.selectedCircle));
     if (this.selectedCircle) {
       this.selectedCircle.maxBounces = maxBounces;
       this.circleChangedSubject.next(this.selectedCircle);
