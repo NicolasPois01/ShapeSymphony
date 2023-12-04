@@ -8,17 +8,22 @@ import {Percussions} from "../models/percussionEnum";
 })
 export class SoundService {
   selectionChanged = new EventEmitter<void>();
-  instruments = ["Piano", "Batterie", "Guitare", "Violon", "Trompette", "Clavecin"];
+  instruments = ["Piano", "Percussion", "Xylophone", "Bass"];
   notes = ["Do", "Re", "Mi", "Fa", "Sol", "La", "Si"];
   percussions = ["Clap", "Cowbell", "Cymbale", "Gong", "Guiro", "Hat", "Kick", "Snap", "Snare", "Tambour", "Timbale", "Triangle"];
   octaves = ["1","2","3","4","5","6","7"];
   alterations = ["♮","♭","#"];
 
-  activeInstrument: string = "Piano";
-  activeNote: string = "Do";
-  activeOctave: number = 3;
-  activeAlteration: number = 0;
-  activeAlterationString: string ="";
+  activeInstrumentSubject = new BehaviorSubject<string>("Piano");
+  activeInstrument$ = this.activeInstrumentSubject.asObservable();
+  activeNoteSubject = new BehaviorSubject<string>("Do");
+  activeNote$ = this.activeNoteSubject.asObservable();
+  activeOctaveSubject = new BehaviorSubject<number>(4);
+  activeOctave$ = this.activeOctaveSubject.asObservable();
+  activeAlterationSubject = new BehaviorSubject<number>(0);
+  activeAlteration$ = this.activeAlterationSubject.asObservable();
+  activeAlterationStringSubject = new BehaviorSubject<string>("");
+  activeAlterationString$ = this.activeAlterationStringSubject.asObservable();
 
   constructor() { }
 
@@ -68,7 +73,7 @@ export class SoundService {
       const audioFilePath = `./assets/samples/Percussion/${audioFileName}`;
       const audio = new Audio(audioFilePath);
       audio.volume = circle.volume;
-      audio.play().then(r => console.log(r));
+      audio.play();
     }
     // les autres
     else {
@@ -79,58 +84,57 @@ export class SoundService {
       audio.play();
     }
   }
+
   setActiveInstrument(instrument: string){
-    this.activeInstrument = instrument;
-    this.selectionChanged.emit();
+    //this.activeInstrument = instrument;
+    this.activeInstrumentSubject.next(instrument)
+    //this.selectionChanged.emit();
   }
 
   getActiveInstrument(){
-    return this.activeInstrument;
+    return this.activeInstrumentSubject.getValue();
   }
 
   setActiveNote(note: string) {
-    this.activeNote = note;
-    this.selectionChanged.emit();
+    this.activeNoteSubject.next(note);
   }
 
   getActiveNote(){
-    return this.activeNote;
+    return this.activeNoteSubject.getValue();
   }
 
   setActiveOctave(octave: number){
-    this.activeOctave = octave;
-    this.selectionChanged.emit();
+    this.activeOctaveSubject.next(octave);
   }
 
   getActiveOctave(){
-    return this.activeOctave;
+    return this.activeOctaveSubject.getValue();
   }
 
   setActiveAlteration(alteration: number){
-    this.activeAlteration = alteration;
-    this.selectionChanged.emit();
+    this.activeAlterationSubject.next(alteration);
   }
 
   getActiveAlteration(){
-    return this.activeAlteration;
+    return this.activeAlterationSubject.getValue();
   }
 
   getCurrentSelection(){
     let alterationSymbol = '';
-    switch (this.activeAlteration) {
+    switch (this.activeAlterationSubject.getValue()) {
       case -1:
         alterationSymbol = '♭';
-        this.activeAlterationString = 'b';
+        this.activeAlterationStringSubject.next('b');
         break;
       case 1:
         alterationSymbol = '♯';
-        this.activeAlterationString = 'd';
+        this.activeAlterationStringSubject.next('d');
         break;
       default:
         alterationSymbol = '♮';
-        this.activeAlterationString = '';
+        this.activeAlterationStringSubject.next('');
         break;
     }
-    return `${this.activeInstrument} ${this.activeNote}${alterationSymbol}${this.activeOctave}`;
+    return `${this.activeInstrumentSubject.getValue()} ${this.activeNoteSubject.getValue()}${alterationSymbol}${this.activeOctaveSubject.getValue()}`;
   }
 }

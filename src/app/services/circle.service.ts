@@ -122,8 +122,7 @@ export class CircleService {
     } else {
       circle.x = midSquareSize - (circle.x - midSquareSize);
     }
-
-    }
+  }
 
   bounceY(circle: any, topBorder: Boolean, midSquareSize: number, isArenaMuted: boolean) {
     if (!isArenaMuted) {
@@ -154,6 +153,7 @@ export class CircleService {
 
   setSelectedCircle(circle: Circle) {
     this.selectedCircleSubject.next(circle);
+    this.selectedCircle = this.selectedCircleSubject.getValue();
   }
 
   deleteCircle(circle: Circle): void {
@@ -195,7 +195,6 @@ export class CircleService {
   }
 
   setMaxBounces(maxBounces: number) {
-    console.log(JSON.stringify(this.selectedCircle));
     if (this.selectedCircle) {
       this.selectedCircle.maxBounces = maxBounces;
       this.circleChangedSubject.next(this.selectedCircle);
@@ -222,17 +221,5 @@ export class CircleService {
       }
       this.circleChangedSubject.next(this.selectedCircle);
     }
-  }
-
-  resetCircles(): void {
-    this.circleList.forEach(circle => {
-      circle.x = circle.startX;
-      circle.y = circle.startY;
-      circle.xSpeed = circle.startXSpeed;
-      circle.ySpeed = circle.startYSpeed;
-      circle.nbBounces = 0;
-      circle.showable = true;
-    });
-    this.circleListSubject.next(this.circleList);
   }
 }

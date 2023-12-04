@@ -8,22 +8,20 @@ import { SoundService } from '../services/sound.service';
 })
 export class OctaveComponent {
   @Output() octaveChanged = new EventEmitter<void>();
-  selectedOctave: number = this.soundService.activeOctave;
+  selectedOctave!: number;
 
-  constructor(private soundService: SoundService) {}
+  constructor(private soundService: SoundService) {
+    this.soundService.activeOctave$.subscribe(octave => this.selectedOctave = octave);
+  }
   increaseOctave() {
     if (this.selectedOctave < 7) {
-      this.selectedOctave++;
-      this.soundService.setActiveOctave(this.selectedOctave);
-      this.octaveChanged.emit();
+      this.soundService.setActiveOctave(this.selectedOctave + 1);
     }
   }
 
   decreaseOctave() {
     if (this.selectedOctave > 1) {
-      this.selectedOctave--;
-      this.soundService.setActiveOctave(this.selectedOctave);
-      this.octaveChanged.emit();
+      this.soundService.setActiveOctave(this.selectedOctave - 1);
     }
   }
 }

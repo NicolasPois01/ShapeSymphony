@@ -1,9 +1,9 @@
 <div class="container">
   <div class="text">
-    <span class="instrument">{{ soundService.activeInstrument }}</span>
-    <span class="note">{{ soundService.activeNote }}</span>
-    <span class="alteration" *ngIf="soundService.activeAlteration !== 0">
+    <span class="instrument">{{ soundService.activeInstrumentSubject.getValue() }}</span>
+    <span class="note">{{ soundService.activeNoteSubject.getValue() }}</span>
+    <span class="alteration" *ngIf="soundService.activeAlterationSubject.getValue() !== 0">
     {{ alterationSymbol }} </span>
-    <span class="octave">{{ soundService.activeOctave }}</span>
+    <span class="octave">{{ soundService.activeOctaveSubject.getValue() }}</span>
   </div>
 </div>
