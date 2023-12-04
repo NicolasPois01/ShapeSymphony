@@ -111,8 +111,7 @@ export class CircleService {
     } else {
       circle.x = midSquareSize - (circle.x - midSquareSize);
     }
-
-    }
+  }
 
   bounceY(circle: any, topBorder: Boolean, midSquareSize: number, isArenaMuted: boolean) {
     if (!isArenaMuted) {
@@ -211,17 +210,5 @@ export class CircleService {
       }
       this.circleChangedSubject.next(this.selectedCircle);
     }
-  }
-
-  resetCircles(): void {
-    this.circleList.forEach(circle => {
-      circle.x = circle.startX;
-      circle.y = circle.startY;
-      circle.xSpeed = circle.startXSpeed;
-      circle.ySpeed = circle.startYSpeed;
-      circle.nbBounces = 0;
-      circle.showable = true;
-    });
-    this.circleListSubject.next(this.circleList);
   }
 }
