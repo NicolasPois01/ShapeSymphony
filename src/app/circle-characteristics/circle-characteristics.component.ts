@@ -44,6 +44,7 @@ export class CircleCharacteristicsComponent implements OnInit{
         this.angleDepart = +((this.angleDepart * 180) / Math.PI).toFixed(0);;
         this.newAngle = this.angleDepart;
         this.vitesseGlobale = +Math.sqrt(Math.pow(circle.xSpeed, 2) + Math.pow(circle.ySpeed, 2)).toFixed(2);
+        this.maxBounces = circle.maxBounces;
       }
     });
   }
