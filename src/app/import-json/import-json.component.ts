@@ -44,20 +44,26 @@ export class ImportJsonComponent {
       let circleListDead: Circle [] = [];
       let arenaActiveId: number = 0;
       arenas.forEach(arenaData => {
-        let circleArenaListWaiting: Circle [] = [];
-        let circleArenaListAlive: Circle [] = [];
-        let circleArenaListDead: Circle [] = [];
-        circleArenaListWaiting = this.getCircleListData(arenaData.circleListWaiting);
-        circleArenaListDead = this.getCircleListData(arenaData.circleListDead);
-        circleArenaListAlive = this.getCircleListData(arenaData.circleListAlive);
-        circleListWaiting = circleListWaiting.concat(circleArenaListWaiting);
-        circleListAlive = circleListAlive.concat(circleArenaListAlive);
-        circleListDead = circleListDead.concat(circleArenaListDead);
+        circleListWaiting = [];
+        circleListAlive = [];
+        circleListDead = [];
+        if(arenaActiveId === 0) {
+          arenaActiveId = arenaData.id;
+        }
+        arenaData.circleListAlive.forEach((circleData: Circle) => {
+          circleListAlive.push(this.getCircleData(circleData));
+        })
+        arenaData.circleListWaiting.forEach((circleData: Circle) => {
+          circleListWaiting.push(this.getCircleData(circleData));
+        })
+        arenaData.circleListDead.forEach((circleData: Circle) => {
+          circleListDead.push(this.getCircleData(circleData));
+        })
         arenaList.push({
           id: arenaData.id,
-          circleListWaiting: circleArenaListWaiting,
-          circleListAlive: circleArenaListAlive,
-          circleListDead: circleArenaListDead,
+          circleListWaiting: circleListWaiting,
+          circleListAlive: circleListAlive,
+          circleListDead: circleListDead,
           isMuted: arenaData.isMuted
         });
       });
@@ -68,36 +74,31 @@ export class ImportJsonComponent {
     }
   }
 
-  getCircleListData(circleList: Circle[]) {
-    let circleListData: Circle[] = [];
-    circleList.forEach((circleData: Circle) => {
-      let circle: Circle = {
-        id: circleData.id,
-        x: circleData.startX,
-        y: circleData.startY,
-        xSpeed: circleData.xSpeed,
-        ySpeed: circleData.ySpeed,
-        color: circleData.color,
-        startX: circleData.startX,
-        startY: circleData.startY,
-        startXSpeed: circleData.startXSpeed,
-        startYSpeed: circleData.startYSpeed,
-        instrument: circleData.instrument,
-        note: circleData.note,
-        alteration: circleData.alteration,
-        octave: circleData.octave,
-        volume: circleData.volume,
-        spawnTime: circleData.spawnTime,
-        maxBounces: circleData.maxBounces,
-        maxTime: circleData.maxTime,
-        nbBounces: circleData.nbBounces,
-        showable: circleData.showable,
-        contactPoint: {x: -1, y: -1},
-        isColliding: false
-      }
-      circleListData.push(circle);
-    })
-    return circleListData;
+  getCircleData(circleData: Circle) {
+   return {
+      id: circleData.id,
+      x: circleData.startX,
+      y: circleData.startY,
+      xSpeed: circleData.xSpeed,
+      ySpeed: circleData.ySpeed,
+      color: circleData.color,
+      startX: circleData.startX,
+      startY: circleData.startY,
+      startXSpeed: circleData.startXSpeed,
+      startYSpeed: circleData.startYSpeed,
+      instrument: circleData.instrument,
+      note: circleData.note,
+      alteration: circleData.alteration,
+      octave: circleData.octave,
+      volume: circleData.volume,
+      spawnTime: circleData.spawnTime,
+      maxBounces: circleData.maxBounces,
+      maxTime: circleData.maxTime,
+      nbBounces: circleData.nbBounces,
+      showable: circleData.showable,
+      isColliding: false,
+      contactPoint: {x: -1, y: -1}
+    }
   }
 
   playCirclesFromJson(jsonString: string): void {
