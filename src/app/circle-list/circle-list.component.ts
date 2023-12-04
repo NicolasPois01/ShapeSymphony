@@ -5,7 +5,6 @@ import { Subscription } from 'rxjs';
 import {ArenaService} from "../services/arena.service";
 import {Arena} from "../models/arena";
 import {SoundService} from "../services/sound.service";
-import {forEach} from "lodash";
 
 @Component({
   selector: 'app-circle-list',
@@ -13,7 +12,9 @@ import {forEach} from "lodash";
   styleUrls: ['./circle-list.component.scss']
 })
 export class CircleListComponent implements OnInit  {
-  circlesList!: Circle[];
+  circleListWaiting!: Circle[];
+  circleListAlive!: Circle[];
+  circleListDead!: Circle[];
   activeArena!: Arena;
   selectedCircle: Circle | null | undefined;
   circleNameList: [Circle, string, number][] = [];    //circleNameList[circle, name, occurrence];
@@ -27,27 +28,69 @@ export class CircleListComponent implements OnInit  {
     this.arenaSubscription = this.arenaService.activeArena$
       .subscribe(arena => {
         this.activeArena = arena;
-        this.circlesList = arena.circleList
-        this.circleListDisplay(this.circlesList)
+        this.circleListAlive = arena.circleListAlive
+        this.circleListWaiting = arena.circleListWaiting
+        this.circleListDead = arena.circleListDead
+        this.circleListDisplay(this.circleListAlive)
       });  // S'abonner à circleList de l'activeArena$
 
       this.circlesListSubscription = this.circlesService.circleChanged$.subscribe(
         (updatedCircle: Circle) => {
-          const index = this.circlesList.findIndex(
+          let index = this.circleListAlive.findIndex(
             (circle) => circle.id === updatedCircle.id
           );
           if (index !== -1) {
-            this.circlesList[index] = updatedCircle;
+            this.circleListAlive[index] = updatedCircle;
+          } else {
+            index = this.circleListWaiting.findIndex(
+              (circle) => circle.id === updatedCircle.id
+            );
+            if (index !== -1) {
+              this.circleListWaiting[index] = updatedCircle;
+            } else {
+              index = this.circleListDead.findIndex(
+                (circle) => circle.id === updatedCircle.id
+              );
+              if (index !== -1) {
+                this.circleListDead[index] = updatedCircle;
+              }
+            }
+          }
+        }
+      );
+      this.circlesService.circleDeleted$.subscribe(
+        (deletedCircle: Circle) => {
+          let index = this.circleListAlive.findIndex(
+            (circle) => circle.id === deletedCircle.id
+          );
+          if (index !== -1) {
+            this.circleListAlive.splice(index, 1);
+          } else {
+            index = this.circleListWaiting.findIndex(
+              (circle) => circle.id === deletedCircle.id
+            );
+            if (index !== -1) {
+              this.circleListWaiting.splice(index, 1);
+            } else {
+              index = this.circleListDead.findIndex(
+                (circle) => circle.id === deletedCircle.id
+              );
+              if (index !== -1) {
+                this.circleListDead.splice(index, 1);
+              }
+            }
           }
         }
       );
 
-    this.circlesList = this.circlesService.circleList;
+    this.circleListWaiting = this.circlesService.circleListWaitingSubject.getValue();
+    this.circleListAlive = this.circlesService.circleListAliveSubject.getValue();
+    this.circleListDead = this.circlesService.circleListDeadSubject.getValue();
 
     this.circlesService.selectedCircle$.subscribe((circle: Circle | null) => {
       this.selectedCircle = circle;
     });
-    this.circleListDisplay(this.circlesList);
+    this.circleListDisplay(this.circleListAlive);
   }
 
   ngOnDestroy() {

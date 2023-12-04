@@ -36,7 +36,7 @@ export class MainComponentComponent implements OnInit, OnDestroy {
               private soundService: SoundService) {}
 
   ngOnInit() {
-    this.circleService.circleList$
+    this.circleService.circleListAlive$
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe((circles: Circle[]) => this.circles = circles); // Ajoutez le type ici
     this.arenaService.activeArena$.subscribe(arena => {
