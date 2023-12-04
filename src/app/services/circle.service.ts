@@ -140,7 +140,7 @@ export class CircleService {
     this.newCircleSubject.next(circle);
   }
 
-  setSelectedCircle(circle: Circle) {
+  setSelectedCircle(circle: Circle | null = null) {
     this.selectedCircleSubject.next(circle);
     this.selectedCircle = this.selectedCircleSubject.getValue();
   }

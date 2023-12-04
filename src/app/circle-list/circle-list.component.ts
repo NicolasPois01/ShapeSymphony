@@ -65,6 +65,11 @@ export class CircleListComponent implements OnInit  {
 
   deleteCircle(circle: Circle): void {
     this.arenaService.deleteCircleFromActiveArena(circle);  // Mettre à jour pour utiliser la méthode de service
+    this.circlesService.selectedCircle$.subscribe(selectedCircle => {
+      if (selectedCircle && selectedCircle.id === circle.id) {
+        this.circlesService.setSelectedCircle(null);
+      }
+    });
   }
 
   isSelected(circle: Circle) {
