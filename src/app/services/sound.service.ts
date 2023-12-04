@@ -15,19 +15,14 @@ export class SoundService {
   octaves = ["1","2","3","4","5","6","7"];
   alterations = ["","b","d"];   //Legende : d=dièse, b=bémol.
 
-  activeInstrument: string = "Piano";
   activeInstrumentSubject = new BehaviorSubject<string>("Piano");
   activeInstrument$ = this.activeInstrumentSubject.asObservable();
-  activeNote: string = "Do";
   activeNoteSubject = new BehaviorSubject<string>("Do");
   activeNote$ = this.activeNoteSubject.asObservable();
-  activeOctave: number = 3;
   activeOctaveSubject = new BehaviorSubject<number>(3);
   activeOctave$ = this.activeOctaveSubject.asObservable();
-  activeAlteration: number = 0;
   activeAlterationSubject = new BehaviorSubject<number>(0);
   activeAlteration$ = this.activeAlterationSubject.asObservable();
-  activeAlterationString: string ="";
   activeAlterationStringSubject = new BehaviorSubject<string>("");
   activeAlterationString$ = this.activeAlterationStringSubject.asObservable();
 
@@ -114,16 +109,15 @@ export class SoundService {
   }
 
   getActiveOctave(){
-    return this.activeOctave;
+    return this.activeOctaveSubject.getValue();
   }
 
   setActiveAlteration(alteration: number){
-    this.activeAlteration = alteration;
-    this.selectionChanged.emit();
+    this.activeAlterationSubject.next(alteration);
   }
 
   getActiveAlteration(){
-    return this.activeAlteration;
+    return this.activeAlterationSubject.getValue();
   }
 
   getCurrentSelection(){
@@ -131,20 +125,17 @@ export class SoundService {
     switch (this.activeAlterationSubject.getValue()) {
       case -1:
         alterationSymbol = '♭';
-        this.activeAlterationString = 'b';
         this.activeAlterationStringSubject.next('b');
         break;
       case 1:
         alterationSymbol = '♯';
-        this.activeAlterationString = 'd';
         this.activeAlterationStringSubject.next('d');
         break;
       default:
         alterationSymbol = '';
-        this.activeAlterationString = '';
         this.activeAlterationStringSubject.next('');
         break;
     }
-    return `${this.activeInstrument} ${this.activeNote}${alterationSymbol}${this.activeOctave}`;
+    return `${this.activeInstrumentSubject.getValue()} ${this.activeNoteSubject.getValue()}${alterationSymbol}${this.activeOctaveSubject.getValue()}`;
   }
 }
