@@ -19,7 +19,7 @@ export class SoundService {
   activeInstrument$ = this.activeInstrumentSubject.asObservable();
   activeNoteSubject = new BehaviorSubject<string>("Do");
   activeNote$ = this.activeNoteSubject.asObservable();
-  activeOctaveSubject = new BehaviorSubject<number>(3);
+  activeOctaveSubject = new BehaviorSubject<number>(4);
   activeOctave$ = this.activeOctaveSubject.asObservable();
   activeAlterationSubject = new BehaviorSubject<number>(0);
   activeAlteration$ = this.activeAlterationSubject.asObservable();

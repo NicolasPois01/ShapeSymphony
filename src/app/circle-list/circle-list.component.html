@@ -1,10 +1,10 @@
 <div class="title">Liste des entités : </div>
 
 <ul>
-  <li *ngFor="let circle of circlesList" (click)="circleClicked(circle)"
-      class="highlight-on-hover circle" [class.active]="isSelected(circle)">
-    <span class="color-box" [style.background-color]="circle.color"></span>
-    Circle {{circle.id}}
-    <span class="cross ml-auto" (click)="deleteCircle(circle); $event.stopPropagation()">X</span>
+  <li *ngFor="let tuple of circleNameList" (click)="circleClicked(tuple[0])"
+      class="highlight-on-hover circle" [class.active]="isSelected(tuple[0])">
+    <span class="color-box" [style.background-color]="tuple[0].color"></span>
+    {{tuple[1]}}<span *ngIf="tuple[2]!=1">&thinsp;({{tuple[2]}})</span>
+    <span class="cross ml-auto" (click)="deleteCircle(tuple[0]); $event.stopPropagation()">X</span>
   </li>
 </ul>
