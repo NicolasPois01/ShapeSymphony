@@ -76,7 +76,9 @@ export class ImportJsonComponent {
         })
         arenaList.push({
           id: arenaData.id,
-          circleList: circleList,
+          circleListWaiting: [],
+          circleListAlive: circleList,
+          circleListDead: [],
           isMuted: arenaData.isMuted
         });
         this.arenaService.setArenaList(arenaList, arenaActiveId);
@@ -115,7 +117,7 @@ export class ImportJsonComponent {
             isColliding: false,
             contactPoint: {x: -1, y: -1}
           }
-          this.circleService.addCircleToActiveArena(circle);
+          this.circleService.addCircleToAliveList(circle);
         });
       }
     } catch (error) {

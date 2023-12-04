@@ -1,7 +1,7 @@
 <div class="title">Liste des entités : </div>
 
 <ul>
-  <li *ngFor="let circle of circlesList" (click)="circleClicked(circle)"
+  <li *ngFor="let circle of circleListAlive" (click)="circleClicked(circle)"
       class="highlight-on-hover circle" [class.active]="isSelected(circle)">
     <span class="color-box" [style.background-color]="circle.color"></span>
     Circle {{circle.id}}
