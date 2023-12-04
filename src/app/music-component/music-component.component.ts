@@ -25,7 +25,7 @@ export class MusicComponent implements OnInit, OnDestroy {
   }
 
   get alterationSymbol(): string {
-    switch (this.soundService.activeAlteration) {
+    switch (this.soundService.activeAlterationSubject.getValue()) {
       case -1: return '♭';
       case 1: return '♯';
       default: return '';

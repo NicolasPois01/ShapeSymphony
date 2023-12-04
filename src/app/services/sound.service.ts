@@ -2,23 +2,34 @@ import { Injectable } from '@angular/core';
 import {Circle} from "../models/circle";
 import { EventEmitter } from '@angular/core';
 import {Percussions} from "../models/percussionEnum";
+import {BehaviorSubject} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 export class SoundService {
   selectionChanged = new EventEmitter<void>();
-  instruments = ["Piano", "Batterie", "Guitare", "Violon", "Trompette", "Clavecin"];
+  instruments = ["Piano", "Percussion", "Guitare", "Violon", "Trompette", "Clavecin"];
   notes = ["Do", "Re", "Mi", "Fa", "Sol", "La", "Si"];
   percussions = ["Clap", "Cowbell", "Cymbale", "Gong", "Guiro", "Hat", "Kick", "Snap", "Snare", "Tambour", "Timbale", "Triangle"];
   octaves = ["1","2","3","4","5","6","7"];
   alterations = ["","b","d"];   //Legende : d=dièse, b=bémol.
 
   activeInstrument: string = "Piano";
+  activeInstrumentSubject = new BehaviorSubject<string>("Piano");
+  activeInstrument$ = this.activeInstrumentSubject.asObservable();
   activeNote: string = "Do";
+  activeNoteSubject = new BehaviorSubject<string>("Do");
+  activeNote$ = this.activeNoteSubject.asObservable();
   activeOctave: number = 3;
+  activeOctaveSubject = new BehaviorSubject<number>(3);
+  activeOctave$ = this.activeOctaveSubject.asObservable();
   activeAlteration: number = 0;
+  activeAlterationSubject = new BehaviorSubject<number>(0);
+  activeAlteration$ = this.activeAlterationSubject.asObservable();
   activeAlterationString: string ="";
+  activeAlterationStringSubject = new BehaviorSubject<string>("");
+  activeAlterationString$ = this.activeAlterationStringSubject.asObservable();
 
   constructor() { }
 
@@ -81,26 +92,25 @@ export class SoundService {
   }
 
   setActiveInstrument(instrument: string){
-    this.activeInstrument = instrument;
-    this.selectionChanged.emit();
+    //this.activeInstrument = instrument;
+    this.activeInstrumentSubject.next(instrument)
+    //this.selectionChanged.emit();
   }
 
   getActiveInstrument(){
-    return this.activeInstrument;
+    return this.activeInstrumentSubject.getValue();
   }
 
   setActiveNote(note: string) {
-    this.activeNote = note;
-    this.selectionChanged.emit();
+    this.activeNoteSubject.next(note);
   }
 
   getActiveNote(){
-    return this.activeNote;
+    return this.activeNoteSubject.getValue();
   }
 
   setActiveOctave(octave: number){
-    this.activeOctave = octave;
-    this.selectionChanged.emit();
+    this.activeOctaveSubject.next(octave);
   }
 
   getActiveOctave(){
@@ -118,18 +128,21 @@ export class SoundService {
 
   getCurrentSelection(){
     let alterationSymbol = '';
-    switch (this.activeAlteration) {
+    switch (this.activeAlterationSubject.getValue()) {
       case -1:
         alterationSymbol = '♭';
         this.activeAlterationString = 'b';
+        this.activeAlterationStringSubject.next('b');
         break;
       case 1:
         alterationSymbol = '♯';
         this.activeAlterationString = 'd';
+        this.activeAlterationStringSubject.next('d');
         break;
       default:
         alterationSymbol = '';
         this.activeAlterationString = '';
+        this.activeAlterationStringSubject.next('');
         break;
     }
     return `${this.activeInstrument} ${this.activeNote}${alterationSymbol}${this.activeOctave}`;
