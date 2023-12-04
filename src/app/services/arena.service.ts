@@ -32,6 +32,7 @@ export class ArenaService {
   constructor(private circleService: CircleService) {
     this.circleService.newCircleSubject.subscribe(circle => {
       this.addCircleToActiveArena(circle);
+      this.circleService.setSelectedCircle(circle);
     })
   }
 

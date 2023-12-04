@@ -1,20 +1,97 @@
-/* Styles pour les labels et les symboles degré */
-li label {
-  margin-right: 5px;
+.title {
+  margin-left: 0.5rem;
+  border: 1px solid #000;
+}
+ul {
+  list-style-type: none; /* Removes bullet points */
+  margin-left: -1rem;
 }
 
-li span {
+li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px; /* Ajoutez une marge en bas pour séparer les éléments */
+}
+
+li input {
+  margin-left: 1rem;
+  width: 7rem;
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #2a1f3d;
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: -3px -3px 7px #36284e, 3px 3px 7px #1e162c;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  margin-right: 15px; /* Ajoutez une marge à droite pour chaque élément */
+}
+
+/* Supprimez la marge à droite pour le dernier <li> contenant un <input> de type nombre */
+li:last-child input {
+  margin-right: 0;
+}
+
+/* Style au survol du curseur */
+li input:hover {
+  box-shadow: -1px -1px 3px #36284e, 1px 1px 3px #1e162c;
+}
+
+/* Style pour un <input> de type nombre actif */
+li input.active {
+  background-color: #36284e;
+  box-shadow: inset -1px -1px 3px #41305f, inset 1px 1px 3px #1e162c;
+  color: white;
+}
+
+li select {
+  margin-left: 1rem;
+  width: 7rem;
+  padding: 10px 20px;
+  background-color: #2a1f3d;
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: -3px -3px 7px #36284e, 3px 3px 7px #1e162c;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+li select:hover {
+  box-shadow: -1px -1px 3px #36284e, 1px 1px 3px #1e162c;
+}
+
+li select:focus {
+  outline: none;
+  box-shadow: inset -1px -1px 3px #41305f, inset 1px 1px 3px #1e162c;
+}
+
+li select option {
+  background-color: #2a1f3d;
+  color: #fff;
+}
+
+.octave-container {
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+  margin-top: 22px;
+  color: white; /* Changé la couleur du texte en blanc pour mieux contraster avec le fond sombre */
+}
+
+.octave-container span {
+  margin-right: 10px;
   font-size: 18px; /* Augmenté la taille du texte pour une meilleure lisibilité */
 }
 
-/* Styles pour les éléments de type number (spinbox) */
-li .spinbox-container input[type="number"] {
+.octave-spinbox {
   padding: 5px 10px;
   background-color: #2a1f3d;
   border: none;
   border-radius: 12px;
-  color: white;
-  font-size: 18px; /* Augmenté la taille du texte pour une meilleure lisibilité */
+  color: white; /* Changé la couleur du texte en blanc */
+  font-size: 18px;
   transition: box-shadow 0.3s;
   width: 60px;
   text-align: center;
@@ -22,90 +99,51 @@ li .spinbox-container input[type="number"] {
   appearance: textfield;
 }
 
-li .spinbox-container input[type="number"]:hover {
+.octave-spinbox:hover {
   box-shadow: -1px -1px 3px #36284e, 1px 1px 3px #1e162c;
 }
 
-li .spinbox-container input[type="number"]:focus {
+.octave-spinbox:focus {
   outline: none;
   box-shadow: inset -1px -1px 3px #41305f, inset 1px 1px 3px #1e162c;
 }
 
-/* Styles pour les sélecteurs */
-li select {
-  width: 100%;
-  padding: 5px;
-  background-color: #2a1f3d;
-  border: none;
-  border-radius: 12px;
-  color: white;
-  font-size: 18px; /* Augmenté la taille du texte pour une meilleure lisibilité */
-  transition: box-shadow 0.3s;
-  text-align: center;
-  box-shadow: -3px -3px 7px #36284e, 3px 3px 7px #1e162c;
-  appearance: textfield;
+.octave-spinbox::-moz-focus-inner {
+  border: 0;
 }
 
-/* Styles pour les options des sélecteurs */
-li select option {
-  background-color: #2a1f3d;
+/* Pour Chrome */
+.octave-spinbox::-webkit-inner-spin-button,
+.octave-spinbox::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
-/* Styles pour les sélecteurs lors du survol */
-li select:hover {
-  box-shadow: -1px -1px 3px #36284e, 1px 1px 3px #1e162c;
+.octave-spinbox {
+  position: relative; /* Nécessaire pour positionner absolument les pseudo-éléments */
 }
 
-/* Styles pour les sélecteurs lors du focus */
-li select:focus {
-  outline: none;
-  box-shadow: inset -1px -1px 3px #41305f, inset 1px 1px 3px #1e162c;
+.octave-spinbox::-webkit-inner-spin-button,
+.octave-spinbox::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
-/* Styles pour les conteneurs et boutons des spinbox */
-li .spinbox-container {
+.octave-spinbox:-moz-spinner {
+  -moz-appearance: textfield;
+}
+
+.spinbox-container {
   position: relative;
   display: inline-flex;
   align-items: center;
-  appearance: textfield;
-
-
 }
 
-li .value-display {
-  padding: 5px 10px;
-  background-color: #2A1F3D; /* Couleur de fond sombre */
-  border-radius: 12px;
-  color: white;
-  font-size: 18px;
-  text-align: center;
-  box-shadow: inset -3px -3px 7px #36284e, inset 3px 3px 7px #1e162c;
-  margin-right: 25px; /* Espace à droite pour les boutons */
+.octave-spinbox {
+  padding-right: 30px; /* adjust space for buttons */
 }
 
-/* Ajustement de la position des boutons pour éviter qu'ils chevauchent le texte */
-li .spinbox-button {
-  position: absolute;
-  right: 5px; /* Décale légèrement vers la droite */
-  width: 20px;
-  height: 15px;
-  border: none;
-  background-color: transparent;
-  color: #B084CC;
-  cursor: pointer;
-  font-size: 12px;
-}
-
-li .spinbox-button.up {
-  top: 0;
-}
-
-li .spinbox-button.down {
-  bottom: 0;
-}
-
-/* Styles pour les boutons "up" et "down" des spinbox */
-li .spinbox-button.up, li .spinbox-button.down {
+.spinbox-button {
   position: absolute;
   right: 0;
   width: 20px;
@@ -117,50 +155,106 @@ li .spinbox-button.up, li .spinbox-button.down {
   font-size: 12px;
 }
 
-/* Position spécifique pour le bouton "up" */
-li .spinbox-button.up {
+.spinbox-button.up {
   top: 0;
 }
 
-/* Position spécifique pour le bouton "down" */
-li .spinbox-button.down {
+.spinbox-button.down {
   bottom: 0;
 }
 
-/* Éventuellement, d'autres styles spécifiques pour votre application */
-/* ... */
-
-/* Styles globaux pour le conteneur */
-li {
-  margin-bottom: 10px; /* Espace entre chaque élément de liste */
-  color: white; /* Couleur du texte pour tous les éléments de liste */
+.alteration-container {
+  display: flex;
+  flex-direction: column;
+  width: 120px;
+  margin-left: 20px;
+  color: white;
 }
 
-/* Styles pour assurer une bonne lisibilité et esthétique */
-ul {
-  padding: 0;
-  list-style: none; /* Enlève les puces des listes */
+.alteration-slider {
+  width: 100%;
+  margin: 10px 0;
+  appearance: none;
+  border-radius: 12px;
+  background-color: #2a1f3d;
+  box-shadow: -3px -3px 7px #36284e, 3px 3px 7px #1e162c;
 }
 
-/* Styles pour le conteneur principal */
-.title {
-  /* Styles pour le conteneur titre, si nécessaire */
-  /* ... */
+.alteration-slider:hover,
+.alteration-slider:focus {
+  box-shadow: -1px -1px 3px #36284e, 1px 1px 3px #1e162c;
 }
 
-/* Styles additionnels pour les autres éléments de votre interface, si nécessaire */
-/* ... */
-/* Pour les navigateurs WebKit comme Chrome et Safari */
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+.alteration-slider::-webkit-slider-thumb {
+  appearance: none;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  background-color: #B084CC;
+  box-shadow: -1px -1px 3px #41305f, 1px 1px 3px #1e162c;
 }
 
-/* Pour Firefox */
-input[type="number"]::-moz-focus-inner {
-  border: 0;
+.alteration-slider::-moz-range-thumb {
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  background-color: #36284e;
+  box-shadow: -1px -1px 3px #41305f, 1px 1px 3px #1e162c;
 }
-input[type="number"]:-moz-spinner {
-  -moz-appearance: textfield;
+
+.alteration-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px;
+  line-height: 2;
+}
+
+.alteration-labels span {
+  width: 33%;
+  text-align: center;
+}
+
+span {
+  font-size: 1.2em;
+  color: white; /* Changé la couleur du texte en blanc pour mieux contraster avec le fond sombre */
+  margin-right: 10px;
+}
+
+.alteration-container {
+  margin-top: 20px;
+}
+
+.scroll-container {
+  max-height: 29rem;
+  overflow-y: auto;
+}
+
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #36284e; /* Color of the thumb */
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #2a1f3d; /* Color of the track */
+}
+
+/* For Firefox */
+::-moz-scrollbar {
+  width: 12px;
+}
+
+::-moz-scrollbar-thumb {
+  background-color: #36284e; /* Color of the thumb */
+  border-radius: 6px;
+}
+
+::-moz-scrollbar-track {
+  background-color: #2a1f3d; /* Color of the track */
 }
