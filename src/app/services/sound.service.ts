@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {Circle} from "../models/circle";
 import { EventEmitter } from '@angular/core';
 import {Percussions} from "../models/percussionEnum";
+import {BehaviorSubject} from "rxjs";
 
 @Injectable({
   providedIn: 'root'

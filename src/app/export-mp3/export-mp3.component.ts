@@ -110,9 +110,9 @@ export class ExportMp3Component {
     }
     for (let i = 0; i <= 10; i++) {
       jsonData.push({
-        instrument: "Piano",
-        note: "Re",
-        octave: 2,
+        instrument: "Bass",
+        note: "Sol",
+        octave: 4,
         alteration: "",
         currentTime: i * 1000
       });
@@ -120,7 +120,7 @@ export class ExportMp3Component {
     }
     for (let i = 0; i <= 10; i++) {
       jsonData.push({
-        instrument: "Piano",
+        instrument: "Clap",
         note: "Mi",
         octave: 2,
         alteration: "",

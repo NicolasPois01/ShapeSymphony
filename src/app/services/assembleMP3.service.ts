@@ -1,17 +1,28 @@
 import { Injectable } from '@angular/core';
 import * as toWav from 'audiobuffer-to-wav';
+import { SoundService } from './sound.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AssembleMP3Service {
 
+  constructor(private soundService: SoundService) { }
   async mergeAudio(jsonData: any[], duration: number ): Promise<void> {
+    console.log(jsonData)
     const context = new AudioContext();
     const buffers = await Promise.all(
       jsonData.map(async (item) => {
-
-        const response = await fetch(`assets/samples/${item.instrument}/Piano${item.note}${item.octave}.mp3`);
+        let response;
+        console.log(item.instrument)
+        if(this.soundService.isPercussion(item.instrument)){
+          response = await fetch(`assets/samples/Percussion/${item.instrument}.mp3`);
+          console.log(response)
+        }
+        else{
+          response = await fetch(`assets/samples/${item.instrument}/${item.instrument}${item.note}${item.octave}.mp3`);
+          console.log(response)
+        }
         const arrayBuffer = await response.arrayBuffer();
         return context.decodeAudioData(arrayBuffer);
       })
