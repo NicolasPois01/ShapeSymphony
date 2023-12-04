@@ -33,9 +33,6 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   velocityY: number = 2.6;
 
   squareSize: number = 600;
-  squareUnit: number = 10;
-
-  fps: number = 60;
 
   mouseDown: boolean = false;
   savePoseX: number = 0;
@@ -55,7 +52,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   constructor(private circlesService: CircleService,
               private soundService: SoundService,
               private arenaService: ArenaService) {
-    this.circles = circlesService.circleList;
+    arenaService.activeArenaSubject.subscribe(arena => this.circles = arena.circleList);
   }
 
   ngOnInit() {
@@ -75,30 +72,8 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
       this.interval = setInterval(() => {
         let elapsedTime = ((this.timerService?.getTimeStamp() ?? 0) - this.timestamp) / 1000; // elapsed time in seconds
         this.timestamp = this.timerService?.getTimeStamp();
-        this.arenaService.updateArenas(elapsedTime, this.squareUnit, this.offset);
-        // for (let circle of this.circles) {
-        //   this.circlesService.updatePos(circle, circle.x + (circle.xSpeed * elapsedTime), circle.y + (circle.ySpeed * elapsedTime));
-        //
-        //   if (!this.circlesService.inRange(circle.x, this.squareUnit)) {
-        //     circle.isColliding = true;
-        //      let adjustedX = circle.xSpeed > 0 ? circle.x + this.circlesService.circleRad - this.offset : circle.x - this.circlesService.circleRad + this.offset;
-        //     circle.contactPoint = { x: adjustedX, y: circle.y }; // Adjusted point of contact
-        //     this.circlesService.bounceX(circle, circle.x - this.circlesService.circleRad < -(this.squareUnit / 2), this.squareUnit / 2 - this.circlesService.circleRad);
-        //     setTimeout(() => {
-        //       circle.isColliding = false;
-        //     }, 500);
-        //   }
-        //
-        //   if (!this.circlesService.inRange(circle.y, this.squareUnit)) {
-        //     circle.isColliding = true;
-        //     let adjustedY = circle.ySpeed > 0 ? circle.y + this.circlesService.circleRad - this.offset : circle.y - this.circlesService.circleRad + this.offset;
-        //     circle.contactPoint = { x: circle.x, y: adjustedY }; // Adjusted point of contact
-        //     this.circlesService.bounceY(circle, circle.y - this.circlesService.circleRad < -(this.squareUnit / 2), this.squareUnit / 2 - this.circlesService.circleRad);
-        //     setTimeout(() => {
-        //       circle.isColliding = false;
-        //     }, 500);
-        //   }
-        // }
+        if(this.timerService?.getIsRunning())
+          this.arenaService.updateArenas(elapsedTime, this.squareUnit, this.offset);
       }, 1000 / this.fps);
     }
   }
@@ -122,16 +97,32 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
       y = this.circlesService.getFromMouse(this.savePoseY + ((event?.target as HTMLElement)?.parentElement as HTMLElement)?.getBoundingClientRect()?.top, this.squareUnit, squareSize);
     }
     if(!this.circlesService.inRange(x, this.squareUnit) || !this.circlesService.inRange(y, this.squareUnit)) return;
-    let circle = new Circle(this.circlesService.getNewId(),
-                            parseFloat(x.toFixed(this.precisionMode ? 1 : 2)),
-                            parseFloat(y.toFixed(this.precisionMode ? 1 : 2)),
-                            parseFloat(((this.saveVx * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)),
-                            parseFloat(((this.saveVy * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)),
-                            this.circlesService.getRandomColor(),
-                            this.soundService.activeInstrument,
-                            this.soundService.activeNote,
-                            this.soundService.activeAlterationString,
-                            this.soundService.activeOctave);
+
+    let spawnTimeValue: number = this.timerService ? this.timerService.getTimeStamp() : 0;
+    let circle: Circle = {
+      id: this.circlesService.getNewId(),
+      x: parseFloat(x.toFixed(this.precisionMode ? 1 : 2)),
+      y: parseFloat(y.toFixed(this.precisionMode ? 1 : 2)),
+      xSpeed: parseFloat(((this.saveVx * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)),
+      ySpeed: parseFloat(((this.saveVy * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)),
+      color: this.circlesService.getRandomColor(),
+      startX: parseFloat(x.toFixed(this.precisionMode ? 1 : 2)),
+      startY: parseFloat(y.toFixed(this.precisionMode ? 1 : 2)),
+      startXSpeed: parseFloat(((this.saveVx * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)),
+      startYSpeed: parseFloat(((this.saveVy * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)),
+      instrument: this.soundService.activeInstrumentSubject.getValue(),
+      note: this.soundService.activeNoteSubject.getValue(),
+      alteration: this.soundService.activeAlterationStringSubject.getValue(),
+      octave: this.soundService.activeOctaveSubject.getValue(),
+      volume: 1,
+      spawnTime: spawnTimeValue,
+      maxBounces: 0,
+      maxTime: 0,
+      nbBounces: 0,
+      showable: true,
+      contactPoint: {x: -1, y: -1},
+      isColliding: false
+    }
     this.circlesService.addCircleToActiveArena(circle);
   }
 

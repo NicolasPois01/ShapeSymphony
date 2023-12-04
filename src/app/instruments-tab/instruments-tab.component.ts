@@ -14,7 +14,7 @@ export class InstrumentsTabComponent {
   percussion: boolean = false;
   constructor(private soundService: SoundService) {
     this.instrumentsList = this.soundService.instruments;
-    this.activeInstrument = this.soundService.activeInstrument;
+    this.soundService.activeInstrument$.subscribe(activeInstrument => this.activeInstrument = activeInstrument)
   }
 
   isActive(instrument: string) {
@@ -22,10 +22,8 @@ export class InstrumentsTabComponent {
   }
 
   toggleInstrument(instrument: string) {
-    this.percussion = (instrument === "Percussion");
+    instrument = instrument === "Percussion" ? "Clap" : instrument;
     this.soundService.setActiveInstrument(instrument);
-    this.activeInstrument = this.soundService.getActiveInstrument();
-    this.instrumentChanged.emit();
+    //this.instrumentChanged.emit();
   }
-
 }

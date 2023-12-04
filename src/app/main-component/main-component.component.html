@@ -1,7 +1,7 @@
 <div class="file-dropdown">
   <button class="dropbtn">Fichier</button>
   <div class="dropdown-content">
-    <app-json-export [data]="circles" filename="circles.json"></app-json-export>
+    <app-json-export></app-json-export>
     <app-import-json></app-import-json>
   </div>
 </div>
@@ -30,11 +30,11 @@
     <app-instruments-tab ngModel #instrumentsTab></app-instruments-tab>
     <app-notes-tab></app-notes-tab>
     <div class="controls-wrapper">
-      <app-octave *ngIf="!instrumentsTab.percussion"></app-octave>
-      <app-alteration *ngIf="!instrumentsTab.percussion"></app-alteration>
-      <app-music *ngIf="!instrumentsTab.percussion"></app-music>
+      <app-octave *ngIf="!isPercussion(activeInstrument)"></app-octave>
+      <app-alteration *ngIf="!isPercussion(activeInstrument)"></app-alteration>
+      <app-music *ngIf="!isPercussion(activeInstrument)"></app-music>
     </div>
-    <app-percussion-tab *ngIf="instrumentsTab.percussion"></app-percussion-tab>
+    <app-percussion-tab *ngIf="isPercussion(activeInstrument)"></app-percussion-tab>
     <app-timer class="timer" [timerService]="this.timerService"></app-timer>
   </div>
 </div>

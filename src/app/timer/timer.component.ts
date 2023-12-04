@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import {TimerService} from "../services/timer.service";
 import {CircleService} from "../services/circle.service";
+import {ArenaService} from "../services/arena.service";
 
 @Component({
   selector: 'app-timer',
@@ -11,7 +12,8 @@ export class TimerComponent {
 
   @Input() timerService: TimerService|undefined = undefined;
 
-  constructor(private circleService: CircleService) {
+  constructor(private circleService: CircleService,
+              private arenaService: ArenaService) {
   }
 
   startTimer(): void {
@@ -37,18 +39,19 @@ export class TimerComponent {
   getIsRunning(): any {
     return this.timerService?.getIsRunning();
   }
+
   clearAll(): void {
-    this.circleService.clearAllCircles();
+    this.arenaService.clearAll();
     this.timerService?.resetTimer();
   }
 
-  resetGame(): void {
-    this.circleService.saveCircles();  // sauvegarde les cercles actuels
-    this.timerService?.resetTimer();  // réinitialise le timer
-    setTimeout(() => {
-      this.circleService.restoreCircles();
-    }, 300);
+  clearActive() {
+    this.arenaService.clearActiveArena();
+  }
 
+  resetGame(): void {
+    this.timerService?.resetTimer();  // réinitialise le timer
+    this.arenaService.restoreArenas();  // réinitialise les cercles
   }
 
 }

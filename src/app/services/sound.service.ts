@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import {Circle} from "../models/circle";
 import { EventEmitter } from '@angular/core';
+import {Percussions} from "../models/percussionEnum";
+import {BehaviorSubject} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -9,16 +11,20 @@ export class SoundService {
   selectionChanged = new EventEmitter<void>();
   instruments = ["Piano", "Percussion", "Xylophone", "Bass"];
   notes = ["Do", "Re", "Mi", "Fa", "Sol", "La", "Si"];
-  percussions = ["Clap", "Cowbell", "Cymballe", "Gong", "Guiro", "Hat", "Kick", "Snap", "Snare", "Tambor", "Timballe", "Triangle"];
+  percussions = ["Clap", "Cowbell", "Cymbale", "Gong", "Guiro", "Hat", "Kick", "Snap", "Snare", "Tambour", "Timbale", "Triangle"];
   octaves = ["1","2","3","4","5","6","7"];
   alterations = ["","b","d"];   //Legende : d=dièse, b=bémol.
 
-  activeInstrument: string = "Piano";
-  activePercussion: string = "Hat";
-  activeNote: string = "Do";
-  activeOctave: number = 3;
-  activeAlteration: number = 0;
-  activeAlterationString: string ="";
+  activeInstrumentSubject = new BehaviorSubject<string>("Piano");
+  activeInstrument$ = this.activeInstrumentSubject.asObservable();
+  activeNoteSubject = new BehaviorSubject<string>("Do");
+  activeNote$ = this.activeNoteSubject.asObservable();
+  activeOctaveSubject = new BehaviorSubject<number>(3);
+  activeOctave$ = this.activeOctaveSubject.asObservable();
+  activeAlterationSubject = new BehaviorSubject<number>(0);
+  activeAlteration$ = this.activeAlterationSubject.asObservable();
+  activeAlterationStringSubject = new BehaviorSubject<string>("");
+  activeAlterationString$ = this.activeAlterationStringSubject.asObservable();
 
   constructor() { }
 
@@ -28,7 +34,6 @@ export class SoundService {
           for (const percussion of this.percussions) {
             const audioFileName = `${percussion}.mp3`;
             const audioFilePath = `./assets/samples/${instrument}/${audioFileName}`;
-            console.log(audioFilePath);
             //Vérifie si le fichier audio existe :
             const response = await fetch(audioFilePath, {method: 'HEAD'});
             if (response.ok) {
@@ -44,7 +49,6 @@ export class SoundService {
               for (const alteration of this.alterations) {
               const audioFileName = `${instrument}${note}${alteration}${octave}.mp3`;
               const audioFilePath = `./assets/samples/${instrument}/${audioFileName}`;
-              console.log(audioFilePath);
               //Vérifie si le fichier audio existe :
               const response = await fetch(audioFilePath, { method: 'HEAD' });
                 if (response.ok) {
@@ -59,16 +63,22 @@ export class SoundService {
       }
   }
 
+  isPercussion (instrument: string): boolean {
+    return Object.values(Percussions).includes(instrument as Percussions)
+  }
+
   playAudio = function(circle : Circle) {
-    if (circle.instrument != "Percussion"){
-       const audioFileName = circle.instrument+circle.note+circle.alteration+circle.octave+'.mp3';
-       const audioFilePath = `./assets/samples/${circle.instrument}/${audioFileName}`;
-       const audio = new Audio(audioFilePath);
-       audio.volume = circle.volume;
-       audio.play();
+    //Cas des percussions
+    if (Object.values(Percussions).includes(circle.instrument as Percussions)){
+      const audioFileName = circle.instrument+'.mp3';
+      const audioFilePath = `./assets/samples/Percussion/${audioFileName}`;
+      const audio = new Audio(audioFilePath);
+      audio.volume = circle.volume;
+      audio.play();
     }
-    else{   //Cas des percussions
-      const audioFileName = circle.percussion+'.mp3';
+    // les autres
+    else {
+      const audioFileName = circle.instrument+circle.note+circle.alteration+circle.octave+'.mp3';
       const audioFilePath = `./assets/samples/${circle.instrument}/${audioFileName}`;
       const audio = new Audio(audioFilePath);
       audio.volume = circle.volume;
@@ -77,66 +87,55 @@ export class SoundService {
   }
 
   setActiveInstrument(instrument: string){
-    this.activeInstrument = instrument;
-    this.selectionChanged.emit();
+    //this.activeInstrument = instrument;
+    this.activeInstrumentSubject.next(instrument)
+    //this.selectionChanged.emit();
   }
 
   getActiveInstrument(){
-    return this.activeInstrument;
-  }
-
-  setActivePercussion(percussion: string){
-    this.activePercussion = percussion;
-    this.selectionChanged.emit();
-  }
-
-  getActivePercussion(){
-    return this.activePercussion;
+    return this.activeInstrumentSubject.getValue();
   }
 
   setActiveNote(note: string) {
-    this.activeNote = note;
-    this.selectionChanged.emit();
+    this.activeNoteSubject.next(note);
   }
 
   getActiveNote(){
-    return this.activeNote;
+    return this.activeNoteSubject.getValue();
   }
 
   setActiveOctave(octave: number){
-    this.activeOctave = octave;
-    this.selectionChanged.emit();
+    this.activeOctaveSubject.next(octave);
   }
 
   getActiveOctave(){
-    return this.activeOctave;
+    return this.activeOctaveSubject.getValue();
   }
 
   setActiveAlteration(alteration: number){
-    this.activeAlteration = alteration;
-    this.selectionChanged.emit();
+    this.activeAlterationSubject.next(alteration);
   }
 
   getActiveAlteration(){
-    return this.activeAlteration;
+    return this.activeAlterationSubject.getValue();
   }
 
   getCurrentSelection(){
     let alterationSymbol = '';
-    switch (this.activeAlteration) {
+    switch (this.activeAlterationSubject.getValue()) {
       case -1:
         alterationSymbol = '♭';
-        this.activeAlterationString = 'b';
+        this.activeAlterationStringSubject.next('b');
         break;
       case 1:
         alterationSymbol = '♯';
-        this.activeAlterationString = 'd';
+        this.activeAlterationStringSubject.next('d');
         break;
       default:
         alterationSymbol = '';
-        this.activeAlterationString = '';
+        this.activeAlterationStringSubject.next('');
         break;
     }
-    return `${this.activeInstrument} ${this.activeNote}${alterationSymbol}${this.activeOctave}`;
+    return `${this.activeInstrumentSubject.getValue()} ${this.activeNoteSubject.getValue()}${alterationSymbol}${this.activeOctaveSubject.getValue()}`;
   }
 }

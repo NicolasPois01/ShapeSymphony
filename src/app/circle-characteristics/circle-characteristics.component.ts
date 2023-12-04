@@ -23,6 +23,7 @@ export class CircleCharacteristicsComponent implements OnInit{
   newStartX: number | undefined;
   newStartY: number | undefined;
   newAngle: number | undefined;
+  maxBounces: number = 0;
 
   constructor(private circlesService: CircleService, private timerService: TimerService) {}
 
@@ -64,6 +65,16 @@ export class CircleCharacteristicsComponent implements OnInit{
       this.circlesService.setNote(note);
     }
   }
+
+  setMaxBounces(maxBounces: number) {
+    if (this.selectedCircle) {
+      if (maxBounces != null) {
+        this.selectedCircle.maxBounces = maxBounces;
+      }
+      this.circlesService.setMaxBounces(maxBounces);
+    }
+  }
+
   setAlteration(alteration: string | undefined) {
     if (this.selectedCircle) {
       if (alteration != null) {
@@ -97,16 +108,7 @@ export class CircleCharacteristicsComponent implements OnInit{
       }
     }
   }
-  changeAngle(angle: number | undefined) {
-    if (angle !== undefined && this.selectedCircle) {
-      const speed = this.vitesseGlobale || 1;
-      const xSpeed = speed * Math.cos((angle * Math.PI) / 180);
-      const ySpeed = -speed * Math.sin((angle * Math.PI) / 180);
-      this.selectedCircle.xSpeed = xSpeed;
-      this.selectedCircle.ySpeed = ySpeed;
-      this.circlesService.updateCircleSpeed(this.selectedCircle);
-    }
-  }
+
   validateStartY(value: number | undefined) {
     if (value !== undefined) {
       if (value < -4.5) {
@@ -123,6 +125,18 @@ export class CircleCharacteristicsComponent implements OnInit{
       }
     }
   }
+  
+  changeAngle(angle: number | undefined) {
+    if (angle !== undefined && this.selectedCircle) {
+      const speed = this.vitesseGlobale || 1;
+      const xSpeed = speed * Math.cos((angle * Math.PI) / 180);
+      const ySpeed = -speed * Math.sin((angle * Math.PI) / 180);
+      this.selectedCircle.xSpeed = xSpeed;
+      this.selectedCircle.ySpeed = ySpeed;
+      this.circlesService.updateCircleSpeed(this.selectedCircle);
+    }
+  }
+
   isTimerNotStarted() {
    return this.timerService.isTimerNotStarted();
   }
