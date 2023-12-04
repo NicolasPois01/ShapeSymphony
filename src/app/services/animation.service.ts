@@ -4,6 +4,7 @@ import {BehaviorSubject, Observable, Subject} from "rxjs";
 @Injectable({
   providedIn: 'root'
 })
+
 export class AnimationService {
   isAnimationRunningSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   isAnimationRunning$: Observable<boolean> = this.isAnimationRunningSubject.asObservable();

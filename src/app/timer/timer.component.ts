@@ -32,6 +32,10 @@ export class TimerComponent {
     return this.timerService?.getMinutes();
   }
 
+  getShowTimer(): any {
+    return this.timerService?.getShowTimer();
+  }
+
   getSecondes(): any {
     return this.timerService?.getSecondes();
   }

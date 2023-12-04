@@ -32,7 +32,7 @@ export class CircleService {
   selectedCircle$ = this.selectedCircleSubject.asObservable();
 
   constructor(soundService : SoundService,
-              private ExportMp3Service: ExportMp3Service,  timerService: TimerService) {
+              private ExportMp3Service: ExportMp3Service, private timerService: TimerService) {
     this.selectedCircle = null;
     this.soundService = soundService;
     this.notes = this.soundService.notes;
@@ -63,21 +63,27 @@ export class CircleService {
     this.circleChangedSubject.next(circle);
   }
 
-  calculatePos(elapsedTime: number, circle: Circle, squareUnit: number, offSet: number, isArenaMuted: boolean) {
-    console.log("ça calcule ou quoi")
+  calculatePos(elapsedTime: number, circle: Circle, squareUnit: number, isArenaMuted: boolean, exportMP3Active: boolean = false) {
     // Update the circle's position based on its speed and elapsed time
-    circle.x += circle.xSpeed * elapsedTime;
-    circle.y += circle.ySpeed * elapsedTime;
+    if (exportMP3Active) {
+      circle.x += circle.xSpeed * elapsedTime * 10;
+      circle.y += circle.ySpeed * elapsedTime * 10;
+    }
+    else {
+      circle.x += circle.xSpeed * elapsedTime;
+      circle.y += circle.ySpeed * elapsedTime;
+    }
     this.updatePos(circle, circle.x, circle.y);
 
     // Collides x
     if (!this.inRange(circle.x, squareUnit)) {
       circle.isColliding = true;
       circle.nbBounces += 1;
-      let adjustedX = circle.xSpeed > 0 ? circle.x + this.circleRad - offSet : circle.x - this.circleRad + offSet;
+      let adjustedX = circle.xSpeed > 0 ? circle.x + this.circleRad : circle.x - this.circleRad;
       circle.contactPoint = { x: adjustedX, y: circle.y };
       this.bounceX(circle, circle.x - this.circleRad < -(squareUnit / 2),
         squareUnit / 2 - this.circleRad, isArenaMuted)
+      console.log("running in circle service    " + this.timerService?.getIsRunning());
       this.ExportMp3Service.exportMp3(circle);
 
       setTimeout(() => {
@@ -89,7 +95,7 @@ export class CircleService {
     if (!this.inRange(circle.y, squareUnit)) {
       circle.isColliding = true;
       circle.nbBounces += 1;
-      let adjustedY = circle.ySpeed > 0 ? circle.y + this.circleRad - offSet : circle.y - this.circleRad + offSet;
+      let adjustedY = circle.ySpeed > 0 ? circle.y + this.circleRad : circle.y - this.circleRad;
       circle.contactPoint = {x: circle.x, y: adjustedY};
       this.bounceY(circle, circle.y - this.circleRad < -(squareUnit / 2),
       squareUnit / 2 - this.circleRad, isArenaMuted);

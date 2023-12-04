@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import {BehaviorSubject, Subject} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,9 +12,16 @@ export class TimerService {
   startTime: any;
   isRunning: boolean = false;
   timer: any;
+  showTimer: boolean = true;
 
-  start(): void {
+  private isRunningSubject = new BehaviorSubject<boolean>(false);
+  isRunning$ = this.isRunningSubject.asObservable();
+
+  start(showTimer?: boolean): void {
     if (!this.isRunning) {
+      if (showTimer == false) {
+        this.showTimer = false;
+      }
       this.isRunning = true;
       // Adjust the start time based on previously elapsed time
       this.startTime = Date.now() - this.elapsedTime;
@@ -29,6 +36,7 @@ export class TimerService {
           self.minutes = Math.floor(self.elapsedTime / 60000);
         }, 10);
       }
+      this.isRunningSubject.next(true);
     }
   }
 
@@ -50,10 +58,15 @@ export class TimerService {
         this.timer = null;
       }
     }
+    this.isRunningSubject.next(false);
   }
 
   getTime(): object {
     return {'minutes': this.minutes,'secondes': this.seconds,'millisecondes':  this.milliseconds}
+  }
+
+  getShowTimer(): boolean {
+    return this.showTimer;
   }
 
   isTimerNotStarted() {

@@ -7,20 +7,21 @@ import { TimerService } from './timer.service';
 })
 export class ExportMp3Service {
   private collisionData: any[] = []; // Liste pour stocker les données de collision
+  private currentTime: number=0;
 
-  constructor(private timerService: TimerService) {}
-
+  constructor(private timerService: TimerService) {
+  }
   exportMp3(circle: Circle) {
-    // Obtenez le temps actuel à partir du TimerService
-    const currentTime = this.timerService.getTimeStamp();
-
+    this.currentTime = this.timerService.getTimeStamp();
+    console.log("running in export service    " + this.timerService?.getIsRunning());
+    console.log("Current time in ExportMp3Service: " + this.currentTime);
     // Créez un objet avec les données de collision
     const collisionInfo = {
       instrument: circle.instrument,
       note: circle.note,
       octave: circle.octave,
       alteration: circle.alteration,
-      currentTime: currentTime
+      currentTime: this.currentTime/10
     };
 
     // Ajoutez l'objet à la liste de collision
@@ -36,4 +37,7 @@ export class ExportMp3Service {
   resetCollisionData() {
     this.collisionData = [];
   }
+
+
+
 }

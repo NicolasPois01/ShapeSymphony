@@ -150,13 +150,13 @@ export class ArenaService {
     }
   }
 
-  updateArenas(elapsedTime: number, squareUnit: number, offSet: number) {
+  updateArenas(elapsedTime: number, squareUnit: number, exportMP3Active: boolean = false) {
     const arenas = this.arenaListSubject.getValue();
 
     arenas.forEach(arena => {
       arena.circleList.forEach(circle => {
         if(circle.showable) {
-          this.circleService.calculatePos(elapsedTime, circle, squareUnit, offSet, arena.isMuted);
+          this.circleService.calculatePos(elapsedTime, circle, squareUnit, arena.isMuted, exportMP3Active );
         }
       });
     });

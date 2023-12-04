@@ -49,7 +49,6 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   interval: any;
 
   subscriptions: Subscription[] = [];
-  offset = 0
   constructor(private circlesService: CircleService,
               private soundService: SoundService,
               private arenaService: ArenaService,
@@ -61,11 +60,12 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     this.soundService?.loadAudioFiles();
     this.animationService.isAnimationRunning$.subscribe(isRunning => {
       if (isRunning && this.timerService?.getIsRunning()) {
-        console.log("is running ?" +isRunning);
         this.interval = setInterval(() => {
-          let elapsedTime = ((this.timerService?.getTimeStamp() ?? 0) - this.timestamp) / 1000; // elapsed time in seconds
+          let elapsedTime = ((this.timerService?.getTimeStamp() ?? 0) - this.timestamp) / 1000;
           this.timestamp = this.timerService?.getTimeStamp();
-          this.arenaService.updateArenas(elapsedTime, this.squareUnit, this.offset);
+          if (elapsedTime > 0){
+            this.arenaService.updateArenas(elapsedTime, this.squareUnit );
+          }
         }, 1000 / this.fps);
       }
       else {
