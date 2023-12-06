@@ -1,10 +1,32 @@
-<div class="title">Liste des entités : </div>
+<div class="title">Liste des entités en attente : </div>
 
 <ul>
-  <li *ngFor="let tuple of circleNameList" (click)="circleClicked(tuple[0])"
+  <li *ngFor="let tuple of circleNameListWaiting()" (click)="circleClicked(tuple[0])"
       class="highlight-on-hover circle" [class.active]="isSelected(tuple[0])">
-    <span class="color-box" [style.background-color]="tuple[0].color"></span>
-    {{tuple[1]}}<span *ngIf="tuple[2]!=1">&thinsp;({{tuple[2]}})</span>
-    <span class="cross ml-auto" (click)="deleteCircle(tuple[0]); $event.stopPropagation()">X</span>
+      <span class="color-box" [style.background-color]="tuple[0].color"></span>
+      {{tuple[1]}}<span *ngIf="tuple[2]!=1">&thinsp;({{tuple[2]}})</span>
+      <span class="cross ml-auto" (click)="deleteCircle(tuple[0]); $event.stopPropagation()">X</span>
+  </li>
+</ul>
+
+<div class="title">Liste des entités en vie : </div>
+
+<ul>
+  <li *ngFor="let tuple of circleNameListAlive()" (click)="circleClicked(tuple[0])"
+      class="highlight-on-hover circle" [class.active]="isSelected(tuple[0])">
+      <span class="color-box" [style.background-color]="tuple[0].color"></span>
+      {{tuple[1]}}<span *ngIf="tuple[2]!=1">&thinsp;({{tuple[2]}})</span>
+      <span class="cross ml-auto" (click)="deleteCircle(tuple[0]); $event.stopPropagation()">X</span>
+  </li>
+</ul>
+
+<div class="title">Liste des entités mortes : </div>
+
+<ul>
+  <li *ngFor="let tuple of circleNameListDead()" (click)="circleClicked(tuple[0])"
+      class="highlight-on-hover circle" [class.active]="isSelected(tuple[0])">
+      <span class="color-box" [style.background-color]="tuple[0].color"></span>
+      {{tuple[1]}}<span *ngIf="tuple[2]!=1">&thinsp;({{tuple[2]}})</span>
+      <span class="cross ml-auto" (click)="deleteCircle(tuple[0]); $event.stopPropagation()">X</span>
   </li>
 </ul>
