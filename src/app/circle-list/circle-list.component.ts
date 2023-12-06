@@ -87,6 +87,22 @@ export class CircleListComponent implements OnInit  {
     this.circleListAlive = this.circlesService.circleListAliveSubject.getValue();
     this.circleListDead = this.circlesService.circleListDeadSubject.getValue();
 
+      this.circlesService.circleMovedToDead$.subscribe(
+        (circle: Circle) => {
+          let index = this.circleListAlive.findIndex(
+            (circle) => circle.id === circle.id
+          );
+          if (index !== -1) {
+            this.circleListAlive.splice(index, 1);
+          }
+          this.circleListDead.push(circle);
+        }
+      );
+
+    this.circleListWaiting = this.circlesService.circleListWaitingSubject.getValue();
+    this.circleListAlive = this.circlesService.circleListAliveSubject.getValue();
+    this.circleListDead = this.circlesService.circleListDeadSubject.getValue();
+
     this.circlesService.selectedCircle$.subscribe((circle: Circle | null) => {
       this.selectedCircle = circle;
     });
