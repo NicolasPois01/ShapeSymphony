@@ -88,6 +88,7 @@ export class CircleListComponent implements OnInit  {
         name = circle.instrument;}
       else {
         name = circle.instrument + circle.note + circle.alteration + circle.octave;
+        console.log(name)
       }
 
       let index = this.circleNameList.length - 1;

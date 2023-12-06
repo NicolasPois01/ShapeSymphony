@@ -83,6 +83,7 @@ export class CircleCharacteristicsComponent implements OnInit{
       this.circlesService.setAlteration(alteration);
     }
   }
+
   setOctave(octave: number | undefined) {
     if (this.selectedCircle) {
       if (octave != null) {

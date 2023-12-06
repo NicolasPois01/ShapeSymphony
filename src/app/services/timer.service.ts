@@ -17,7 +17,7 @@ export class TimerService {
   private isRunningSubject = new BehaviorSubject<boolean>(false);
   isRunning$ = this.isRunningSubject.asObservable();
 
-  start(showTimer?: boolean): void {
+  start(showTimer?: boolean): boolean {
     if (!this.isRunning) {
       if (showTimer == false) {
         this.showTimer = false;
@@ -25,19 +25,20 @@ export class TimerService {
       this.isRunning = true;
       // Adjust the start time based on previously elapsed time
       this.startTime = Date.now() - this.elapsedTime;
-      let self = this;
 
       if (!this.timer) {
         this.timer = setInterval(() => {
-          self.elapsedTime = Date.now() - self.startTime;
+          this.elapsedTime = Date.now() - this.startTime;
 
-          self.milliseconds = self.elapsedTime % 1000;
-          self.seconds = Math.floor(self.elapsedTime / 1000) % 60;
-          self.minutes = Math.floor(self.elapsedTime / 60000);
+          this.milliseconds = this.elapsedTime % 1000;
+          this.seconds = Math.floor(this.elapsedTime / 1000) % 60;
+          this.minutes = Math.floor(this.elapsedTime / 60000);
+
         }, 10);
       }
       this.isRunningSubject.next(true);
     }
+    return this.isRunning;
   }
 
   // Ajouter cette méthode dans TimerService

@@ -3,12 +3,12 @@ import {Circle} from "../models/circle";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {SoundService} from "./sound.service";
 import cloneDeep from 'lodash/cloneDeep'
-import {ExportMp3Service} from "./exportmp3.service";
-import { TimerService } from './timer.service';
+import {ExportWAVService} from "./exportWAV.service";
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class CircleService {
   circleSize: number = 1;
   circleRad: number = this.circleSize/2;
@@ -30,9 +30,9 @@ export class CircleService {
   circleList$: Observable<Circle[]> = this.circleListSubject.asObservable();
   selectedCircleSubject = new BehaviorSubject<Circle | null>(null);
   selectedCircle$ = this.selectedCircleSubject.asObservable();
-
-  constructor(soundService : SoundService,
-              private ExportMp3Service: ExportMp3Service, private timerService: TimerService) {
+  exportWavCircleSubject = new BehaviorSubject<Circle | null>(null);
+  exportWavCircle$ = this.exportWavCircleSubject.asObservable();
+  constructor(soundService : SoundService) {
     this.selectedCircle = null;
     this.soundService = soundService;
     this.notes = this.soundService.notes;
@@ -83,8 +83,7 @@ export class CircleService {
       circle.contactPoint = { x: adjustedX, y: circle.y };
       this.bounceX(circle, circle.x - this.circleRad < -(squareUnit / 2),
         squareUnit / 2 - this.circleRad, isArenaMuted)
-      console.log("running in circle service    " + this.timerService?.getIsRunning());
-      this.ExportMp3Service.exportMp3(circle);
+      this.exportWavCircleSubject.next(circle);
 
       setTimeout(() => {
         circle.isColliding = false;
@@ -99,7 +98,7 @@ export class CircleService {
       circle.contactPoint = {x: circle.x, y: adjustedY};
       this.bounceY(circle, circle.y - this.circleRad < -(squareUnit / 2),
       squareUnit / 2 - this.circleRad, isArenaMuted);
-      this.ExportMp3Service.exportMp3(circle);
+      this.exportWavCircleSubject.next(circle);
 
       setTimeout(() => {
         circle.isColliding = false;
