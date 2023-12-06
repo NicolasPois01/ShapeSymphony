@@ -26,7 +26,21 @@ export class SoundService {
   activeAlterationStringSubject = new BehaviorSubject<string>("");
   activeAlterationString$ = this.activeAlterationStringSubject.asObservable();
 
-  constructor() { }
+  constructor() {
+    this.activeAlterationSubject.subscribe(value => {
+      switch (value) {
+        case -1:
+          this.activeAlterationStringSubject.next('b');
+          break
+        case 1:
+          this.activeAlterationStringSubject.next('d');
+          break
+        default:
+          this.activeAlterationStringSubject.next('');
+          break;
+      }
+    })
+  }
 
   async loadAudioFiles() {
       for (const instrument of this.instruments) {
