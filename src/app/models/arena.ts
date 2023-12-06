@@ -2,6 +2,8 @@ import {Circle} from "./circle";
 
 export interface Arena {
   id: number,
-  circleList: Circle[],
+  circleListWaiting: Circle[],
+  circleListDead: Circle[],
+  circleListAlive: Circle[],
   isMuted: boolean
 }

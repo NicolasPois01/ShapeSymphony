@@ -52,7 +52,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   constructor(private circlesService: CircleService,
               private soundService: SoundService,
               private arenaService: ArenaService) {
-    arenaService.activeArenaSubject.subscribe(arena => this.circles = arena.circleList);
+    arenaService.activeArenaSubject.subscribe(arena => this.circles = arena.circleListAlive);
   }
 
   ngOnInit() {
@@ -123,7 +123,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
       contactPoint: {x: -1, y: -1},
       isColliding: false
     }
-    this.circlesService.addCircleToActiveArena(circle);
+    this.circlesService.addCircleToAliveList(circle);
   }
 
 
@@ -196,7 +196,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   ngOnChanges(changes: SimpleChanges) {
     if(this.mousebox) this.onSquareMouseMove(new MouseEvent("mousemove"), true );
     if (changes['arena']) {
-      this.circles = this.arena.circleList;
+      this.circles = this.arena.circleListAlive;
     }
   }
 
