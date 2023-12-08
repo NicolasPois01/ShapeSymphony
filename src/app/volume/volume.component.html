@@ -1,0 +1,8 @@
+<div class="volume-container">
+  <input class="volume-slider" type="range" min="0" max="100" step="1" [(ngModel)]="selectedVolume" (change)="updateVolume()">
+  <div class="volume-labels">
+    <span>0%</span>
+    <span>50%</span>
+    <span>100%</span>
+  </div>
+</div>

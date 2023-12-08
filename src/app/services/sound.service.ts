@@ -25,6 +25,8 @@ export class SoundService {
   activeAlteration$ = this.activeAlterationSubject.asObservable();
   activeAlterationStringSubject = new BehaviorSubject<string>("");
   activeAlterationString$ = this.activeAlterationStringSubject.asObservable();
+  activeVolumeSubject = new BehaviorSubject<number>(0.5);   //Valeur par défault pour le volume à 50%.
+  activeVolume$ = this.activeVolumeSubject.asObservable();
 
   constructor() { }
 
@@ -118,6 +120,14 @@ export class SoundService {
 
   getActiveAlteration(){
     return this.activeAlterationSubject.getValue();
+  }
+
+  setActiveVolume(volume: number){
+    this.activeVolumeSubject.next(volume);
+  }
+
+  getActiveVolume(){
+    return this.activeVolumeSubject.getValue();
   }
 
   getCurrentSelection(){
