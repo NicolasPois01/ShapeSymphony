@@ -52,7 +52,7 @@
       <li>Temporalité de départ:
       </li>
       <li>
-        <time-input (onValueChange)="this.setStartTime($event[0])"></time-input>
+        <time-input (onValueChange)="setSpawnTime($event[0])" [minutes]="getMinutesSpawnTime()" [secondes]="getSecondesSpawnTime()" [millisecondes]="getMillisecondesSpawnTime()"></time-input>
       </li>
     </ng-container>
     <ng-container *ngIf="!isTimerNotStarted()">
@@ -78,6 +78,11 @@
         </select>
       </li>
       <li>Nombre de rebonds max: {{ maxBounces }}</li>
+      <li>Temporalité de départ:
+      </li>
+      <li>
+        <time-input [disable]="true" [minutes]="getMinutesSpawnTime()" [secondes]="getSecondesSpawnTime()" [millisecondes]="getMillisecondesSpawnTime()"></time-input>
+      </li>
     </ng-container>
   </ul>
 </div>

@@ -26,6 +26,8 @@ export class CircleService {
   circleMovedToWaiting$ = this.circleMovedToWaitingSubject.asObservable();
   circleMovedToDeadSubject: Subject<Circle> = new Subject<Circle>();
   circleMovedToDead$ = this.circleMovedToDeadSubject.asObservable();
+  circleMovedToAliveSubject: Subject<Circle> = new Subject<Circle>();
+  circleMovedToAlive$ = this.circleMovedToAliveSubject.asObservable();
   circleListWaitingSubject = new BehaviorSubject<Circle[]>([]);
   circleListWaiting$: Observable<Circle[]> = this.circleListWaitingSubject.asObservable();
   circleListAliveSubject = new BehaviorSubject<Circle[]>([]);
@@ -79,6 +81,7 @@ export class CircleService {
   }
 
   calculatePos(elapsedTime: number, circle: Circle, squareUnit: number, isArenaMuted: boolean, exportMP3Active: boolean = false) {
+
     // Update the circle's position based on its speed and elapsed time
     if (exportMP3Active) {
       circle.x += circle.xSpeed * elapsedTime * 10;
@@ -214,6 +217,10 @@ export class CircleService {
 
   moveCircleToDeadList(circle: Circle) {
     this.circleMovedToDeadSubject.next(circle);
+  }
+
+  moveCircleToAliveList(circle: Circle) {
+    this.circleMovedToAliveSubject.next(circle);
   }
 
   setCircleListAlive(circleList: Circle[]) {

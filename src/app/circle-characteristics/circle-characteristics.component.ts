@@ -24,6 +24,7 @@ export class CircleCharacteristicsComponent implements OnInit{
   newStartY: number | undefined;
   newAngle: number | undefined;
   maxBounces: number = 0;
+  spawnTime: number = 0;
 
   constructor(private circlesService: CircleService, private timerService: TimerService) {}
 
@@ -45,6 +46,7 @@ export class CircleCharacteristicsComponent implements OnInit{
         this.newAngle = this.angleDepart;
         this.vitesseGlobale = +Math.sqrt(Math.pow(circle.xSpeed, 2) + Math.pow(circle.ySpeed, 2)).toFixed(2);
         this.maxBounces = circle.maxBounces;
+        this.spawnTime = circle.spawnTime;
       }
     });
   }
@@ -94,11 +96,29 @@ export class CircleCharacteristicsComponent implements OnInit{
     }
   }
 
-  setStartTime(startTime: {minutes: number, secondes: number, millisecondes: number}) {
+  setSpawnTime(startTime: {minutes: number, secondes: number, millisecondes: number}) {
     if (this.selectedCircle) {
-      this.selectedCircle.spawnTime = (startTime.minutes * 3600) + (startTime.secondes * 60) + startTime.millisecondes;
-      this.circlesService.setSpawnTime(this.selectedCircle.spawnTime);
+      this.spawnTime = (startTime.minutes * 60000) + (startTime.secondes * 1000) + startTime.millisecondes;
+      if(this.spawnTime > 0) {
+        this.circlesService.moveCircleToWaitingList(this.selectedCircle);
+      } else {
+        this.circlesService.moveCircleToAliveList(this.selectedCircle);
+      }
+      this.selectedCircle.spawnTime = this.spawnTime;
+      this.circlesService.setSpawnTime(this.spawnTime);
     }
+  }
+
+  getMinutesSpawnTime() {
+    return Math.floor(this.spawnTime / 60000);
+  }
+
+  getSecondesSpawnTime() {
+    return Math.floor((this.spawnTime % 60000) / 1000);
+  }
+
+  getMillisecondesSpawnTime() {
+    return this.spawnTime % 1000;
   }
 
   validateStartX(value: number | undefined) {

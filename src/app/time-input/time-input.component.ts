@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 @Component({
     selector: 'time-input',
@@ -6,19 +6,16 @@ import { Component, EventEmitter, Output } from "@angular/core";
     styleUrls: ['./time-input.component.scss']
 })
 export class TimeInputComponent {
-    public minutes: number = 0;
-    public secondes: number = 0;
-    public millisecondes: number = 0;
 
     @Output() public onValueChange: EventEmitter<any> = new EventEmitter();
 
-    public onUpClick(): void {
-        this.minutes++;
-    }
+    @Input() public disable: boolean = false;
 
-    public onDownClick(): void {
-        this.minutes--;
-    }
+    @Input() public minutes = 0;
+
+    @Input() public secondes = 0;
+
+    @Input() public millisecondes = 0;
 
     public onMinutesChange(event: any): void {
         this.minutes = Number(event.target.value);
