@@ -8,7 +8,7 @@
   position: relative;
   aspect-ratio: 1 / 1;
   height: calc(100% - 20px);
-  background-color: #3f3550;
+  background-color: #1F172E;
   color: white;
   box-shadow: 0 0 15px black;
   box-sizing: border-box;
@@ -16,7 +16,7 @@
   pointer-events: auto;
   margin: auto;
   width: min-content;
-  border: 1px solid #444;
+  border: 0px;
 }
 
 .square:hover {

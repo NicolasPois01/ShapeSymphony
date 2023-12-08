@@ -4,7 +4,10 @@
       <lucide-icon name="plus"></lucide-icon> Add arena
     </button>
   </div>
-  <div *ngFor="let arena of arenaList" class="arena-item">
+  <div id="app-arena-list-inside">
+  <div *ngFor="let arena of arenaList"
+       [class.active]="isActiveArena(arena.id)"
+       class="arena-item">
     <input type="text" [(ngModel)]="arena.name" class="arena-name-input"
            (blur)="setArenaName(arena.id, arena.name)" />
     <div class="button-container">
@@ -25,6 +28,7 @@
         <lucide-icon *ngIf="!isActiveArena(arena.id)" name="eye-off" class="inactive-icon"></lucide-icon>
       </div>
     </div>
+  </div>
   </div>
 </div>
 

@@ -3,30 +3,63 @@ body {
   background-color: #36284E;
 }
 
-.add-arena-container {
-  margin: 20px;
-  /* Ajoutez ici d'autres styles si nécessaire */
+#app-arena-list-inside {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0px;
+  /* La hauteur maximale dépend de la taille de votre écran et du contenu total de la page */
+  max-height: calc(100vh - 300px); /* Ajustez '100px' en fonction de l'espace d'en-tête ou d'autres contenus */
+  overflow-y: auto; /* Ajoute un défilement vertical si nécessaire */
 }
 
-.instrument-container {
-  display: flex;
-  flex-direction: column; /* Les enfants s'alignent en colonne */
-  gap: 10px;
+
+.add-arena-container {
+  margin: 10px;
+  text-align: center; /* Centrer le bouton d'ajout d'arène */
+}
+
+.arenas-container {
   margin: 20px;
   max-height: 600px; /* Hauteur maximale avant que le défilement ne soit activé */
   overflow-y: auto; /* Active le défilement vertical si le contenu dépasse max-height */
 }
 
-.toggle-button, .icon-container{
+.arena-item {
+  background-color: #2a1f3d;
+  border-radius: 12px;
+  margin: 7px 0; /* Espace vertical entre les éléments */
+  padding: 10px;
+  box-shadow: -5px -5px 10px #36284e, 5px 5px 10px #1e162c;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.arena-item.active {
+  background-color: #4F295A; /* Choisissez la couleur de mise en évidence souhaitée */
+  box-shadow: inset 0 0 10px #36284e; /* Optionnel: ajouter une ombre interne pour un effet enfoncé */
+}
+
+.arena-name-input {
+  background-color: transparent;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  margin-bottom: 0px;
+  width: calc(100% - 50px);
+  text-align: center;
+  outline: none;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-around;
   width: 100%;
-
+  margin-top: 5px; /* Espace au-dessus des boutons */
 }
 
-.toggle-button {
-  height: fit-content;
-}
-
-.toggle-button, .icon-container, .toggle-button-add-arena{
+.toggle-button, .icon-container, .toggle-button-add-arena {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -38,130 +71,75 @@ body {
   cursor: pointer;
   box-shadow: -5px -5px 10px #36284e, 5px 5px 10px #1e162c;
   transition: background-color 0.3s, box-shadow 0.3s;
-  margin-right: 7px;
 }
 
-.toggle-button:hover {
+.toggle-button:hover, .toggle-button-add-arena:hover {
   box-shadow: -2px -2px 5px #36284e, 2px 2px 5px #1e162c;
+  background-color: #36284e;
 }
 
-.toggle-button.active {
+.toggle-button.active, .icon-container.active {
   background-color: #36284e;
   box-shadow: inset -2px -2px 5px #41305f, inset 2px 2px 5px #1e162c;
-  color: white;
 }
 
-.mini-square.active {
-  background-color: blue;
-}
-
-.arena-item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Style pour les icônes Lucide */
-lucide-icon {
+.icon-container {
   fill: white; /* Pour s'assurer que les icônes sont visibles sur un fond sombre */
   margin-right: 5px;
 }
 
-
-.icon-container:hover {
-  background-color: #36284e; /* Un changement de couleur pour le survol */
-}
-
 .active-icon, .inactive-icon {
   fill: white; /* Couleur de l'icône */
-
 }
 
-/* Optionnel: si vous voulez une transition au survol pour l'icône */
 .active-icon:hover, .inactive-icon:hover {
   transform: scale(1.1);
 }
 
 /* Styliser la barre de défilement pour Chrome, Safari, etc. */
-.instrument-container::-webkit-scrollbar {
+.arenas-container::-webkit-scrollbar {
   width: 10px; /* Largeur de la barre de défilement */
 }
 
-.instrument-container::-webkit-scrollbar-track {
+.arenas-container::-webkit-scrollbar-track {
   background: #2a1f3d; /* Couleur de la piste de défilement */
 }
 
-.instrument-container::-webkit-scrollbar-thumb {
+.arenas-container::-webkit-scrollbar-thumb {
   background: #4e426c; /* Couleur du curseur de défilement */
   border-radius: 5px; /* Bords arrondis pour le curseur de défilement */
 }
 
-.instrument-container::-webkit-scrollbar-thumb:hover {
+.arenas-container::-webkit-scrollbar-thumb:hover {
   background: #675a85; /* Couleur du curseur de défilement au survol */
 }
 
 /* Styliser la barre de défilement pour Firefox */
-.instrument-container {
+.arenas-container {
   scrollbar-width: thin; /* "auto" ou "thin" */
   scrollbar-color: #4e426c #2a1f3d; /* Couleur du curseur et de la piste */
 }
 
-.icon-container.active {
-  background-color: #36284e; /* Changement de couleur de fond */
-  box-shadow: inset -2px -2px 5px #41305f, inset 2px 2px 5px #1e162c;
+/* Styles pour la barre de défilement */
+#app-arena-list-inside::-webkit-scrollbar {
+  width: 12px;
 }
 
-.toggle-button-add-arena {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 7px;
-  background-color: #2a1f3d;
-  border: none;
-  border-radius: 12px;
-  color: white;
-  cursor: pointer;
-  box-shadow: -5px -5px 10px #36284e, 5px 5px 10px #1e162c;
-  transition: background-color 0.3s, box-shadow 0.3s;
+#app-arena-list-inside::-webkit-scrollbar-track {
+  background: #2a1f3d;
 }
 
-.toggle-button-add-arena:hover {
-  box-shadow: -2px -2px 5px #36284e, 2px 2px 5px #1e162c;
-  background-color: #36284e;
+#app-arena-list-inside::-webkit-scrollbar-thumb {
+  background: #4e426c;
+  border-radius: 6px;
 }
 
-.arena-item {
-  background-color: #2a1f3d; /* Couleur de fond de l'élément */
-  border-radius: 12px; /* Coins arrondis */
-  margin: 10px; /* Espace autour de l'élément */
-  padding: 10px; /* Espace à l'intérieur de l'élément */
-  box-shadow: -5px -5px 10px #36284e, 5px 5px 10px #1e162c; /* Ombre box */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
+#app-arena-list-inside::-webkit-scrollbar-thumb:hover {
+  background: #675a85;
 }
 
-.arena-name-input {
-  background-color: transparent; /* Fond transparent */
-  border: none; /* Pas de bordure */
-  color: white; /* Couleur du texte */
-  padding: 5px 10px; /* Espacement intérieur */
-  margin-bottom: 10px; /* Espace sous le champ de texte */
-  width: 100%; /* Largeur complète */
-  box-sizing: border-box; /* Inclut padding et border dans la largeur */
-  text-align: center; /* Texte centré */
-
-  /* Enlève l'outline lors de la sélection */
-  outline: none;
+/* Styles de la barre de défilement pour Firefox */
+#app-arena-list-inside {
+  scrollbar-width: thin;
+  scrollbar-color: #4e426c #2a1f3d;
 }
-
-.button-container {
-  display: flex; /* Affichage flex pour aligner les boutons horizontalement */
-  justify-content: space-around; /* Espacement uniforme entre les boutons */
-  align-items: center;
-  height: fit-content;
-  margin-left: 10px;
-}
-
