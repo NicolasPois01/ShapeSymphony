@@ -19,8 +19,10 @@ import { OctaveComponent } from './octave/octave.component';
 import { FormsModule } from "@angular/forms";
 import { MusicComponent} from './music-component/music-component.component';
 import { ArenaListComponent } from './arena-list/arena-list.component';
+import {VolumeComponent} from "./volume/volume.component";
 import { ExportMp3Component } from './export-mp3/export-mp3.component';
 import {ArenaListModule} from "./arena-list/arena-list.module";
+import {VolumeModule} from "./volume/volume.module";
 
 @NgModule({
   declarations: [
@@ -45,7 +47,9 @@ import {ArenaListModule} from "./arena-list/arena-list.module";
     BrowserModule,
     NgbModule,
     FormsModule,
-    ArenaListModule
+    ArenaListModule,
+    FormsModule,
+    VolumeModule
   ],
   providers: [],
   bootstrap: [MainComponentComponent]
