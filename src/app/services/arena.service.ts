@@ -218,21 +218,23 @@ export class ArenaService {
     this.activeArenaSubject.next(updatedArenas[0]);
   }
 
-  clearActiveArena() {
-    const activeArena = this.activeArenaSubject.getValue();
-    // Empty the circle list of the active arena
-    activeArena.circleListAlive = [];
-    // Update the active arena subject with the modified active arena
-    this.activeArenaSubject.next(activeArena);
-    // Update the arena list as well
+  clearArenaById(idArena: number): void {
     const arenas = this.arenaListSubject.getValue();
-    const arenaIndex = arenas.findIndex(a => a.id === activeArena.id);
+    const arenaIndex = arenas.findIndex(a => a.id === idArena);
 
     if (arenaIndex !== -1) {
-      // Update the arena in the list with the modified active arena
-      arenas[arenaIndex] = activeArena;
-      // Update the arena list subject with the updated list of arenas
+      // Clear the circle lists of the targeted arena
+      arenas[arenaIndex].circleListAlive = [];
+      arenas[arenaIndex].circleListDead = [];
+      arenas[arenaIndex].circleListWaiting = [];
+
+      // Update the arena list with the modified arena
       this.arenaListSubject.next([...arenas]);
+
+      // If the cleared arena is the active one, update the active arena subject
+      if (this.activeArenaSubject.getValue().id === idArena) {
+        this.activeArenaSubject.next(arenas[arenaIndex]);
+      }
     }
   }
 

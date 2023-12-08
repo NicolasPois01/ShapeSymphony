@@ -11,7 +11,7 @@
     <input type="text" [(ngModel)]="arena.name" class="arena-name-input"
            (blur)="setArenaName(arena.id, arena.name)" />
     <div class="button-container">
-      <button class="toggle-button" (click)="clearActive()">
+      <button class="toggle-button" (click)="clearActive(arena.id)">
         <lucide-icon name="eraser"></lucide-icon>
       </button>
       <button class="toggle-button" (click)="deleteArena(arena.id)">
