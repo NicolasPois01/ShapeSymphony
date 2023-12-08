@@ -126,12 +126,24 @@ export class CircleListComponent implements OnInit  {
     circleList.forEach(circle => {
       let name: string;
       let counter: number = 0;
+      let alteration:string = '';
+
+      switch (circle.alteration) {
+        case "b":
+          alteration = '♭';
+          break;
+        case "d":
+          alteration = '♯';
+          break;
+        default:
+          alteration = '';
+          break;
+      }
 
       if (circle.instrument === "Percussion") {
         name = circle.instrument;}
       else {
-        name = circle.instrument + circle.note + circle.alteration + circle.octave;
-        console.log(name)
+        name = circle.instrument + circle.note + alteration + circle.octave;
       }
 
       let index = this.circleNameList.length - 1;
