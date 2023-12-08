@@ -8,13 +8,15 @@ import { SoundService } from '../services/sound.service';
 })
 
 export class VolumeComponent {
-  @Output() volumeChanged = new EventEmitter<void>();
-  selectedVolume: number = this.soundService.getActiveVolume();
+  selectedVolume!: number;
 
-  constructor(private soundService: SoundService) {}
+  constructor(private soundService: SoundService) {
+    this.soundService.activeVolume$.subscribe(volume=> {
+      this.selectedVolume = volume;
+    })
+  }
 
   updateVolume(): void {
     this.soundService.setActiveVolume(this.selectedVolume);
-    this.volumeChanged.emit();
   }
 }

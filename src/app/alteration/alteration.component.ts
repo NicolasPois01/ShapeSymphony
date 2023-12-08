@@ -7,7 +7,6 @@ import { SoundService } from '../services/sound.service';
   styleUrls: ['./alteration.component.scss']
 })
 export class AlterationComponent {
-  @Output() alterationChanged = new EventEmitter<void>();
   selectedAlteration: number = this.soundService.getActiveAlteration();
 
   constructor(private soundService: SoundService) {}

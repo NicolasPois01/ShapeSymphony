@@ -98,7 +98,6 @@ export class SoundService {
       const audioFilePath = `./assets/samples/${circle.instrument}/${audioFileName}`;
       const audio = new Audio(audioFilePath);
       audio.volume = (circle.volume/100);
-      console.log(audio.volume);
       audio.play();
     }
   }
