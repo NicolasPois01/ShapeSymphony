@@ -34,6 +34,7 @@
     <div class="controls-wrapper">
       <app-octave *ngIf="!isPercussion(activeInstrument)"></app-octave>
       <app-alteration *ngIf="!isPercussion(activeInstrument)"></app-alteration>
+      <app-volume></app-volume>
       <app-music *ngIf="!isPercussion(activeInstrument)"></app-music>
     </div>
     <app-percussion-tab *ngIf="isPercussion(activeInstrument)"></app-percussion-tab>

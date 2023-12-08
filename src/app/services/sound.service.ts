@@ -25,7 +25,7 @@ export class SoundService {
   activeAlteration$ = this.activeAlterationSubject.asObservable();
   activeAlterationStringSubject = new BehaviorSubject<string>("");
   activeAlterationString$ = this.activeAlterationStringSubject.asObservable();
-  activeVolumeSubject = new BehaviorSubject<number>(0.5);   //Valeur par défault pour le volume à 50%.
+  activeVolumeSubject = new BehaviorSubject<number>(50);   //Valeur par défault pour le volume à 50%.
   activeVolume$ = this.activeVolumeSubject.asObservable();
 
   constructor() {
@@ -89,15 +89,16 @@ export class SoundService {
       const audioFileName = circle.instrument+'.mp3';
       const audioFilePath = `./assets/samples/Percussion/${audioFileName}`;
       const audio = new Audio(audioFilePath);
-      audio.volume = circle.volume;
+      audio.volume = (circle.volume/100);
       audio.play();
     }
-    // les autres
+    // les autres instruments
     else {
       const audioFileName = circle.instrument+circle.note+circle.alteration+circle.octave+'.mp3';
       const audioFilePath = `./assets/samples/${circle.instrument}/${audioFileName}`;
       const audio = new Audio(audioFilePath);
-      audio.volume = circle.volume;
+      audio.volume = (circle.volume/100);
+      console.log(audio.volume);
       audio.play();
     }
   }

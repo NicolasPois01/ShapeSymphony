@@ -6,13 +6,12 @@ import { SoundService } from '../services/sound.service';
   templateUrl: './volume.component.html',
   styleUrls: ['./volume.component.scss']
 })
+
 export class VolumeComponent {
   @Output() volumeChanged = new EventEmitter<void>();
   selectedVolume: number = this.soundService.getActiveVolume();
 
   constructor(private soundService: SoundService) {}
-
-
 
   updateVolume(): void {
     this.soundService.setActiveVolume(this.selectedVolume);

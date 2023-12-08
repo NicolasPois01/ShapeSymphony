@@ -12,8 +12,6 @@ export class AlterationComponent {
 
   constructor(private soundService: SoundService) {}
 
-
-
   updateAlteration(): void {
     this.soundService.setActiveAlteration(this.selectedAlteration);
   }
