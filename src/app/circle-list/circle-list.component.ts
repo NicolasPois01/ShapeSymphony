@@ -137,40 +137,56 @@ export class CircleListComponent implements OnInit  {
     });
   }
 
-    getCircleNameList(circle: Circle, list: string): [Circle, string, number, string] {
-        let name: string;
-        let counter: number = 0;
+  getCircleNameList(circle: Circle, list: string): [Circle, string, number, string] {
+    let name: string;
+    let counter: number = 0;
+    circleList.forEach(circle => {
+      let name: string;
+      let counter: number = 0;
+      let alteration:string = '';
 
-        if (circle.instrument === "Percussion") {
-            name = circle.instrument;
-        } else {
-            name = circle.instrument + circle.note + circle.alteration + circle.octave;
-        }
+      switch (circle.alteration) {
+        case "b":
+          alteration = '♭';
+          break;
+        case "d":
+          alteration = '♯';
+          break;
+        default:
+          alteration = '';
+          break;
+      }
 
-        let index = this.circleNameList.length - 1;
-        while (index >= 0) {
-            const currentTuple = this.circleNameList[index];
-            if (currentTuple[1] === name) {
-                counter = currentTuple[2];
-                break;
-            }
-            index--;
-        }
-        return [circle, name, counter + 1, list];
+      if (circle.instrument === "Percussion") {
+        name = circle.instrument;}
+      else {
+        name = circle.instrument + circle.note + alteration + circle.octave;
+      }
+
+    let index = this.circleNameList.length - 1;
+    while (index >= 0) {
+      const currentTuple = this.circleNameList[index];
+      if (currentTuple[1] === name) {
+        counter = currentTuple[2];
+        break;
+      }
+      index--;
     }
+    return [circle, name, counter + 1, list];
+  }
 
-    circleNameListWaiting() {
-        return this.circleNameList.filter(tuple => tuple[3] === "Waiting");
-    }
+  circleNameListWaiting() {
+    return this.circleNameList.filter(tuple => tuple[3] === "Waiting");
+  }
 
-    circleNameListAlive() {
-        return this.circleNameList.filter(tuple => tuple[3] === "Alive");
-    }
+  circleNameListAlive() {
+    return this.circleNameList.filter(tuple => tuple[3] === "Alive");
+  }
 
-    circleNameListDead() {
-        return this.circleNameList.filter(tuple => tuple[3] === "Dead");
-    }
+  circleNameListDead() {
+    return this.circleNameList.filter(tuple => tuple[3] === "Dead");
+  }
 
-    protected readonly CircleService = CircleService;
-    protected readonly SoundService = SoundService;
+  protected readonly CircleService = CircleService;
+  protected readonly SoundService = SoundService;
 }
