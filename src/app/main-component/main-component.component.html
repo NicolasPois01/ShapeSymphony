@@ -4,39 +4,52 @@
     <app-json-export></app-json-export>
     <app-import-json></app-import-json>
     <app-export-mp3></app-export-mp3>
+    <button (click)="showConfirmationModal()" class="clear-button">Clear All</button>
   </div>
 </div>
 
-<div class="container-app d-flex flex-column align-stretch">
+<!-- Fenêtre modale de confirmation -->
+<div class="modal" *ngIf="isConfirmationModalVisible">
+  <div class="modal-content">
+    <span class="close" (click)="hideConfirmationModal()">&times;</span>
+    <h3>Êtes-vous sûr de vouloir tout effacer ?</h3>
+    <div class="modal-buttons">
+      <button (click)="clearAll()">Confirmer</button>
+      <button (click)="hideConfirmationModal()">Annuler</button>
+    </div>
+  </div>
+</div>
 
-  <div class="container-app-row d-flex flex-row">
+<div class="container-app">
+  <div class="container-app-row">
     <app-arena-list></app-arena-list>
 
-    <app-square class="square"
-                [timerService]="this.timerService"
-                [grid]="this.grid"
-                [squareUnit]="this.squareUnit"
-                [fps]="this.fps"
-                [precisionMode]="this.precisionMode"
-                [arena]="activeArena"></app-square>
-
-
+    <!-- Conteneur pour le square et les contrôles -->
+    <div class="square-and-controls">
+      <app-square class="square"
+                  [timerService]="this.timerService"
+                  [grid]="this.grid"
+                  [squareUnit]="this.squareUnit"
+                  [fps]="this.fps"
+                  [precisionMode]="this.precisionMode"
+                  [arena]="activeArena"></app-square>
+      <div class="controls-container">
+        <app-instruments-tab ngModel #instrumentsTab></app-instruments-tab>
+        <app-notes-tab></app-notes-tab>
+        <div class="controls-wrapper">
+          <app-octave *ngIf="!isPercussion(activeInstrument)"></app-octave>
+          <app-alteration *ngIf="!isPercussion(activeInstrument)"></app-alteration>
+          <app-music *ngIf="!isPercussion(activeInstrument)"></app-music>
+        </div>
+        <app-percussion-tab *ngIf="isPercussion(activeInstrument)"></app-percussion-tab>
+        <app-timer class="timer" [timerService]="this.timerService"></app-timer>
+      </div>
+    </div>
     <div class="col-2 circles-list-container">
       <app-circle-list></app-circle-list>
     </div>
     <div class="col-3">
       <app-circle-characteristics-list></app-circle-characteristics-list>
     </div>
-  </div>
-  <div class="controls-container">
-    <app-instruments-tab ngModel #instrumentsTab></app-instruments-tab>
-    <app-notes-tab></app-notes-tab>
-    <div class="controls-wrapper">
-      <app-octave *ngIf="!isPercussion(activeInstrument)"></app-octave>
-      <app-alteration *ngIf="!isPercussion(activeInstrument)"></app-alteration>
-      <app-music *ngIf="!isPercussion(activeInstrument)"></app-music>
-    </div>
-    <app-percussion-tab *ngIf="isPercussion(activeInstrument)"></app-percussion-tab>
-    <app-timer class="timer" [timerService]="this.timerService"></app-timer>
   </div>
 </div>

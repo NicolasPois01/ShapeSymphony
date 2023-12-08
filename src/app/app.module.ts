@@ -20,6 +20,7 @@ import { FormsModule } from "@angular/forms";
 import { MusicComponent} from './music-component/music-component.component';
 import { ArenaListComponent } from './arena-list/arena-list.component';
 import { ExportMp3Component } from './export-mp3/export-mp3.component';
+import {ArenaListModule} from "./arena-list/arena-list.module";
 
 @NgModule({
   declarations: [
@@ -38,13 +39,13 @@ import { ExportMp3Component } from './export-mp3/export-mp3.component';
     AlterationComponent,
     OctaveComponent,
     MusicComponent,
-    ArenaListComponent,
-    ExportMp3Component
+    ExportMp3Component,
   ],
   imports: [
     BrowserModule,
     NgbModule,
-    FormsModule
+    FormsModule,
+    ArenaListModule
   ],
   providers: [],
   bootstrap: [MainComponentComponent]

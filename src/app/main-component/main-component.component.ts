@@ -58,4 +58,20 @@ export class MainComponentComponent implements OnInit, OnDestroy {
   isPercussion (instrument: string): boolean {
     return this.soundService.isPercussion(instrument);
   }
+
+  isConfirmationModalVisible = false;
+
+  showConfirmationModal() {
+    this.isConfirmationModalVisible = true;
+  }
+
+  hideConfirmationModal() {
+    this.isConfirmationModalVisible = false;
+  }
+  clearAll(): void {
+    this.arenaService.clearAll();
+    this.timerService?.resetTimer();
+    this.hideConfirmationModal();
+  }
+
 }

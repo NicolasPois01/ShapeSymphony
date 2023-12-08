@@ -64,7 +64,8 @@ export class ImportJsonComponent {
           circleListWaiting: circleListWaiting,
           circleListAlive: circleListAlive,
           circleListDead: circleListDead,
-          isMuted: arenaData.isMuted
+          isMuted: arenaData.isMuted,
+          name: arenaData.name
         });
       });
       this.arenaService.setArenaList(arenaList, arenaActiveId);

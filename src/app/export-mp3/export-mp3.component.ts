@@ -26,18 +26,6 @@ export class ExportMp3Component {
 
   ngOnInit(): void {}
 
-  private downloadJson(jsonObject: string, fileName: string) {
-    const blob = new Blob([jsonObject], { type: 'application/json' });
-    const url = window.URL.createObjectURL(blob);
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = fileName;
-    document.body.appendChild(anchor);
-    anchor.click();
-    document.body.removeChild(anchor);
-    window.URL.revokeObjectURL(url);
-  }
-
   openTimeInputModal() {
     this.showModal = true;
   }
