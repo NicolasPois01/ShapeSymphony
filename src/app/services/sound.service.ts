@@ -13,7 +13,7 @@ export class SoundService {
   notes = ["Do", "Re", "Mi", "Fa", "Sol", "La", "Si"];
   percussions = ["Clap", "Cowbell", "Cymbale", "Gong", "Guiro", "Hat", "Kick", "Snap", "Snare", "Tambour", "Timbale", "Triangle"];
   octaves = ["1","2","3","4","5","6","7"];
-  alterations = ["","b","d"];   //Legende : d=dièse, b=bémol.
+  alterations = ["♮","♭","#"];
 
   activeInstrumentSubject = new BehaviorSubject<string>("Piano");
   activeInstrument$ = this.activeInstrumentSubject.asObservable();
@@ -28,7 +28,21 @@ export class SoundService {
   activeVolumeSubject = new BehaviorSubject<number>(0.5);   //Valeur par défault pour le volume à 50%.
   activeVolume$ = this.activeVolumeSubject.asObservable();
 
-  constructor() { }
+  constructor() {
+    this.activeAlterationSubject.subscribe(value => {
+      switch (value) {
+        case -1:
+          this.activeAlterationStringSubject.next('b');
+          break
+        case 1:
+          this.activeAlterationStringSubject.next('d');
+          break
+        default:
+          this.activeAlterationStringSubject.next('');
+          break;
+      }
+    })
+  }
 
   async loadAudioFiles() {
       for (const instrument of this.instruments) {
@@ -142,7 +156,7 @@ export class SoundService {
         this.activeAlterationStringSubject.next('d');
         break;
       default:
-        alterationSymbol = '';
+        alterationSymbol = '♮';
         this.activeAlterationStringSubject.next('');
         break;
     }

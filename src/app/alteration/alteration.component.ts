@@ -16,6 +16,5 @@ export class AlterationComponent {
 
   updateAlteration(): void {
     this.soundService.setActiveAlteration(this.selectedAlteration);
-    this.alterationChanged.emit();
   }
 }

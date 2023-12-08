@@ -2,26 +2,40 @@ import {Injectable} from '@angular/core';
 import {Circle} from "../models/circle";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {SoundService} from "./sound.service";
-import cloneDeep from 'lodash/cloneDeep'
+import {ExportWAVService} from "./exportWAV.service";
 import { TimerService } from './timer.service';
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class CircleService {
   circleSize: number = 1;
   circleRad: number = this.circleSize/2;
   circleChangedSubject: Subject<Circle> = new Subject<Circle>();
   circleChanged$: Observable<Circle> = this.circleChangedSubject.asObservable();
-  newCircleSubject: Subject<Circle> = new Subject<Circle>();
-  newCircle$ = this.newCircleSubject.asObservable();
-  circleList: Circle[] = [];
-  tempCircleList: Circle[] = [];
+  circleDeletedSubject: Subject<Circle> = new Subject<Circle>();
+  circleDeleted$: Observable<Circle> = this.circleDeletedSubject.asObservable();
+  circleNewWaitingSubject: Subject<Circle> = new Subject<Circle>();
+  circleNewWaiting$ = this.circleNewWaitingSubject.asObservable();
+  circleNewAliveSubject: Subject<Circle> = new Subject<Circle>();
+  circleNewAlive$ = this.circleNewAliveSubject.asObservable();
+  circleNewDeadSubject: Subject<Circle> = new Subject<Circle>();
+  circleNewDead$ = this.circleNewDeadSubject.asObservable();
+  circleMovedToWaitingSubject: Subject<Circle> = new Subject<Circle>();
+  circleMovedToWaiting$ = this.circleMovedToWaitingSubject.asObservable();
+  circleMovedToDeadSubject: Subject<Circle> = new Subject<Circle>();
+  circleMovedToDead$ = this.circleMovedToDeadSubject.asObservable();
+  circleListWaitingSubject = new BehaviorSubject<Circle[]>([]);
+  circleListWaiting$: Observable<Circle[]> = this.circleListWaitingSubject.asObservable();
+  circleListAliveSubject = new BehaviorSubject<Circle[]>([]);
+  circleListAlive$: Observable<Circle[]> = this.circleListAliveSubject.asObservable();
+  circleListDeadSubject = new BehaviorSubject<Circle[]>([]);
+  circleListDead$: Observable<Circle[]> = this.circleListDeadSubject.asObservable();
 
   colors = ["red", "green", "blue", "yellow", "pink", "orange", "purple", "cyan", "magenta", "brown"];
   selectedCircle: Circle | null;
   soundService : SoundService;
-  timerService: TimerService;
   notes: string[] = [];
   alterations: string[] = [];
   octaves: string[] = [];
@@ -30,11 +44,11 @@ export class CircleService {
   circleList$: Observable<Circle[]> = this.circleListSubject.asObservable();
   selectedCircleSubject = new BehaviorSubject<Circle | null>(null);
   selectedCircle$ = this.selectedCircleSubject.asObservable();
-
+  exportWavCircleSubject = new BehaviorSubject<Circle | null>(null);
+  exportWavCircle$ = this.exportWavCircleSubject.asObservable();
   constructor(soundService : SoundService, timerService: TimerService) {
     this.selectedCircle = null;
     this.soundService = soundService;
-    this.timerService = timerService;
     this.notes = this.soundService.notes;
     this.alterations = this.soundService.alterations;
     this.octaves = this.soundService.octaves;
@@ -52,8 +66,9 @@ export class CircleService {
   }
 
   clearAllCircles(): void {
-    while(this.circleList.length > 0) {
-      this.deleteCircle(this.circleList[0]);
+    let circleList = [...this.circleListAliveSubject.getValue(), ...this.circleListWaitingSubject.getValue(), ...this.circleListDeadSubject.getValue()];
+    while(circleList.length > 0) {
+      this.deleteCircle(circleList[0]);
     }
   }
 
@@ -63,20 +78,28 @@ export class CircleService {
     this.circleChangedSubject.next(circle);
   }
 
-  calculatePos(elapsedTime: number, circle: Circle, squareUnit: number, offSet: number, isArenaMuted: boolean) {
+  calculatePos(elapsedTime: number, circle: Circle, squareUnit: number, isArenaMuted: boolean, exportMP3Active: boolean = false) {
     // Update the circle's position based on its speed and elapsed time
-    circle.x += circle.xSpeed * elapsedTime;
-    circle.y += circle.ySpeed * elapsedTime;
+    if (exportMP3Active) {
+      circle.x += circle.xSpeed * elapsedTime * 10;
+      circle.y += circle.ySpeed * elapsedTime * 10;
+    }
+    else {
+      circle.x += circle.xSpeed * elapsedTime;
+      circle.y += circle.ySpeed * elapsedTime;
+    }
     this.updatePos(circle, circle.x, circle.y);
 
     // Collides x
     if (!this.inRange(circle.x, squareUnit)) {
       circle.isColliding = true;
       circle.nbBounces += 1;
-      let adjustedX = circle.xSpeed > 0 ? circle.x + this.circleRad - offSet : circle.x - this.circleRad + offSet;
+      let adjustedX = circle.xSpeed > 0 ? circle.x + this.circleRad : circle.x - this.circleRad;
       circle.contactPoint = { x: adjustedX, y: circle.y };
       this.bounceX(circle, circle.x - this.circleRad < -(squareUnit / 2),
         squareUnit / 2 - this.circleRad, isArenaMuted)
+      this.exportWavCircleSubject.next(circle);
+
       setTimeout(() => {
         circle.isColliding = false;
       }, 500);
@@ -86,16 +109,19 @@ export class CircleService {
     if (!this.inRange(circle.y, squareUnit)) {
       circle.isColliding = true;
       circle.nbBounces += 1;
-      let adjustedY = circle.ySpeed > 0 ? circle.y + this.circleRad - offSet : circle.y - this.circleRad + offSet;
+      let adjustedY = circle.ySpeed > 0 ? circle.y + this.circleRad : circle.y - this.circleRad;
       circle.contactPoint = {x: circle.x, y: adjustedY};
       this.bounceY(circle, circle.y - this.circleRad < -(squareUnit / 2),
-        squareUnit / 2 - this.circleRad, isArenaMuted);
+      squareUnit / 2 - this.circleRad, isArenaMuted);
+      this.exportWavCircleSubject.next(circle);
+
       setTimeout(() => {
         circle.isColliding = false;
       }, 500);
     }
     if(circle.maxBounces != 0 && circle.nbBounces >= circle.maxBounces) {
-      circle.showable = false;
+      this.moveCircleToDeadList(circle);
+      return;
     }
 
     this.circleChangedSubject.next(circle);
@@ -130,39 +156,79 @@ export class CircleService {
     return this.colors[randomIndex];
   }
 
-  getNewId(): number {
-    return this.highestId++;
+  addCircleToWaitingList(circle: Circle) {
+    let circleList = this.circleListWaitingSubject.getValue();
+    circleList.push(circle);
+    this.circleListWaitingSubject.next(circleList);
+    this.circleNewWaitingSubject.next(circle);
   }
 
-  addCircleToActiveArena(circle: Circle) {
-    this.circleList.push(circle);
-    this.circleListSubject.next(this.circleList);
-    this.newCircleSubject.next(circle);
+  addCircleToAliveList(circle: Circle) {
+    let circleList = this.circleListAliveSubject.getValue();
+    circleList.push(circle);
+    this.circleListAliveSubject.next(circleList);
+    this.circleNewAliveSubject.next(circle);
   }
 
-  setSelectedCircle(circle: Circle) {
+  addCircleToDeadList(circle: Circle) {
+    let circleList = this.circleListDeadSubject.getValue();
+    circleList.push(circle);
+    this.circleListDeadSubject.next(circleList);
+    this.circleNewDeadSubject.next(circle);
+  }
+
+  setSelectedCircle(circle: Circle | null = null) {
     this.selectedCircleSubject.next(circle);
     this.selectedCircle = this.selectedCircleSubject.getValue();
   }
 
   deleteCircle(circle: Circle): void {
-    const index = this.circleList.indexOf(circle);
+    let circleListWaiting = this.circleListWaitingSubject.getValue();
+    let circleListAlive = this.circleListAliveSubject.getValue();
+    let circleListDead = this.circleListDeadSubject.getValue();
+    const index = circleListWaiting.findIndex(c => c.id === circle.id);
     if (index > -1) {
-      this.circleList.splice(index, 1);
-      this.circleListSubject.next(this.circleList);  // Notifier le changement
+      circleListWaiting.splice(index, 1);
+      this.circleListWaitingSubject.next(circleListWaiting);  // Notifier le changement
+      this.circleDeletedSubject.next(circle);
+    } else {
+      const index = circleListAlive.findIndex(c => c.id === circle.id);
+      if (index > -1) {
+        circleListAlive.splice(index, 1);
+        this.circleListAliveSubject.next(circleListAlive);  // Notifier le changement
+        this.circleDeletedSubject.next(circle);
+      } else {
+        const index = circleListDead.findIndex(c => c.id === circle.id);
+        if (index > -1) {
+          circleListDead.splice(index, 1);
+          this.circleListDeadSubject.next(circleListDead);  // Notifier le changement
+          this.circleDeletedSubject.next(circle);
+        }
+      }
     }
   }
 
-  saveCircles(): void {
-    this.tempCircleList = cloneDeep(this.circleList); // deepClone pour copier les objets et non les références
+  moveCircleToWaitingList(circle: Circle) {
+    this.circleMovedToWaitingSubject.next(circle);
   }
 
-  restoreCircles(): void {
-    this.clearAllCircles();  // This will clear the current circles
+  moveCircleToDeadList(circle: Circle) {
+    this.circleMovedToDeadSubject.next(circle);
+  }
 
-    this.tempCircleList.forEach(circle => {
-      this.addCircleToActiveArena(circle);
-    });
+  setCircleListAlive(circleList: Circle[]) {
+    this.circleListAliveSubject.next(circleList);
+    this.highestId = Math.max(...[...this.circleListWaitingSubject.getValue(),...this.circleListAliveSubject.getValue(),...this.circleListDeadSubject.getValue()].map(circle => circle.id)) + 1;
+  }
+
+  setCircleListWaiting(circleList: Circle[]) {
+    this.circleListWaitingSubject.next(circleList);
+    this.highestId = Math.max(...[...this.circleListWaitingSubject.getValue(),...this.circleListAliveSubject.getValue(),...this.circleListDeadSubject.getValue()].map(circle => circle.id)) + 1;
+  }
+
+  setCircleListDead(circleList: Circle[]) {
+    this.circleListDeadSubject.next(circleList);
+    this.highestId = Math.max(...[...this.circleListWaitingSubject.getValue(),...this.circleListAliveSubject.getValue(),...this.circleListDeadSubject.getValue()].map(circle => circle.id)) + 1;
   }
 
   setColor(color: string | undefined) {
@@ -210,5 +276,9 @@ export class CircleService {
       }
       this.circleChangedSubject.next(this.selectedCircle);
     }
+  }
+
+  getNewId(): number {
+    return this.highestId++;
   }
 }

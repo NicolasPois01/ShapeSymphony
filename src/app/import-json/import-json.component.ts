@@ -39,44 +39,65 @@ export class ImportJsonComponent {
       this.timerService.resetTimer();
 
       let arenaList: Arena [] = [];
-      let circleList: Circle [] = [];
+      let circleListWaiting: Circle [] = [];
+      let circleListAlive: Circle [] = [];
+      let circleListDead: Circle [] = [];
+      let arenaActiveId: number = 0;
       arenas.forEach(arenaData => {
-        circleList = [];
-        let circleListData = arenaData.circleList;
-        circleListData.forEach((circleData: Circle) => {
-          let circle: Circle = {
-            id: circleData.id,
-            x: circleData.startX,
-            y: circleData.startY,
-            xSpeed: circleData.xSpeed,
-            ySpeed: circleData.ySpeed,
-            color: circleData.color,
-            startX: circleData.startX,
-            startY: circleData.startY,
-            startXSpeed: circleData.startXSpeed,
-            startYSpeed: circleData.startYSpeed,
-            instrument: circleData.instrument,
-            note: circleData.note,
-            alteration: circleData.alteration,
-            octave: circleData.octave,
-            volume: circleData.volume,
-            spawnTime: circleData.spawnTime,
-            maxBounces: circleData.maxBounces,
-            maxTime: circleData.maxTime,
-            nbBounces: circleData.nbBounces,
-            showable: circleData.showable,
-            isColliding: false,
-            contactPoint: {x: -1, y: -1}
-          }
-          circleList.push(circle);
+        circleListWaiting = [];
+        circleListAlive = [];
+        circleListDead = [];
+        if(arenaActiveId === 0) {
+          arenaActiveId = arenaData.id;
+        }
+        arenaData.circleListAlive.forEach((circleData: Circle) => {
+          circleListAlive.push(this.getCircleData(circleData));
+        })
+        arenaData.circleListWaiting.forEach((circleData: Circle) => {
+          circleListWaiting.push(this.getCircleData(circleData));
+        })
+        arenaData.circleListDead.forEach((circleData: Circle) => {
+          circleListDead.push(this.getCircleData(circleData));
         })
         arenaList.push({
           id: arenaData.id,
-          circleList: circleList,
+          circleListWaiting: circleListWaiting,
+          circleListAlive: circleListAlive,
+          circleListDead: circleListDead,
           isMuted: arenaData.isMuted
         });
-        this.arenaService.setArenaList(arenaList);
-      })
+      });
+      this.arenaService.setArenaList(arenaList, arenaActiveId);
+      this.circleService.setCircleListWaiting(circleListWaiting);
+      this.circleService.setCircleListAlive(circleListAlive);
+      this.circleService.setCircleListDead(circleListDead);
+    }
+  }
+
+  getCircleData(circleData: Circle) {
+   return {
+      id: circleData.id,
+      x: circleData.startX,
+      y: circleData.startY,
+      xSpeed: circleData.xSpeed,
+      ySpeed: circleData.ySpeed,
+      color: circleData.color,
+      startX: circleData.startX,
+      startY: circleData.startY,
+      startXSpeed: circleData.startXSpeed,
+      startYSpeed: circleData.startYSpeed,
+      instrument: circleData.instrument,
+      note: circleData.note,
+      alteration: circleData.alteration,
+      octave: circleData.octave,
+      volume: circleData.volume,
+      spawnTime: circleData.spawnTime,
+      maxBounces: circleData.maxBounces,
+      maxTime: circleData.maxTime,
+      nbBounces: circleData.nbBounces,
+      showable: circleData.showable,
+      isColliding: false,
+      contactPoint: {x: -1, y: -1}
     }
   }
 
@@ -111,7 +132,7 @@ export class ImportJsonComponent {
             isColliding: false,
             contactPoint: {x: -1, y: -1}
           }
-          this.circleService.addCircleToActiveArena(circle);
+          this.circleService.addCircleToAliveList(circle);
         });
       }
     } catch (error) {
