@@ -49,6 +49,11 @@
       <li>Nombre de rebonds max:
         <input type="number" [(ngModel)]="maxBounces" (change)="setMaxBounces(maxBounces)" step="1" min="0"/>
       </li>
+      <li>Temporalité de départ:
+      </li>
+      <li>
+        <time-input></time-input>
+      </li>
     </ng-container>
     <ng-container *ngIf="!isTimerNotStarted()">
       <li>Angle: {{ newAngle }}</li>

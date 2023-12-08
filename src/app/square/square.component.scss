@@ -10,13 +10,14 @@
   height: calc(100% - 20px);
   background-color: #3f3550;
   color: white;
-  box-shadow: 0 0 15px black;
+  box-shadow: rgba(6, 6, 7, 0.4) 0px 7px 29px 0px;
   box-sizing: border-box;
   overflow: hidden;
   pointer-events: auto;
   margin: auto;
   width: min-content;
   border: 1px solid #444;
+  border-radius: 10px;
 }
 
 .square:hover {

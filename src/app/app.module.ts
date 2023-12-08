@@ -20,6 +20,7 @@ import { FormsModule } from "@angular/forms";
 import { MusicComponent} from './music-component/music-component.component';
 import { ArenaListComponent } from './arena-list/arena-list.component';
 import { ExportMp3Component } from './export-mp3/export-mp3.component';
+import { TimeInputComponent } from './time-input/time-input.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { ExportMp3Component } from './export-mp3/export-mp3.component';
     OctaveComponent,
     MusicComponent,
     ArenaListComponent,
-    ExportMp3Component
+    ExportMp3Component,
+    TimeInputComponent
   ],
   imports: [
     BrowserModule,
