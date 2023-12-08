@@ -272,6 +272,8 @@ export class ArenaService {
       arena.circleListAlive.forEach(circle => {
         circle.x = circle.startX;
         circle.y = circle.startY;
+        circle.xSpeed = circle.startXSpeed;
+        circle.ySpeed = circle.startYSpeed;
         circle.nbBounces = 0;
         circle.showable = true;
         circle.isColliding = false;

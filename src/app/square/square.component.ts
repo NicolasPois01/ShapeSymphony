@@ -116,6 +116,8 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
       color: this.circlesService.getRandomColor(),
       startX: parseFloat(x.toFixed(this.precisionMode ? 1 : 2)),
       startY: parseFloat(y.toFixed(this.precisionMode ? 1 : 2)),
+      startXSpeed: parseFloat(((this.saveVx * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)),
+      startYSpeed: parseFloat(((this.saveVy * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)),
       instrument: this.soundService.activeInstrumentSubject.getValue(),
       note: this.soundService.activeNoteSubject.getValue(),
       alteration: this.soundService.activeAlterationStringSubject.getValue(),
