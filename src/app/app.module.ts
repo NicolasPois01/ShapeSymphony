@@ -41,7 +41,8 @@ import {VolumeModule} from "./volume/volume.module";
     OctaveComponent,
     MusicComponent,
     ArenaListComponent,
-    ExportMp3Component
+    ExportMp3Component,
+    TimeInputComponent
   ],
   imports: [
     BrowserModule,
