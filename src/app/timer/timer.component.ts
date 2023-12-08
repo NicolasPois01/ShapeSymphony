@@ -58,10 +58,8 @@ export class TimerComponent {
   }
 
   resetGame(): void {
-    this.timerService?.resetTimer();  // réinitialise le
-    this.animationService.pauseAnimation();  // arrête l'animation
-    this.arenaService.restoreArenas();  // réinitialise les cercles
-
+    this.timerService?.resetTimer();
+    this.animationService.pauseAnimation();
+    this.arenaService.restoreArenas();
   }
-
 }
