@@ -264,6 +264,8 @@ export class CircleService {
   }
 
   updateCircleSpeed(circle: Circle) {
+    circle.startXSpeed = circle.xSpeed;
+    circle.startYSpeed = circle.ySpeed;
     this.selectedCircleSubject.next(circle);
   }
 
