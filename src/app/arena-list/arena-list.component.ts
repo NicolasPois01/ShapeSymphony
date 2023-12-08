@@ -1,4 +1,4 @@
-import {Component, NgModule, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Arena} from "../models/arena";
 import {ArenaService} from "../services/arena.service";
 
@@ -22,8 +22,8 @@ export class ArenaListComponent implements OnInit {
     )
   }
 
-  clearActive() {
-    this.arenaService.clearActiveArena();
+  clearActive(id: number) {
+    this.arenaService.clearArenaById(id);
   }
 
   addArena() {
