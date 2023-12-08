@@ -264,7 +264,12 @@ export class CircleService {
   }
 
   updateCircleSpeed(circle: Circle) {
-    this.selectedCircleSubject.next(circle);
+    if(this.selectedCircle) {
+      this.selectedCircle.xSpeed = circle.xSpeed;
+      this.selectedCircle.ySpeed = circle.ySpeed;
+      this.circleChangedSubject.next(this.selectedCircle);
+      this.selectedCircleSubject.next(this.selectedCircle);
+    }
   }
 
   setAlteration(alteration: string | undefined) {
