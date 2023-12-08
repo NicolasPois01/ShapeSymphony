@@ -26,8 +26,6 @@ export class CircleService {
   circleMovedToWaiting$ = this.circleMovedToWaitingSubject.asObservable();
   circleMovedToDeadSubject: Subject<Circle> = new Subject<Circle>();
   circleMovedToDead$ = this.circleMovedToDeadSubject.asObservable();
-  circleMovedToAliveSubject: Subject<Circle> = new Subject<Circle>();
-  circleMovedToAlive$ = this.circleMovedToAliveSubject.asObservable();
   circleListWaitingSubject = new BehaviorSubject<Circle[]>([]);
   circleListWaiting$: Observable<Circle[]> = this.circleListWaitingSubject.asObservable();
   circleListAliveSubject = new BehaviorSubject<Circle[]>([]);
@@ -81,7 +79,6 @@ export class CircleService {
   }
 
   calculatePos(elapsedTime: number, circle: Circle, squareUnit: number, isArenaMuted: boolean, exportMP3Active: boolean = false) {
-
     // Update the circle's position based on its speed and elapsed time
     if (exportMP3Active) {
       circle.x += circle.xSpeed * elapsedTime * 10;
@@ -219,10 +216,6 @@ export class CircleService {
     this.circleMovedToDeadSubject.next(circle);
   }
 
-  moveCircleToAliveList(circle: Circle) {
-    this.circleMovedToAliveSubject.next(circle);
-  }
-
   setCircleListAlive(circleList: Circle[]) {
     this.circleListAliveSubject.next(circleList);
     this.highestId = Math.max(...[...this.circleListWaitingSubject.getValue(),...this.circleListAliveSubject.getValue(),...this.circleListDeadSubject.getValue()].map(circle => circle.id)) + 1;
@@ -264,8 +257,6 @@ export class CircleService {
   }
 
   updateCircleSpeed(circle: Circle) {
-    circle.startXSpeed = circle.xSpeed;
-    circle.startYSpeed = circle.ySpeed;
     this.selectedCircleSubject.next(circle);
   }
 
@@ -283,13 +274,6 @@ export class CircleService {
       if (octave != null) {
         this.selectedCircle.octave = octave;
       }
-      this.circleChangedSubject.next(this.selectedCircle);
-    }
-  }
-
-  setSpawnTime(spawnTime: number) {
-    if (this.selectedCircle) {
-      this.selectedCircle.spawnTime = spawnTime;
       this.circleChangedSubject.next(this.selectedCircle);
     }
   }
