@@ -1,0 +1,61 @@
+.volume-container {
+  display: flex;
+  flex-direction: column;
+  width: 120px;
+  margin-left: 20px;
+  color: white;
+}
+
+.volume-slider {
+  width: 100%;
+  margin: 10px 0;
+  appearance: none;
+  border-radius: 12px;
+  background-color: #2a1f3d;
+  box-shadow: -3px -3px 7px #36284e, 3px 3px 7px #1e162c;
+}
+
+.volume-slider:hover,
+.volume-slider:focus {
+  box-shadow: -1px -1px 3px #36284e, 1px 1px 3px #1e162c;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  appearance: none;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  background-color: #B084CC;
+  box-shadow: -1px -1px 3px #41305f, 1px 1px 3px #1e162c;
+}
+
+.volume-slider::-moz-range-thumb {
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  background-color: #36284e;
+  box-shadow: -1px -1px 3px #41305f, 1px 1px 3px #1e162c;
+}
+
+.volume-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px; /* Augmenté la taille du texte pour une meilleure lisibilité */
+}
+
+.volume-labels span {
+  width: 33%;
+  text-align: center;
+}
+
+span {
+  font-size: 1.2em;
+  color: white; /* Changé la couleur du texte en blanc pour mieux contraster avec le fond sombre */
+  margin-right: 10px;
+}
+
+.volume-container {
+  margin-top: 20px;
+}

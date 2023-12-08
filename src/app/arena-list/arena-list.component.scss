@@ -1,10 +1,167 @@
-.mini-square {
-  width: 50px;
-  height: 50px;
-  background-color: black;
-  margin: 1rem;
+body {
+  font-family: Arial, sans-serif;
+  background-color: #36284E;
 }
 
-.active {
+.add-arena-container {
+  margin: 20px;
+  /* Ajoutez ici d'autres styles si nécessaire */
+}
+
+.instrument-container {
+  display: flex;
+  flex-direction: column; /* Les enfants s'alignent en colonne */
+  gap: 10px;
+  margin: 20px;
+  max-height: 600px; /* Hauteur maximale avant que le défilement ne soit activé */
+  overflow-y: auto; /* Active le défilement vertical si le contenu dépasse max-height */
+}
+
+.toggle-button, .icon-container{
+  width: 100%;
+
+}
+
+.toggle-button {
+  height: fit-content;
+}
+
+.toggle-button, .icon-container, .toggle-button-add-arena{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 7px;
+  background-color: #2a1f3d;
+  border: none;
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+  box-shadow: -5px -5px 10px #36284e, 5px 5px 10px #1e162c;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  margin-right: 7px;
+}
+
+.toggle-button:hover {
+  box-shadow: -2px -2px 5px #36284e, 2px 2px 5px #1e162c;
+}
+
+.toggle-button.active {
+  background-color: #36284e;
+  box-shadow: inset -2px -2px 5px #41305f, inset 2px 2px 5px #1e162c;
+  color: white;
+}
+
+.mini-square.active {
   background-color: blue;
 }
+
+.arena-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Style pour les icônes Lucide */
+lucide-icon {
+  fill: white; /* Pour s'assurer que les icônes sont visibles sur un fond sombre */
+  margin-right: 5px;
+}
+
+
+.icon-container:hover {
+  background-color: #36284e; /* Un changement de couleur pour le survol */
+}
+
+.active-icon, .inactive-icon {
+  fill: white; /* Couleur de l'icône */
+
+}
+
+/* Optionnel: si vous voulez une transition au survol pour l'icône */
+.active-icon:hover, .inactive-icon:hover {
+  transform: scale(1.1);
+}
+
+/* Styliser la barre de défilement pour Chrome, Safari, etc. */
+.instrument-container::-webkit-scrollbar {
+  width: 10px; /* Largeur de la barre de défilement */
+}
+
+.instrument-container::-webkit-scrollbar-track {
+  background: #2a1f3d; /* Couleur de la piste de défilement */
+}
+
+.instrument-container::-webkit-scrollbar-thumb {
+  background: #4e426c; /* Couleur du curseur de défilement */
+  border-radius: 5px; /* Bords arrondis pour le curseur de défilement */
+}
+
+.instrument-container::-webkit-scrollbar-thumb:hover {
+  background: #675a85; /* Couleur du curseur de défilement au survol */
+}
+
+/* Styliser la barre de défilement pour Firefox */
+.instrument-container {
+  scrollbar-width: thin; /* "auto" ou "thin" */
+  scrollbar-color: #4e426c #2a1f3d; /* Couleur du curseur et de la piste */
+}
+
+.icon-container.active {
+  background-color: #36284e; /* Changement de couleur de fond */
+  box-shadow: inset -2px -2px 5px #41305f, inset 2px 2px 5px #1e162c;
+}
+
+.toggle-button-add-arena {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 7px;
+  background-color: #2a1f3d;
+  border: none;
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+  box-shadow: -5px -5px 10px #36284e, 5px 5px 10px #1e162c;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.toggle-button-add-arena:hover {
+  box-shadow: -2px -2px 5px #36284e, 2px 2px 5px #1e162c;
+  background-color: #36284e;
+}
+
+.arena-item {
+  background-color: #2a1f3d; /* Couleur de fond de l'élément */
+  border-radius: 12px; /* Coins arrondis */
+  margin: 10px; /* Espace autour de l'élément */
+  padding: 10px; /* Espace à l'intérieur de l'élément */
+  box-shadow: -5px -5px 10px #36284e, 5px 5px 10px #1e162c; /* Ombre box */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.arena-name-input {
+  background-color: transparent; /* Fond transparent */
+  border: none; /* Pas de bordure */
+  color: white; /* Couleur du texte */
+  padding: 5px 10px; /* Espacement intérieur */
+  margin-bottom: 10px; /* Espace sous le champ de texte */
+  width: 100%; /* Largeur complète */
+  box-sizing: border-box; /* Inclut padding et border dans la largeur */
+  text-align: center; /* Texte centré */
+
+  /* Enlève l'outline lors de la sélection */
+  outline: none;
+}
+
+.button-container {
+  display: flex; /* Affichage flex pour aligner les boutons horizontalement */
+  justify-content: space-around; /* Espacement uniforme entre les boutons */
+  align-items: center;
+  height: fit-content;
+  margin-left: 10px;
+}
+

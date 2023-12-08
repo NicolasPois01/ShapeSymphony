@@ -65,7 +65,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
           let elapsedTime = ((this.timerService?.getTimeStamp() ?? 0) - this.timestamp) / 1000;
           this.timestamp = this.timerService?.getTimeStamp();
           if (elapsedTime > 0){
-            this.arenaService.updateArenas(elapsedTime, this.squareUnit, this.timestamp);
+            this.arenaService.updateArenas(elapsedTime, this.squareUnit );
           }
         }, 1000 / this.fps);
       }
@@ -122,7 +122,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
       note: this.soundService.activeNoteSubject.getValue(),
       alteration: this.soundService.activeAlterationStringSubject.getValue(),
       octave: this.soundService.activeOctaveSubject.getValue(),
-      volume: 1,
+      volume: this.soundService.activeVolumeSubject.getValue(),
       spawnTime: spawnTimeValue,
       maxBounces: 0,
       maxTime: 0,

@@ -1,0 +1,11 @@
+<div class="volume-container">
+    <input class="volume-slider" type="range" min="0" max="100" step="1" [(ngModel)]="selectedVolume" (change)="updateVolume()">
+    <div class="volume-labels">
+        <span> </span>
+        <span *ngIf="selectedVolume == 0">&thinsp;<lucide-icon name="volume-x"></lucide-icon></span>
+        <span *ngIf="selectedVolume > 0 && selectedVolume <= 20">&thinsp;<lucide-icon name="volume"></lucide-icon></span>
+        <span *ngIf="selectedVolume > 20 && selectedVolume < 65">&thinsp;<lucide-icon name="volume-1"></lucide-icon></span>
+        <span *ngIf="selectedVolume >= 65">&thinsp;<lucide-icon name="volume-2"></lucide-icon></span>
+        <span>{{selectedVolume}}%</span>
+    </div>
+</div>

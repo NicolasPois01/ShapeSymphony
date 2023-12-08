@@ -17,13 +17,17 @@ export class InstrumentsTabComponent {
     this.soundService.activeInstrument$.subscribe(activeInstrument => this.activeInstrument = activeInstrument)
   }
 
-  isActive(instrument: string) {
-    return instrument == this.activeInstrument;
+  isActive(instrument: string): boolean {
+    if (instrument === "Percussion") {
+      return this.soundService.isPercussion(this.activeInstrument);
+    } else {
+      return instrument === this.activeInstrument;
+    }
   }
+
 
   toggleInstrument(instrument: string) {
     instrument = instrument === "Percussion" ? "Clap" : instrument;
     this.soundService.setActiveInstrument(instrument);
-    //this.instrumentChanged.emit();
   }
 }

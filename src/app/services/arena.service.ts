@@ -16,7 +16,8 @@ export class ArenaService {
       circleListWaiting: [],
       circleListDead: [],
       circleListAlive: [],
-      isMuted: false
+      isMuted: false,
+      name: 'Arena 1'
     }
   ]);
   arenaList$: Observable<Arena[]> = this.arenaListSubject.asObservable();
@@ -26,7 +27,8 @@ export class ArenaService {
     circleListWaiting: [],
     circleListDead: [],
     circleListAlive: [],
-    isMuted: false
+    isMuted: false,
+    name: 'Arena 1'
   });
   activeArena$ = this.activeArenaSubject.asObservable();
 
@@ -46,9 +48,6 @@ export class ArenaService {
     this.circleService.circleMovedToDead$.subscribe(circle => {
       this.moveCircleToDeadList(circle);
     });
-    this.circleService.circleMovedToAlive$.subscribe(circle => {
-      this.moveCircleToAliveList(circle);
-    });
 
   }
 
@@ -58,7 +57,8 @@ export class ArenaService {
       circleListWaiting: [],
       circleListDead: [],
       circleListAlive: [],
-      isMuted: false
+      isMuted: false,
+      name: 'Arena ' + (this.arenaListSubject.getValue().length + 1)
     };
 
     const updatedArenas = [...this.arenaListSubject.getValue(), newArena];
@@ -193,32 +193,10 @@ export class ArenaService {
     });
   }
 
-  moveCircleToAliveList(circle: Circle) {
-    const arenas = this.arenaListSubject.getValue();
-    arenas.forEach((arena, arenaIndex) => {
-      const index = arena.circleListWaiting.findIndex(c => c.id === circle.id);
-      if(index !== -1) {
-        arena.circleListWaiting.splice(index, 1);
-        arena.circleListAlive.push(circle);
-        arenas[arenaIndex] = arena;
-        this.arenaListSubject.next(arenas);
-        if(arena.id === this.activeArenaSubject.getValue().id) {
-          this.activeArenaSubject.next(arena);
-        }
-        return;
-      }
-    });
-  }
-
-  updateArenas(elapsedTime: number, squareUnit: number, timestamp: number, exportMP3Active: boolean = false) {
+  updateArenas(elapsedTime: number, squareUnit: number, exportMP3Active: boolean = false) {
     const arenas = this.arenaListSubject.getValue();
 
     arenas.forEach(arena => {
-      arena.circleListWaiting.forEach(circle => {
-        if(timestamp >= circle.spawnTime) {
-          this.circleService.moveCircleToAliveList(circle);
-        }
-      });
       arena.circleListAlive.forEach(circle => {
         this.circleService.calculatePos(elapsedTime, circle, squareUnit, arena.isMuted, exportMP3Active );
       });
@@ -278,10 +256,6 @@ export class ArenaService {
         circle.showable = true;
         circle.isColliding = false;
         circle.contactPoint = {x: -1, y: -1};
-        if(circle.spawnTime > 0) {
-          arena.circleListWaiting.push(circle);
-          arena.circleListAlive.splice(arena.circleListAlive.indexOf(circle), 1);
-        }
       });
     });
     this.setArenaList(tempoArenaList, arenaActiveId);
@@ -290,5 +264,17 @@ export class ArenaService {
   setArenaList(arenaList: Arena[], arenaActiveId: number) {
     this.arenaListSubject.next(arenaList);
     this.activeArenaSubject.next(arenaList[arenaActiveId]);
+  }
+
+  setArenaName(idArena: number, name: string) {
+    const arenas = this.arenaListSubject.getValue();
+    const arenaIndex = arenas.findIndex(a => a.id === idArena);
+
+    if (arenaIndex !== -1) {
+      // Update the arena in the list with the modified active arena
+      arenas[arenaIndex].name = name;
+      // Update the arena list subject with the updated list of arenas
+      this.arenaListSubject.next([...arenas]);
+    }
   }
 }

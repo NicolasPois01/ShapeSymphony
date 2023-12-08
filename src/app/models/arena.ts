@@ -5,5 +5,6 @@ export interface Arena {
   circleListWaiting: Circle[],
   circleListDead: Circle[],
   circleListAlive: Circle[],
-  isMuted: boolean
+  isMuted: boolean,
+  name: string
 }
