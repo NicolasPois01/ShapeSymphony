@@ -13,7 +13,7 @@ export class SoundService {
   notes = ["Do", "Re", "Mi", "Fa", "Sol", "La", "Si"];
   percussions = ["Clap", "Cowbell", "Cymbale", "Gong", "Guiro", "Hat", "Kick", "Snap", "Snare", "Tambour", "Timbale", "Triangle"];
   octaves = ["1","2","3","4","5","6","7"];
-  alterations = ["","b","d"];   //Legende : d=dièse, b=bémol.
+  alterations = ["♮","♭","#"];
 
   activeInstrumentSubject = new BehaviorSubject<string>("Piano");
   activeInstrument$ = this.activeInstrumentSubject.asObservable();
@@ -25,8 +25,24 @@ export class SoundService {
   activeAlteration$ = this.activeAlterationSubject.asObservable();
   activeAlterationStringSubject = new BehaviorSubject<string>("");
   activeAlterationString$ = this.activeAlterationStringSubject.asObservable();
+  activeVolumeSubject = new BehaviorSubject<number>(50);   //Valeur par défault pour le volume à 50%.
+  activeVolume$ = this.activeVolumeSubject.asObservable();
 
-  constructor() { }
+  constructor() {
+    this.activeAlterationSubject.subscribe(value => {
+      switch (value) {
+        case -1:
+          this.activeAlterationStringSubject.next('b');
+          break
+        case 1:
+          this.activeAlterationStringSubject.next('d');
+          break
+        default:
+          this.activeAlterationStringSubject.next('');
+          break;
+      }
+    })
+  }
 
   async loadAudioFiles() {
       for (const instrument of this.instruments) {
@@ -73,15 +89,15 @@ export class SoundService {
       const audioFileName = circle.instrument+'.mp3';
       const audioFilePath = `./assets/samples/Percussion/${audioFileName}`;
       const audio = new Audio(audioFilePath);
-      audio.volume = circle.volume;
+      audio.volume = (circle.volume/100);
       audio.play();
     }
-    // les autres
+    // les autres instruments
     else {
       const audioFileName = circle.instrument+circle.note+circle.alteration+circle.octave+'.mp3';
       const audioFilePath = `./assets/samples/${circle.instrument}/${audioFileName}`;
       const audio = new Audio(audioFilePath);
-      audio.volume = circle.volume;
+      audio.volume = (circle.volume/100);
       audio.play();
     }
   }
@@ -120,6 +136,14 @@ export class SoundService {
     return this.activeAlterationSubject.getValue();
   }
 
+  setActiveVolume(volume: number){
+    this.activeVolumeSubject.next(volume);
+  }
+
+  getActiveVolume(){
+    return this.activeVolumeSubject.getValue();
+  }
+
   getCurrentSelection(){
     let alterationSymbol = '';
     switch (this.activeAlterationSubject.getValue()) {
@@ -132,7 +156,7 @@ export class SoundService {
         this.activeAlterationStringSubject.next('d');
         break;
       default:
-        alterationSymbol = '';
+        alterationSymbol = '♮';
         this.activeAlterationStringSubject.next('');
         break;
     }

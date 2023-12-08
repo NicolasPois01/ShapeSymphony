@@ -1,4 +1,9 @@
-<h2>Timer: {{ getMinutes() }}:{{ getSecondes() | zeroPadding }}.{{ getMillisecondes() | zeroPadding }}</h2>
+<div *ngIf="getShowTimer(); else noTimer">
+  <h2>Timer: {{ getMinutes() }}:{{ getSecondes() | zeroPadding }}.{{ getMillisecondes() | zeroPadding }}</h2>
+</div>
+<ng-template #noTimer>
+  <h2>Timer: 0:00.00</h2>
+</ng-template>
 
 <button (click)="startTimer()" *ngIf="!getIsRunning()">Start</button>
 <button (click)="pauseTimer()" *ngIf="getIsRunning()">Pause</button>

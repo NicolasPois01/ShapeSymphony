@@ -3,8 +3,10 @@
   <div class="dropdown-content">
     <app-json-export></app-json-export>
     <app-import-json></app-import-json>
+    <app-export-mp3></app-export-mp3>
   </div>
 </div>
+
 <div class="container-app d-flex flex-column align-stretch">
 
   <div class="container-app-row d-flex flex-row">
@@ -22,7 +24,7 @@
     <div class="col-2 circles-list-container">
       <app-circle-list></app-circle-list>
     </div>
-    <div class="col-2">
+    <div class="col-3">
       <app-circle-characteristics-list></app-circle-characteristics-list>
     </div>
   </div>
@@ -32,9 +34,11 @@
     <div class="controls-wrapper">
       <app-octave *ngIf="!isPercussion(activeInstrument)"></app-octave>
       <app-alteration *ngIf="!isPercussion(activeInstrument)"></app-alteration>
+      <app-volume *ngIf="!isPercussion(activeInstrument)"></app-volume>
       <app-music *ngIf="!isPercussion(activeInstrument)"></app-music>
     </div>
     <app-percussion-tab *ngIf="isPercussion(activeInstrument)"></app-percussion-tab>
+    <app-volume *ngIf="isPercussion(activeInstrument)"></app-volume>
     <app-timer class="timer" [timerService]="this.timerService"></app-timer>
   </div>
 </div>

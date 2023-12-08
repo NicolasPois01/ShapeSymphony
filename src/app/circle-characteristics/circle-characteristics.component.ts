@@ -44,6 +44,7 @@ export class CircleCharacteristicsComponent implements OnInit{
         this.angleDepart = +((this.angleDepart * 180) / Math.PI).toFixed(0);;
         this.newAngle = this.angleDepart;
         this.vitesseGlobale = +Math.sqrt(Math.pow(circle.xSpeed, 2) + Math.pow(circle.ySpeed, 2)).toFixed(2);
+        this.maxBounces = circle.maxBounces;
       }
     });
   }
@@ -83,6 +84,7 @@ export class CircleCharacteristicsComponent implements OnInit{
       this.circlesService.setAlteration(alteration);
     }
   }
+
   setOctave(octave: number | undefined) {
     if (this.selectedCircle) {
       if (octave != null) {
@@ -125,7 +127,7 @@ export class CircleCharacteristicsComponent implements OnInit{
       }
     }
   }
-  
+
   changeAngle(angle: number | undefined) {
     if (angle !== undefined && this.selectedCircle) {
       const speed = this.vitesseGlobale || 1;
@@ -150,6 +152,20 @@ export class CircleCharacteristicsComponent implements OnInit{
       this.selectedCircle.xSpeed = xSpeed;
       this.selectedCircle.ySpeed = ySpeed;
       this.circlesService.updateCircleSpeed(this.selectedCircle);
+    }
+  }
+
+  increaseOctave() {
+    if (this.selectedOctave && this.selectedOctave < 7) {
+      this.selectedOctave++;
+      this.circlesService.setOctave(this.selectedOctave);
+    }
+  }
+
+  decreaseOctave() {
+    if (this.selectedOctave &&this.selectedOctave > 1) {
+      this.selectedOctave--;
+      this.circlesService.setOctave(this.selectedOctave);
     }
   }
 }

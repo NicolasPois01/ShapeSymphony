@@ -6,6 +6,7 @@ import {Subscription} from "rxjs";
 import {SoundService} from "../services/sound.service";
 import {Arena} from "../models/arena";
 import {ArenaService} from "../services/arena.service";
+import {AnimationService} from "../services/animation.service";
 
 @Component({
   selector: 'app-square',
@@ -51,16 +52,33 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   offset = 0
   constructor(private circlesService: CircleService,
               private soundService: SoundService,
-              private arenaService: ArenaService) {
-    arenaService.activeArenaSubject.subscribe(arena => this.circles = arena.circleList);
+              private arenaService: ArenaService,
+              private animationService: AnimationService) {
+    arenaService.activeArenaSubject.subscribe(arena => this.circles = arena.circleListAlive);
   }
 
   ngOnInit() {
     this.soundService?.loadAudioFiles();
+    this.animationService.isAnimationRunning$.subscribe(isRunning => {
+      if (isRunning && this.timerService?.getIsRunning()) {
+        this.interval = setInterval(() => {
+          let elapsedTime = ((this.timerService?.getTimeStamp() ?? 0) - this.timestamp) / 1000;
+          this.timestamp = this.timerService?.getTimeStamp();
+          if (elapsedTime > 0){
+            this.arenaService.updateArenas(elapsedTime, this.squareUnit );
+          }
+        }, 1000 / this.fps);
+      }
+      else {
+        if (this.interval) {
+          clearInterval(this.interval);
+          this.interval = null;
+        }
+      }
+    });
   }
 
   ngAfterViewInit() {
-    this.startAnimation();
   }
 
   getSquareSize() {
@@ -68,21 +86,11 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   }
 
   startAnimation() {
-    if (!this.interval && this.timerService) {
-      this.interval = setInterval(() => {
-        let elapsedTime = ((this.timerService?.getTimeStamp() ?? 0) - this.timestamp) / 1000; // elapsed time in seconds
-        this.timestamp = this.timerService?.getTimeStamp();
-        if(this.timerService?.getIsRunning())
-          this.arenaService.updateArenas(elapsedTime, this.squareUnit, this.offset);
-      }, 1000 / this.fps);
-    }
+    this.animationService.startAnimation();
   }
 
   pauseAnimation(): void {
-    if (this.interval) {
-      clearInterval(this.interval);
-      this.interval = null;
-    }
+    this.animationService.pauseAnimation();
   }
 
   onSquareClick(event: MouseEvent) {
@@ -114,7 +122,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
       note: this.soundService.activeNoteSubject.getValue(),
       alteration: this.soundService.activeAlterationStringSubject.getValue(),
       octave: this.soundService.activeOctaveSubject.getValue(),
-      volume: 1,
+      volume: this.soundService.activeVolumeSubject.getValue(),
       spawnTime: spawnTimeValue,
       maxBounces: 0,
       maxTime: 0,
@@ -123,7 +131,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
       contactPoint: {x: -1, y: -1},
       isColliding: false
     }
-    this.circlesService.addCircleToActiveArena(circle);
+    this.circlesService.addCircleToAliveList(circle);
   }
 
 
@@ -196,7 +204,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   ngOnChanges(changes: SimpleChanges) {
     if(this.mousebox) this.onSquareMouseMove(new MouseEvent("mousemove"), true );
     if (changes['arena']) {
-      this.circles = this.arena.circleList;
+      this.circles = this.arena.circleListAlive;
     }
   }
 
