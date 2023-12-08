@@ -94,6 +94,13 @@ export class CircleCharacteristicsComponent implements OnInit{
     }
   }
 
+  setStartTime(startTime: {minutes: number, secondes: number, millisecondes: number}) {
+    if (this.selectedCircle) {
+      this.selectedCircle.spawnTime = (startTime.minutes * 3600) + (startTime.secondes * 60) + startTime.millisecondes;
+      this.circlesService.setSpawnTime(this.selectedCircle.spawnTime);
+    }
+  }
+
   validateStartX(value: number | undefined) {
     if (value !== undefined) {
       if (value < -4.5) {

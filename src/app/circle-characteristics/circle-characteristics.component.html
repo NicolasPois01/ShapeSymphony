@@ -52,7 +52,7 @@
       <li>Temporalité de départ:
       </li>
       <li>
-        <time-input></time-input>
+        <time-input (onValueChange)="this.setStartTime($event[0])"></time-input>
       </li>
     </ng-container>
     <ng-container *ngIf="!isTimerNotStarted()">

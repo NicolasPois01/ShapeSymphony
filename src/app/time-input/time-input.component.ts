@@ -1,4 +1,4 @@
-import { Component, NgModule } from "@angular/core";
+import { Component, EventEmitter, Output } from "@angular/core";
 
 @Component({
     selector: 'time-input',
@@ -10,6 +10,8 @@ export class TimeInputComponent {
     public secondes: number = 0;
     public millisecondes: number = 0;
 
+    @Output() public onValueChange: EventEmitter<any> = new EventEmitter();
+
     public onUpClick(): void {
         this.minutes++;
     }
@@ -20,7 +22,6 @@ export class TimeInputComponent {
 
     public onMinutesChange(event: any): void {
         this.minutes = Number(event.target.value);
-        console.info(this.minutes, "0" + this.minutes.toString());
         if(this.minutes < 0) this.minutes = 0;
         else if(this.minutes < 10) event.target.value = "0" + this.minutes.toString();
         else if(this.minutes <= 59) event.target.value = this.minutes;
@@ -28,6 +29,7 @@ export class TimeInputComponent {
             this.minutes = 59;
             event.target.value = this.minutes;
         }
+        this.onValueChange.emit([this.getValue()]);
     }
 
     public onSecondesChange(event: any): void {
@@ -39,6 +41,7 @@ export class TimeInputComponent {
             this.secondes = 59;
             event.target.value = this.secondes;
         }
+        this.onValueChange.emit([this.getValue()]);
     }
 
     public onMillisecondesChange(event: any): void {
@@ -50,9 +53,18 @@ export class TimeInputComponent {
             this.millisecondes = 999;
             event.target.value = this.millisecondes;
         }
+        this.onValueChange.emit([this.getValue()]);
     }
 
-    public getValue(): string {
+    public getValueStringify(): string {
         return this.minutes + ":" + this.secondes + "." + this.millisecondes;
+    }
+
+    public getValue(): object {
+        return {
+            minutes: this.minutes,
+            secondes: this.secondes,
+            millisecondes: this.millisecondes
+        }
     }
 }

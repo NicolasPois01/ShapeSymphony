@@ -278,6 +278,13 @@ export class CircleService {
     }
   }
 
+  setSpawnTime(spawnTime: number) {
+    if (this.selectedCircle) {
+      this.selectedCircle.spawnTime = spawnTime;
+      this.circleChangedSubject.next(this.selectedCircle);
+    }
+  }
+
   getNewId(): number {
     return this.highestId++;
   }
