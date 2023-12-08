@@ -17,7 +17,7 @@ export class CircleListComponent implements OnInit  {
   circleListDead!: Circle[];
   activeArena!: Arena;
   selectedCircle: Circle | null | undefined;
-  circleNameList: [Circle, string, number][] = [];    //circleNameList[circle, name, occurrence];
+  circleNameList: [Circle, string, number, string][] = [];    //circleNameList[circle, name, occurrence, list];
   private arenaSubscription!: Subscription;
   private circlesListSubscription!: Subscription;
 
@@ -32,7 +32,7 @@ export class CircleListComponent implements OnInit  {
         this.circleListAlive = arena.circleListAlive
         this.circleListWaiting = arena.circleListWaiting
         this.circleListDead = arena.circleListDead
-        this.circleListDisplay(this.circleListAlive)
+        this.circleListDisplay()
       });  // S'abonner à circleList de l'activeArena$
 
       this.circlesListSubscription = this.circlesService.circleChanged$.subscribe(
@@ -92,7 +92,7 @@ export class CircleListComponent implements OnInit  {
     this.circlesService.selectedCircle$.subscribe((circle: Circle | null) => {
       this.selectedCircle = circle;
     });
-    this.circleListDisplay(this.circleListAlive);
+    this.circleListDisplay();
   }
 
   ngOnDestroy() {
@@ -121,30 +121,54 @@ export class CircleListComponent implements OnInit  {
     return circle == this.selectedCircle;
   }
 
-  circleListDisplay(circleList : Circle[]) {
+  circleListDisplay() {
     this.circleNameList = [];
-    circleList.forEach(circle => {
-      let name: string;
-      let counter: number = 0;
-
-      if (circle.instrument === "Percussion") {
-        name = circle.instrument;}
-      else {
-        name = circle.instrument + circle.note + circle.alteration + circle.octave;
-        console.log(name)
-      }
-
-      let index = this.circleNameList.length - 1;
-      while (index >= 0) {
-        const currentTuple = this.circleNameList[index];
-        if (currentTuple[1] === name) {
-          counter = currentTuple[2];
-          break;
-        }
-        index--;
-      }
-      this.circleNameList.push([circle,name,counter + 1]);
+    this.circleListAlive.forEach(circle => {
+      let tuple = this.getCircleNameList(circle, "Alive");
+      this.circleNameList.push(tuple);
     });
+    this.circleListWaiting.forEach(circle => {
+      let tuple = this.getCircleNameList(circle, "Waiting");
+      this.circleNameList.push(tuple);
+    });
+    this.circleListDead.forEach(circle => {
+      let tuple = this.getCircleNameList(circle, "Dead");
+      this.circleNameList.push(tuple);
+    });
+  }
+
+  getCircleNameList(circle: Circle, list: string): [Circle, string, number, string] {
+    let name: string;
+    let counter: number = 0;
+
+    if (circle.instrument === "Percussion") {
+      name = circle.instrument;
+    } else {
+      name = circle.instrument + circle.note + circle.alteration + circle.octave;
+    }
+
+    let index = this.circleNameList.length - 1;
+    while (index >= 0) {
+      const currentTuple = this.circleNameList[index];
+      if (currentTuple[1] === name) {
+        counter = currentTuple[2];
+        break;
+      }
+      index--;
+    }
+    return [circle, name, counter + 1, list];
+  }
+
+  circleNameListWaiting() {
+    return this.circleNameList.filter(tuple => tuple[3] === "Waiting");
+  }
+
+  circleNameListAlive() {
+    return this.circleNameList.filter(tuple => tuple[3] === "Alive");
+  }
+
+  circleNameListDead() {
+    return this.circleNameList.filter(tuple => tuple[3] === "Dead");
   }
 
   protected readonly CircleService = CircleService;
