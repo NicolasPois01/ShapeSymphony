@@ -1,5 +1,17 @@
+.percussion-container {
+  display: flex;
+  flex-wrap: wrap; /* Permet aux éléments de passer à la ligne suivante */
+  gap: 10px; /* Espacement entre les boutons */
+  max-width: calc(100vw - 600px); /* Largeur maximale du conteneur */
+  overflow-y: visible;
+  overflow-x: auto;
+  padding: 10px;
+  margin-left: 35px;
+}
+
 .toggle-button {
-  display: inline-block;
+  flex-basis: calc(15%); /* Répartit les boutons équitablement sur deux lignes */
+  /* Notez que 10px est la moitié du gap, ajustez en fonction de votre gap */
   padding: 10px 20px;
   background-color: #2a1f3d;
   border: none;
@@ -8,25 +20,16 @@
   cursor: pointer;
   box-shadow: -5px -5px 10px #36284e, 5px 5px 10px #1e162c;
   transition: background-color 0.3s, box-shadow 0.3s;
+  text-align: center; /* Pour centrer le texte dans le bouton */
 }
 
 .toggle-button:hover {
   box-shadow: -2px -2px 5px #36284e, 2px 2px 5px #1e162c;
+  background-color: #36284e;
 }
 
 .toggle-button.active {
   background-color: #36284e;
   box-shadow: inset -2px -2px 5px #41305f, inset 2px 2px 5px #1e162c;
   color: white;
-}
-
-.percussion-container {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 10px;
-  max-width: calc(100vw - 600px);
-  overflow-y: visible;
-  overflow-x: auto;
-  padding-top: 10px;
-  padding: 10px;
 }

@@ -50,15 +50,6 @@ export class TimerComponent {
     return this.timerService?.getIsRunning();
   }
 
-  clearAll(): void {
-    this.arenaService.clearAll();
-    this.timerService?.resetTimer();
-  }
-
-  clearActive() {
-    this.arenaService.clearActiveArena();
-  }
-
   resetGame(): void {
     this.timerService?.resetTimer();  // réinitialise le
     this.animationService.pauseAnimation();  // arrête l'animation

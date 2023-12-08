@@ -40,5 +40,32 @@ li.circle {
   color: white;
 }
 
+.entities-list {
+  max-height: 600px; /* Hauteur maximale avant que le défilement ne soit activé */
+  overflow-y: auto; /* Active le défilement vertical si le contenu dépasse max-height */
+  /* ... autres styles nécessaires pour la liste ... */
+}
 
+/* Styliser la barre de défilement pour Chrome, Safari, etc. */
+.entities-list::-webkit-scrollbar {
+  width: 10px; /* Largeur de la barre de défilement */
+}
 
+.entities-list::-webkit-scrollbar-track {
+  background: #2a1f3d; /* Couleur de la piste de défilement */
+}
+
+.entities-list::-webkit-scrollbar-thumb {
+  background: #4e426c; /* Couleur du curseur de défilement */
+  border-radius: 5px; /* Bords arrondis pour le curseur de défilement */
+}
+
+.entities-list::-webkit-scrollbar-thumb:hover {
+  background: #675a85; /* Couleur du curseur de défilement au survol */
+}
+
+/* Styliser la barre de défilement pour Firefox */
+.entities-list {
+  scrollbar-width: thin; /* "auto" ou "thin" */
+  scrollbar-color: #4e426c #2a1f3d; /* Couleur du curseur et de la piste */
+}

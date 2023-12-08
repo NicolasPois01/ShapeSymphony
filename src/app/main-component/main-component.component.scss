@@ -1,6 +1,6 @@
 .circles-list-container {
-  max-height: calc(100vh - 200px); /* Adjust this value to match the height of your square */
-  overflow-y: auto;  /* This makes the list scrollable if it exceeds the max height */
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
   display: inline-block;
 }
 
@@ -9,74 +9,80 @@
   overflow: hidden;
   padding: 20px 30px 0 30px;
   box-sizing: border-box;
-  background: radial-gradient(circle at 100%,
-    #2a1f3d 45%,
-    #36284e 60%);
-
-  .container-app-row {
-    height: 100%;
-  }
-
-  .square {
-    width: 100%;
-    height: 100%;
-
-  }
+  background: radial-gradient(circle at 100%, #2a1f3d 45%, #36284e 60%);
 }
 
-.timer {
-  /* TEMP set right bottom */
-  position: fixed;
-  right: 20px;
-  width: 250px;
-  bottom: 20px;
+.container-app-row {
+  display: flex;
+  flex-direction: row;
+  align-items: start; /* Aligner les éléments en haut */
+  justify-content: center; /* Centrer horizontalement */
+  height: 100%;
 }
 
-.controls-container {
+.square-and-controls {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px; /* Ajustez cette valeur pour l'espacement entre les éléments */
-  height: 200px;
-  min-height: 200px;
+  flex-grow: 1; /* Permet au conteneur de prendre tout l'espace disponible */
 }
 
+.square {
+  width: 100%;
+  flex-grow: 1;
+  /* Assurez-vous que la hauteur du .square est définie pour qu'il s'affiche */
+  height: 75vh; /* ou une hauteur fixe selon vos besoins */
+}
+
+.controls-container {
+  width: 100%; /* Largeur adaptée au conteneur */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px; /* Espacement entre les éléments */
+  /* Hauteur et styles supplémentaires si nécessaire */
+}
+
+app-timer{
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    width: 250px;
+}
 .controls-wrapper {
   display: flex;
-  gap: 20px; /* Espacement entre octave et altération */
+  gap: 20px;
 }
+
 .file-dropdown {
-  position: fixed;  /* Change ici */
-  top: 0;  /* Ajouté pour fixer le bouton en haut */
-  left: 0;  /* Ajouté pour fixer le bouton à gauche */
+  position: fixed;
+  top: 0;
+  left: 0;
   display: inline-block;
   z-index: 1;
 }
 
-/* Style du bouton du menu déroulant */
 .dropbtn {
   background-color: #2a1f3d;
   color: white;
   padding: 16px;
   font-size: 16px;
-  border: none;
+  border-radius: 10%;
   cursor: pointer;
 }
 
-/* Style du contenu du menu déroulant */
 .dropdown-content {
   display: none;
   position: absolute;
   background-color: #36284E;
   min-width: 160px;
   z-index: 1;
+  min-height: 300px;
 }
 
-/* Style des éléments du menu déroulant */
-/* Style des éléments du menu déroulant (incluant app-export-mp3) */
 .dropdown-content app-json-export,
 .dropdown-content app-import-json,
-.dropdown-content app-export-mp3 {  /* Ajout de app-export-mp3 */
+.dropdown-content app-export-mp3 {
   color: white;
   padding: 12px 16px;
   text-decoration: none;
@@ -84,16 +90,14 @@
   font-size: 14px;
 }
 
-/* Affiche le menu lorsque la souris survole le bouton principal */
 .file-dropdown:hover .dropdown-content {
   display: block;
 }
 
-/* Change la couleur de fond des éléments du menu déroulant au survol */
 .dropdown-content app-json-export:hover,
 .dropdown-content app-export-mp3:hover,
 .dropdown-content app-import-json:hover {
-  background-color:#36284E;
+  background-color: #36284E;
 }
 
 app-arena-list {
@@ -102,4 +106,101 @@ app-arena-list {
 
 .tempo {
   border: solid black;
+}
+
+.clear-button {
+  background-color: #2a1f3d;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: -3px -3px 7px #36284e, 3px 3px 7px #1e162c;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  margin-top: 10px;
+}
+
+.clear-button:hover {
+  box-shadow: -1px -1px 3px #36284e, 1px 1px 3px #1e162c;
+  background-color: #36284e;
+}
+
+.modal {
+  display: block;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 9999;
+}
+
+.modal-content {
+  background-color: #2a1f3d;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 30%;
+  border-radius: 12px;
+  box-shadow: -3px -3px 7px #36284e, 3px 3px 7px #1e162c;
+  color: #fff;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-content button {
+  background-color: #36284e;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: -1px -1px 3px #36284e, 1px 1px 3px #1e162c;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  flex: 1;
+  margin: 0 10px;
+}
+
+.modal-content button:hover {
+  background-color: #2a1f3d;
+}
+
+.modal-content input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #888;
+}
+
+input::placeholder {
+  color: #ccc;
+  opacity: 1;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
 }

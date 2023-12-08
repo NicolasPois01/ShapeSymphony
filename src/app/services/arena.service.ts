@@ -16,7 +16,8 @@ export class ArenaService {
       circleListWaiting: [],
       circleListDead: [],
       circleListAlive: [],
-      isMuted: false
+      isMuted: false,
+      name: 'Arena 1'
     }
   ]);
   arenaList$: Observable<Arena[]> = this.arenaListSubject.asObservable();
@@ -26,7 +27,8 @@ export class ArenaService {
     circleListWaiting: [],
     circleListDead: [],
     circleListAlive: [],
-    isMuted: false
+    isMuted: false,
+    name: 'Arena 1'
   });
   activeArena$ = this.activeArenaSubject.asObservable();
 
@@ -55,7 +57,8 @@ export class ArenaService {
       circleListWaiting: [],
       circleListDead: [],
       circleListAlive: [],
-      isMuted: false
+      isMuted: false,
+      name: 'Arena ' + (this.arenaListSubject.getValue().length + 1)
     };
 
     const updatedArenas = [...this.arenaListSubject.getValue(), newArena];
@@ -261,5 +264,17 @@ export class ArenaService {
   setArenaList(arenaList: Arena[], arenaActiveId: number) {
     this.arenaListSubject.next(arenaList);
     this.activeArenaSubject.next(arenaList[arenaActiveId]);
+  }
+
+  setArenaName(idArena: number, name: string) {
+    const arenas = this.arenaListSubject.getValue();
+    const arenaIndex = arenas.findIndex(a => a.id === idArena);
+
+    if (arenaIndex !== -1) {
+      // Update the arena in the list with the modified active arena
+      arenas[arenaIndex].name = name;
+      // Update the arena list subject with the updated list of arenas
+      this.arenaListSubject.next([...arenas]);
+    }
   }
 }
