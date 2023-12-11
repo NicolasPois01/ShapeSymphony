@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import {TimerService} from "../services/timer.service";
-import {CircleService} from "../services/circle.service";
 import {ArenaService} from "../services/arena.service";
 import {SoundService} from "../services/sound.service";
 import {AnimationService} from "../services/animation.service";
