@@ -53,12 +53,19 @@ export class MainComponentComponent implements OnInit, OnDestroy {
   }
 
   handleKeyboardEvent(event: KeyboardEvent) {
-    if(event.target instanceof HTMLInputElement) return;
+    if( event.target instanceof HTMLInputElement || 
+        event.target instanceof HTMLTextAreaElement || 
+        event.target instanceof HTMLSelectElement) return;
     if(event.key === "Shift") this.grid = !this.grid;
     else if(event.key === "Control") this.precisionMode = !this.precisionMode;
     else if(event.key === " ") {
       this.timerService.toggle();
       this.animationService.toggleAnimation();
+    }
+    if(event.target instanceof HTMLButtonElement) {
+      // stop execution of button
+      event.preventDefault();
+      event.stopPropagation();
     }
   }
 
