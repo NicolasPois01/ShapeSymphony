@@ -1,8 +1,8 @@
 <div *ngIf="getShowTimer(); else noTimer">
-  <h2>Timer: {{ getMinutes() }}:{{ getSecondes() | zeroPadding }}.{{ getMillisecondes() | zeroPadding }}</h2>
+  <h2>{{ getMinutes() }}m {{ getSecondes() | zeroPadding }}s {{ getMillisecondes() | zeroPadding:true }}ms</h2>
 </div>
 <ng-template #noTimer>
-  <h2>Timer: 0:00.00</h2>
+  <h2>0m 00s 00ms</h2>
 </ng-template>
 
 <button (click)="startTimer()" *ngIf="!getIsRunning()">Start</button>
