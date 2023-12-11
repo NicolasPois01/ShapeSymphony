@@ -14,8 +14,7 @@ export class TimerComponent {
 
   @Input() timerService: TimerService|undefined = undefined;
 
-  constructor(private circleService: CircleService,
-              private soundService: SoundService,
+  constructor(private soundService: SoundService,
               private arenaService: ArenaService,
               private animationService: AnimationService) {
   }

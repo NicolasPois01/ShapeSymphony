@@ -16,4 +16,12 @@ export class AnimationService {
   startAnimation() {
     this.isAnimationRunningSubject.next(true);
   }
+
+  toggleAnimation() {
+    if (this.isAnimationRunningSubject.getValue()) {
+      this.pauseAnimation();
+    } else {
+      this.startAnimation();
+    }
+  }
 }

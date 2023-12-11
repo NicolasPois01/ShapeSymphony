@@ -13,6 +13,7 @@ export class TimerService {
   isRunning: boolean = false;
   timer: any;
   showTimer: boolean = true;
+  isProcessing: boolean = false;
 
   private isRunningSubject = new BehaviorSubject<boolean>(false);
   isRunning$ = this.isRunningSubject.asObservable();
@@ -28,12 +29,15 @@ export class TimerService {
 
       if (!this.timer) {
         this.timer = setInterval(() => {
-          this.elapsedTime = Date.now() - this.startTime;
-
-          this.milliseconds = this.elapsedTime % 1000;
-          this.seconds = Math.floor(this.elapsedTime / 1000) % 60;
-          this.minutes = Math.floor(this.elapsedTime / 60000);
-
+          if(!this.isProcessing) {
+            this.isProcessing = true;
+            this.elapsedTime = Date.now() - this.startTime;
+  
+            this.milliseconds = this.elapsedTime % 1000;
+            this.seconds = Math.floor(this.elapsedTime / 1000) % 60;
+            this.minutes = Math.floor(this.elapsedTime / 60000);
+          }
+          this.isProcessing = false;
         }, 10);
       }
       this.isRunningSubject.next(true);
@@ -60,6 +64,14 @@ export class TimerService {
       }
     }
     this.isRunningSubject.next(false);
+  }
+
+  toggle(): void {
+    if (this.isRunning) {
+      this.pause();
+    } else {
+      this.start();
+    }
   }
 
   getTime(): object {
