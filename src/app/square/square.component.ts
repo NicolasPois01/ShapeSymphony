@@ -65,7 +65,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
           let elapsedTime = ((this.timerService?.getTimeStamp() ?? 0) - this.timestamp) / 1000;
           this.timestamp = this.timerService?.getTimeStamp();
           if (elapsedTime > 0){
-            this.arenaService.updateArenas(elapsedTime, this.squareUnit );
+            this.arenaService.updateArenas(elapsedTime, this.timestamp, this.squareUnit );
           }
         }, 1000 / this.fps);
       }

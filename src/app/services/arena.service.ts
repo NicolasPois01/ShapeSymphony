@@ -193,12 +193,12 @@ export class ArenaService {
     });
   }
 
-  updateArenas(elapsedTime: number, squareUnit: number, exportMP3Active: boolean = false) {
+  updateArenas(elapsedTime: number, time: number, squareUnit: number, exportMP3Active: boolean = false) {
     const arenas = this.arenaListSubject.getValue();
 
     arenas.forEach(arena => {
       arena.circleListAlive.forEach(circle => {
-        this.circleService.calculatePos(elapsedTime, circle, squareUnit, arena.isMuted, exportMP3Active );
+        this.circleService.calculatePos(elapsedTime, time, circle, squareUnit, arena.isMuted, exportMP3Active );
       });
     });
 
