@@ -78,7 +78,12 @@ export class CircleService {
     this.circleChangedSubject.next(circle);
   }
 
-  calculatePos(elapsedTime: number, circle: Circle, squareUnit: number, isArenaMuted: boolean, exportMP3Active: boolean = false) {
+  calculatePos(elapsedTime: number, time: number, circle: Circle, squareUnit: number, isArenaMuted: boolean, exportMP3Active: boolean = false) {
+    
+    if(circle.spawnTime > time) {
+      return;
+    }
+
     // Update the circle's position based on its speed and elapsed time
     if (exportMP3Active) {
       circle.x += circle.xSpeed * elapsedTime * 10;
@@ -253,6 +258,13 @@ export class CircleService {
     if (this.selectedCircle) {
       this.selectedCircle.maxBounces = maxBounces;
       this.circleChangedSubject.next(this.selectedCircle);
+    }
+  }
+
+  updateSpawnTime(circle: Circle) {
+    if (this.selectedCircle) {
+      this.selectedCircle.spawnTime = circle.spawnTime;
+      this.selectedCircleSubject.next(circle);
     }
   }
 

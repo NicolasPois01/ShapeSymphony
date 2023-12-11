@@ -1,7 +1,8 @@
-import {Component, OnInit} from '@angular/core';
-import {CircleService} from "../services/circle.service";
-import {Circle} from "../models/circle";
-import {TimerService} from "../services/timer.service";
+import { Component, OnInit } from '@angular/core';
+import { CircleService } from "../services/circle.service";
+import { Circle } from "../models/circle";
+import { TimerService } from "../services/timer.service";
+import { TimeInputComponent } from '../time-input/time-input.component';
 
 @Component({
   selector: 'app-circle-characteristics-list',
@@ -24,6 +25,7 @@ export class CircleCharacteristicsComponent implements OnInit{
   newStartY: number | undefined;
   newAngle: number | undefined;
   maxBounces: number = 0;
+  spawnTime: any = { millisecondes: 0, secondes: 0, minutes: 0 };
 
   constructor(private circlesService: CircleService, private timerService: TimerService) {}
 
@@ -45,6 +47,11 @@ export class CircleCharacteristicsComponent implements OnInit{
         this.newAngle = this.angleDepart;
         this.vitesseGlobale = +Math.sqrt(Math.pow(circle.xSpeed, 2) + Math.pow(circle.ySpeed, 2)).toFixed(2);
         this.maxBounces = circle.maxBounces;
+        this.spawnTime = {
+          millisecondes: circle.spawnTime % 1000,
+          secondes: Math.floor(circle.spawnTime / 1000) % 60,
+          minutes: Math.floor(circle.spawnTime / 60000) % 60
+        };
       }
     });
   }
@@ -136,6 +143,13 @@ export class CircleCharacteristicsComponent implements OnInit{
       this.selectedCircle.xSpeed = xSpeed;
       this.selectedCircle.ySpeed = ySpeed;
       this.circlesService.updateCircleSpeed(this.selectedCircle);
+    }
+  }
+
+  onTimeChange(time: any) {
+    if (this.selectedCircle) {
+      this.selectedCircle.spawnTime = time.millisecondes + (time.secondes * 1000) + (time.minutes * 60000);
+      this.circlesService.updateSpawnTime(this.selectedCircle);
     }
   }
 
