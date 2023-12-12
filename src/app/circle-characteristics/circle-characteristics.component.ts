@@ -101,6 +101,20 @@ export class CircleCharacteristicsComponent implements OnInit{
     }
   }
 
+  getMinutesSpawnTime() {
+    return this.spawnTime.minutes;
+  }
+
+  getSecondesSpawnTime() {
+    return this.spawnTime.secondes;
+  }
+
+  getMillisecondesSpawnTime() {
+    return this.spawnTime.millisecondes;
+  }
+
+
+
   validateStartX(value: number | undefined) {
     if (value !== undefined) {
       if (value < -4.5) {
@@ -150,6 +164,13 @@ export class CircleCharacteristicsComponent implements OnInit{
     if (this.selectedCircle) {
       this.selectedCircle.spawnTime = time.millisecondes + (time.secondes * 1000) + (time.minutes * 60000);
       this.circlesService.updateSpawnTime(this.selectedCircle);
+      if(this.selectedCircle.spawnTime > 0) {
+        this.circlesService.moveCircleToWaitingList(this.selectedCircle);
+      } else {
+        this.circlesService.moveCircleToAliveList(this.selectedCircle);
+      }
+      this.selectedCircle.spawnTime = this.selectedCircle.spawnTime;
+      this.circlesService.setSpawnTime(this.selectedCircle.spawnTime);
     }
   }
 

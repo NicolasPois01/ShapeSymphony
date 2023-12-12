@@ -2,13 +2,11 @@ import {Injectable} from '@angular/core';
 import {Circle} from "../models/circle";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {SoundService} from "./sound.service";
-import {ExportWAVService} from "./exportWAV.service";
 import { TimerService } from './timer.service';
 
 @Injectable({
   providedIn: 'root'
 })
-
 export class CircleService {
   circleSize: number = 1;
   circleRad: number = this.circleSize/2;
@@ -24,6 +22,8 @@ export class CircleService {
   circleNewDead$ = this.circleNewDeadSubject.asObservable();
   circleMovedToWaitingSubject: Subject<Circle> = new Subject<Circle>();
   circleMovedToWaiting$ = this.circleMovedToWaitingSubject.asObservable();
+  circleMovedToAliveSubject: Subject<Circle> = new Subject<Circle>();
+  circleMovedToAlive$ = this.circleMovedToAliveSubject.asObservable();
   circleMovedToDeadSubject: Subject<Circle> = new Subject<Circle>();
   circleMovedToDead$ = this.circleMovedToDeadSubject.asObservable();
   circleListWaitingSubject = new BehaviorSubject<Circle[]>([]);
@@ -95,8 +95,24 @@ export class CircleService {
     }
     this.updatePos(circle, circle.x, circle.y);
 
+    // Collides x and y
+    if(!this.inRange(circle.x, squareUnit) && !this.inRange(circle.y, squareUnit)) {
+      circle.isColliding = true;
+      circle.nbBounces += 1;
+      let adjustedX = circle.xSpeed > 0 ? circle.x + this.circleRad : circle.x - this.circleRad;
+      let adjustedY = circle.ySpeed > 0 ? circle.y + this.circleRad : circle.y - this.circleRad;
+      circle.contactPoint = { x: adjustedX, y: adjustedY };
+      this.bounceXY(circle, circle.x - this.circleRad < -(squareUnit / 2),
+        circle.y - this.circleRad < -(squareUnit / 2), squareUnit / 2 - this.circleRad, isArenaMuted);
+      this.exportWavCircleSubject.next(circle);
+
+      setTimeout(() => {
+        circle.isColliding = false;
+      }, 500);
+    }
+
     // Collides x
-    if (!this.inRange(circle.x, squareUnit)) {
+    if (!this.inRange(circle.x, squareUnit) && this.inRange(circle.y, squareUnit)) {
       circle.isColliding = true;
       circle.nbBounces += 1;
       let adjustedX = circle.xSpeed > 0 ? circle.x + this.circleRad : circle.x - this.circleRad;
@@ -111,7 +127,7 @@ export class CircleService {
     }
 
     // Collides y
-    if (!this.inRange(circle.y, squareUnit)) {
+    if (!this.inRange(circle.y, squareUnit) && this.inRange(circle.x, squareUnit)) {
       circle.isColliding = true;
       circle.nbBounces += 1;
       let adjustedY = circle.ySpeed > 0 ? circle.y + this.circleRad : circle.y - this.circleRad;
@@ -156,6 +172,24 @@ export class CircleService {
     }
   }
 
+  bounceXY(circle: any, leftBorder: Boolean, topBorder: Boolean, midSquareSize: number, isArenaMuted: boolean) {
+    if (!isArenaMuted) {
+      this.soundService.playAudio(circle);
+    }
+    circle.xSpeed = -circle.xSpeed;
+    circle.ySpeed = -circle.ySpeed;
+    if(leftBorder) {
+      circle.x = -(midSquareSize + (circle.x + midSquareSize));
+    } else {
+      circle.x = midSquareSize - (circle.x - midSquareSize);
+    }
+    if(topBorder) {
+      circle.y = -(midSquareSize + (circle.y + midSquareSize));
+    } else {
+      circle.y = midSquareSize - (circle.y - midSquareSize);
+    }
+  }
+
   getRandomColor(): string {
     const randomIndex = Math.floor(Math.random() * this.colors.length);
     return this.colors[randomIndex];
@@ -180,6 +214,10 @@ export class CircleService {
     circleList.push(circle);
     this.circleListDeadSubject.next(circleList);
     this.circleNewDeadSubject.next(circle);
+  }
+
+  moveCircleToAliveList(circle: Circle) {
+    this.circleMovedToAliveSubject.next(circle);
   }
 
   setSelectedCircle(circle: Circle | null = null) {
@@ -290,6 +328,13 @@ export class CircleService {
       if (octave != null) {
         this.selectedCircle.octave = octave;
       }
+      this.circleChangedSubject.next(this.selectedCircle);
+    }
+  }
+  
+  setSpawnTime(spawnTime: number) {
+    if (this.selectedCircle) {
+      this.selectedCircle.spawnTime = spawnTime;
       this.circleChangedSubject.next(this.selectedCircle);
     }
   }

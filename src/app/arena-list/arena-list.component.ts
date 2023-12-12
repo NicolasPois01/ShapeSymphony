@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {Arena} from "../models/arena";
 import {ArenaService} from "../services/arena.service";
 
@@ -10,6 +10,8 @@ import {ArenaService} from "../services/arena.service";
 export class ArenaListComponent implements OnInit {
   arenaList!: Arena[];
   activeArena!: Arena;
+
+  @ViewChild('fileInput') fileInput: ElementRef | undefined;
 
   constructor(private arenaService: ArenaService) {}
 
@@ -29,6 +31,14 @@ export class ArenaListComponent implements OnInit {
   addArena() {
     let newArenaId = this.arenaService.addArena();
     this.setActiveArena(newArenaId);
+  }
+
+  uploadMidiFile() {
+    this.fileInput?.nativeElement.addEventListener('change', (event: any) => {
+      const file = event.target.files[0];
+      this.arenaService.uploadMidiFile(file);
+    });
+    this.fileInput?.nativeElement.click();
   }
 
   deleteArena(idArena: number) {

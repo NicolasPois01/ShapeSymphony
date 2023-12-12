@@ -162,4 +162,43 @@ export class SoundService {
     }
     return `${this.activeInstrumentSubject.getValue()} ${this.activeNoteSubject.getValue()}${alterationSymbol}${this.activeOctaveSubject.getValue()}`;
   }
+
+  getValidInstrument(instrument: string, family: string) {
+    if(family === "chromatic percussion" || family === "percussive") {
+      if(instrument === "xylophone") {
+        return "Xylophone";
+      }
+      return "Percussion";
+    } else if(family === "bass" || family === "guitar"){
+      return "Bass";
+    }
+    return "Piano";
+  }
+
+  getValidNoteName(name: string): string {
+    let note = name.substring(0, 1);
+    switch (note) {
+      case 'A':
+        return "Do";
+      case 'B':
+        return "Re";
+      case 'C':
+        return "Mi";
+      case 'D':
+        return "Fa";
+      case 'E':
+        return "Sol";
+      case 'F':
+        return "La";
+      case 'G':
+        return "Si";
+      default:
+        break;
+    }
+    return "";
+  }
+
+  getAlteration(name:string): string {
+    return name.substring(1, 2) === "#" ? "d" : "";
+  }
 }

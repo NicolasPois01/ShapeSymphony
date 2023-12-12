@@ -22,6 +22,7 @@
     "@ffmpeg/ffmpeg": "^0.12.7",
     "@ng-bootstrap/ng-bootstrap": "^14.2.0",
     "@popperjs/core": "^2.11.6",
+    "@tonejs/midi": "^2.0.28",
     "audiobuffer-to-wav": "^1.0.0",
     "bootstrap": "^5.3.2",
     "ffmpeg": "^0.0.4",
