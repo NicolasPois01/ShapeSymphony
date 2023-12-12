@@ -36,7 +36,6 @@ export class MidiFileService {
                     });
                 });
             });
-            console.log(midiProcessed);
             resolve(midiProcessed);
         });
     }
@@ -69,10 +68,10 @@ export class MidiFileService {
                             } else if(note.time - last_time <= ecart) {
                                 return true;
                             } else {
-                                suites.push(current_suite);
                                 return false;
                             }
                         });
+                        suites.push(current_suite);
                         return true;
                     });
                 });
@@ -97,7 +96,9 @@ export class MidiFileService {
                 });
             }
         });
-        circle_sets = [...circle_sets, ...circle_set];
+        circle_set.forEach((note: any) => {
+            circle_sets.push([note]);
+        });
         (Object.entries(circle_sets) as any[]).forEach(([index, circle_set]) => {
             if(circle_set.length > 1) {
                 let x = Math.round((Math.random() * 8) - 4);
@@ -106,16 +107,21 @@ export class MidiFileService {
                 let direction = Math.round(Math.random()); // 0 = horizontal, 1 = vertical
                 let distance = direction ? 4.5 - Math.abs(y) : 4.5 - Math.abs(x);
                 let speed = 9 / ecart;
-                let ecart_distance = distance / speed;
-                let spawnTime = (circle_set[0].time - ecart_distance) * 1000
-                if(ecart_distance > circle_set[0].time) {
-                    ecart_distance = circle_set[0].time / speed;
+                let ecart_time = distance / speed;
+                let spawnTime = (circle_set[0].time - ecart_time) * 1000
+                if(ecart_time > circle_set[0].time) {
+                    spawnTime = 0;
+                    let ecart_distance = circle_set[0].time / speed;
                     if(direction) {
                         y = 4.5 - ecart_distance;
                     } else {
                         x = 4.5 - ecart_distance;
                     }
-                    spawnTime = 0;
+                }
+                if(direction === 1 && y < 0) {
+                    speed = -speed;
+                } else if(direction === 0 && x < 0) {
+                    speed = -speed;
                 }
                 circle_sets[index] = {
                     id: index,
@@ -147,8 +153,13 @@ export class MidiFileService {
                 let direction = Math.round(Math.random()); // 0 = horizontal, 1 = vertical
                 let distance = direction ? 4.5 - Math.abs(y) : 4.5 - Math.abs(x);
                 let speed = distance;
-                if(circle_set.time < 1) {
-                    speed = distance / circle_set.time;
+                if(circle_set[0].time < 1) {
+                    speed = distance / circle_set[0].time;
+                }
+                if(direction === 1 && y < 0) {
+                    speed = -speed;
+                } else if(direction === 0 && x < 0) {
+                    speed = -speed;
                 }
                 circle_sets[index] = {
                     id: index,
@@ -161,12 +172,12 @@ export class MidiFileService {
                     startY: y,
                     startXSpeed: direction ? 0 : speed,
                     startYSpeed: direction ? speed : 0,
-                    instrument: this.soundService.getValidInstrument(circle_set.instrument, circle_set.instrumentFamily),
-                    note: circle_set.note,
-                    alteration: circle_set.alteration,
-                    octave: circle_set.octave,
+                    instrument: this.soundService.getValidInstrument(circle_set[0].instrument, circle_set[0].instrumentFamily),
+                    note: circle_set[0].note,
+                    alteration: circle_set[0].alteration,
+                    octave: circle_set[0].octave,
                     volume: 50,
-                    spawnTime: (circle_set.time * 1000) - (circle_set.time < 1 ? circle_set.time*1000 : 1000),
+                    spawnTime: circle_set[0].time < 1 ? 0 : (circle_set[0].time * 1000) - 1000,
                     maxBounces: 1,
                     maxTime: 0,
                     nbBounces: 0,

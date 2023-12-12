@@ -78,11 +78,9 @@ export class CircleService {
     this.circleChangedSubject.next(circle);
   }
 
-  calculatePos(elapsedTime: number, time: number, circle: Circle, squareUnit: number, isArenaMuted: boolean, exportMP3Active: boolean = false) {
+  calculatePos(elapsedTime: number, time: number, circle: Circle, squareUnit: number, isArenaMuted: boolean, midSquareSize: number, exportMP3Active: boolean = false) {
     
-    if(circle.spawnTime > time) {
-      return;
-    }
+    if(circle.spawnTime > time) return;
 
     // Update the circle's position based on its speed and elapsed time
     if (exportMP3Active) {
@@ -95,54 +93,53 @@ export class CircleService {
     }
     this.updatePos(circle, circle.x, circle.y);
 
+    let inRangeX = this.inRange(circle.x, squareUnit);
+    let inRangeY = this.inRange(circle.y, squareUnit);
     // Collides x and y
-    if(!this.inRange(circle.x, squareUnit) && !this.inRange(circle.y, squareUnit)) {
+    if(!inRangeX && !inRangeY) {
       circle.isColliding = true;
-      circle.nbBounces += 1;
+      circle.nbBounces ++;
       let adjustedX = circle.xSpeed > 0 ? circle.x + this.circleRad : circle.x - this.circleRad;
       let adjustedY = circle.ySpeed > 0 ? circle.y + this.circleRad : circle.y - this.circleRad;
       circle.contactPoint = { x: adjustedX, y: adjustedY };
-      this.bounceXY(circle, circle.x - this.circleRad < -(squareUnit / 2),
-        circle.y - this.circleRad < -(squareUnit / 2), squareUnit / 2 - this.circleRad, isArenaMuted);
-      this.exportWavCircleSubject.next(circle);
+      this.bounceXY(circle, circle.xSpeed < 0, circle.ySpeed > 0, midSquareSize, isArenaMuted);
+      if (exportMP3Active) this.exportWavCircleSubject.next(circle);
 
       setTimeout(() => {
         circle.isColliding = false;
       }, 500);
-    }
-
-    // Collides x
-    if (!this.inRange(circle.x, squareUnit) && this.inRange(circle.y, squareUnit)) {
-      circle.isColliding = true;
-      circle.nbBounces += 1;
-      let adjustedX = circle.xSpeed > 0 ? circle.x + this.circleRad : circle.x - this.circleRad;
-      circle.contactPoint = { x: adjustedX, y: circle.y };
-      this.bounceX(circle, circle.x - this.circleRad < -(squareUnit / 2),
-        squareUnit / 2 - this.circleRad, isArenaMuted)
-      this.exportWavCircleSubject.next(circle);
-
-      setTimeout(() => {
-        circle.isColliding = false;
-      }, 500);
-    }
-
-    // Collides y
-    if (!this.inRange(circle.y, squareUnit) && this.inRange(circle.x, squareUnit)) {
-      circle.isColliding = true;
-      circle.nbBounces += 1;
-      let adjustedY = circle.ySpeed > 0 ? circle.y + this.circleRad : circle.y - this.circleRad;
-      circle.contactPoint = {x: circle.x, y: adjustedY};
-      this.bounceY(circle, circle.y - this.circleRad < -(squareUnit / 2),
-      squareUnit / 2 - this.circleRad, isArenaMuted);
-      this.exportWavCircleSubject.next(circle);
-
-      setTimeout(() => {
-        circle.isColliding = false;
-      }, 500);
-    }
-    if(circle.maxBounces != 0 && circle.nbBounces >= circle.maxBounces) {
-      this.moveCircleToDeadList(circle);
-      return;
+    } else {
+      // Collides x
+      if (!inRangeX) {
+        circle.isColliding = true;
+        circle.nbBounces ++;
+        let adjustedX = circle.xSpeed > 0 ? circle.x + this.circleRad : circle.x - this.circleRad;
+        circle.contactPoint = { x: adjustedX, y: circle.y };
+        this.bounceX(circle, circle.xSpeed < 0, midSquareSize, isArenaMuted)
+        if (exportMP3Active) this.exportWavCircleSubject.next(circle);
+  
+        setTimeout(() => {
+          circle.isColliding = false;
+        }, 500);
+      }
+  
+      // Collides y
+      if (!inRangeY) {
+        circle.isColliding = true;
+        circle.nbBounces ++;
+        let adjustedY = circle.ySpeed > 0 ? circle.y + this.circleRad : circle.y - this.circleRad;
+        circle.contactPoint = {x: circle.x, y: adjustedY};
+        this.bounceY(circle, circle.ySpeed > 0, midSquareSize, isArenaMuted);
+        if (exportMP3Active) this.exportWavCircleSubject.next(circle);
+  
+        setTimeout(() => {
+          circle.isColliding = false;
+        }, 500);
+      }
+      if(circle.maxBounces != 0 && circle.nbBounces >= circle.maxBounces) {
+        this.moveCircleToDeadList(circle);
+        return;
+      }
     }
 
     this.circleChangedSubject.next(circle);

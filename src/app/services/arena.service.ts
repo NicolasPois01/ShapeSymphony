@@ -218,6 +218,8 @@ export class ArenaService {
   updateArenas(elapsedTime: number, time: number, squareUnit: number, exportMP3Active: boolean = false) {
     const arenas = this.arenaListSubject.getValue();
 
+    let midSquareSize = squareUnit / 2 - this.circleService.circleRad;
+
     arenas.forEach(arena => {
       arena.circleListWaiting.forEach(circle => {
         if(time >= circle.spawnTime) {
@@ -225,7 +227,7 @@ export class ArenaService {
         }
       });
       arena.circleListAlive.forEach(circle => {
-        this.circleService.calculatePos(elapsedTime, time, circle, squareUnit, arena.isMuted, exportMP3Active );
+        this.circleService.calculatePos(elapsedTime, time, circle, squareUnit, arena.isMuted, midSquareSize, exportMP3Active);
       });
     });
 

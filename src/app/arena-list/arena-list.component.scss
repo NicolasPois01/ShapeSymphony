@@ -59,7 +59,7 @@ body {
   margin-top: 5px; /* Espace au-dessus des boutons */
 }
 
-.toggle-button, .icon-container, .toggle-button-add-arena {
+.toggle-button, .icon-container, .toggle-button-add-arena, .toggle-button-upload-midi-file {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -71,9 +71,13 @@ body {
   cursor: pointer;
   box-shadow: -5px -5px 10px #36284e, 5px 5px 10px #1e162c;
   transition: background-color 0.3s, box-shadow 0.3s;
+
+  &.toggle-button-upload-midi-file {
+    margin-top: 20px;
+  }
 }
 
-.toggle-button:hover, .toggle-button-add-arena:hover {
+.toggle-button:hover, .toggle-button-add-arena:hover, .toggle-button-upload-midi-file:hover {
   box-shadow: -2px -2px 5px #36284e, 2px 2px 5px #1e162c;
   background-color: #36284e;
 }

@@ -21,7 +21,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   @Input() grid: boolean = false;
   @Input() precisionMode: boolean = false;
   @Input() timerService: TimerService|undefined = undefined;
-  @Input() fps: number = 60;
+  @Input() fps: number = 30;
   @Input() squareUnit: number = 10;
   @Input() arena!: Arena;
 

@@ -199,6 +199,6 @@ export class SoundService {
   }
 
   getAlteration(name:string): string {
-    return name.substring(1, 2) === "#" ? "d" : "";
+    return name.substring(1, 2) === "#" ? "d" : name.substring(1, 2) === "b" ? "b" : "";
   }
 }
