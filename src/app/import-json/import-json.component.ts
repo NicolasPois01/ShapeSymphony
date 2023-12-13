@@ -4,6 +4,7 @@ import { TimerService } from '../services/timer.service';
 import { Circle } from '../models/circle';
 import {ArenaService} from "../services/arena.service";
 import {Arena} from "../models/arena";
+import { Percussions } from '../models/percussionEnum';
 
 @Component({
   selector: 'app-import-json',
@@ -76,6 +77,16 @@ export class ImportJsonComponent {
   }
 
   getCircleData(circleData: Circle) {
+    let audioFilePath = "";
+    if (Object.values(Percussions).includes(circleData.instrument as Percussions)){
+      let audioFileName = circleData.instrument+'.mp3';
+      audioFilePath = `./assets/samples/Percussion/${audioFileName}`;
+    } else {
+      let audioFileName = circleData.instrument+circleData.note+circleData.alteration+circleData.octave+'.mp3';
+      audioFilePath = `./assets/samples/${circleData.instrument}/${audioFileName}`;
+    }
+    const audio = new Audio(audioFilePath);
+    audio.volume = (circleData.volume/100);
    return {
       id: circleData.id,
       x: circleData.startX,
@@ -98,46 +109,8 @@ export class ImportJsonComponent {
       nbBounces: circleData.nbBounces,
       showable: circleData.showable,
       isColliding: false,
-      contactPoint: {x: -1, y: -1}
-    }
-  }
-
-  playCirclesFromJson(jsonString: string): void {
-    try {
-      const circles = JSON.parse(jsonString);
-      if (Array.isArray(circles)) {
-        this.circleService.clearAllCircles();
-        this.timerService.resetTimer();
-        circles.forEach(circleData => {
-          let circle: Circle = {
-            id: circleData.id,
-            x: circleData.startX,
-            y: circleData.startY,
-            xSpeed: circleData.xSpeed,
-            ySpeed: circleData.ySpeed,
-            color: circleData.color,
-            startX: circleData.startX,
-            startY: circleData.startY,
-            startXSpeed: circleData.startXSpeed,
-            startYSpeed: circleData.startYSpeed,
-            instrument: circleData.instrument,
-            note: circleData.note,
-            alteration: circleData.alteration,
-            octave: circleData.octave,
-            volume: circleData.volume,
-            spawnTime: circleData.spawnTime,
-            maxBounces: circleData.maxBounces,
-            maxTime: circleData.maxTime,
-            nbBounces: circleData.nbBounces,
-            showable: circleData.showable,
-            isColliding: false,
-            contactPoint: {x: -1, y: -1}
-          }
-          this.circleService.addCircleToAliveList(circle);
-        });
-      }
-    } catch (error) {
-      console.error("Erreur lors de la lecture du fichier JSON.", error);
+      contactPoint: {x: -1, y: -1},
+      audio: audio
     }
   }
 }

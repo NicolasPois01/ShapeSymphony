@@ -7,6 +7,7 @@ import {SoundService} from "../services/sound.service";
 import {Arena} from "../models/arena";
 import {ArenaService} from "../services/arena.service";
 import {AnimationService} from "../services/animation.service";
+import { Percussions } from '../models/percussionEnum';
 
 @Component({
   selector: 'app-square',
@@ -21,7 +22,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   @Input() grid: boolean = false;
   @Input() precisionMode: boolean = false;
   @Input() timerService: TimerService|undefined = undefined;
-  @Input() fps: number = 60;
+  @Input() fps: number = 30;
   @Input() squareUnit: number = 10;
   @Input() arena!: Arena;
 
@@ -107,6 +108,21 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     if(!this.circlesService.inRange(x, this.squareUnit) || !this.circlesService.inRange(y, this.squareUnit)) return;
 
     let spawnTimeValue: number = this.timerService ? this.timerService.getTimeStamp() : 0;
+    let instrument = this.soundService.activeInstrumentSubject.getValue();
+    let note = this.soundService.activeNoteSubject.getValue();
+    let alteration = this.soundService.activeAlterationStringSubject.getValue();
+    let octave = this.soundService.activeOctaveSubject.getValue();
+    let volume = this.soundService.activeVolumeSubject.getValue();
+    let audioFilePath = "";
+    if (Object.values(Percussions).includes(instrument as Percussions)){
+      let audioFileName = instrument+'.mp3';
+      audioFilePath = `./assets/samples/Percussion/${audioFileName}`;
+    } else {
+      let audioFileName = instrument+note+alteration+octave+'.mp3';
+      audioFilePath = `./assets/samples/${instrument}/${audioFileName}`;
+    }
+    const audio = new Audio(audioFilePath);
+    audio.volume = (volume/100);
     let circle: Circle = {
       id: this.circlesService.getNewId(),
       x: parseFloat(x.toFixed(this.precisionMode ? 1 : 2)),
@@ -118,18 +134,19 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
       startY: parseFloat(y.toFixed(this.precisionMode ? 1 : 2)),
       startXSpeed: parseFloat(((this.saveVx * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)),
       startYSpeed: parseFloat(((this.saveVy * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2)),
-      instrument: this.soundService.activeInstrumentSubject.getValue(),
-      note: this.soundService.activeNoteSubject.getValue(),
-      alteration: this.soundService.activeAlterationStringSubject.getValue(),
-      octave: this.soundService.activeOctaveSubject.getValue(),
-      volume: this.soundService.activeVolumeSubject.getValue(),
+      instrument: instrument,
+      note: note,
+      alteration: alteration,
+      octave: octave,
+      volume: volume,
       spawnTime: spawnTimeValue,
       maxBounces: 0,
       maxTime: 0,
       nbBounces: 0,
       showable: true,
       contactPoint: {x: -1, y: -1},
-      isColliding: false
+      isColliding: false,
+      audio: audio
     }
     this.circlesService.addCircleToAliveList(circle);
   }

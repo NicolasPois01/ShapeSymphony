@@ -3,6 +3,7 @@ import {Arena} from "../models/arena";
 import {BehaviorSubject, Observable} from "rxjs";
 import {Circle} from "../models/circle";
 import {CircleService} from "./circle.service";
+import { MidiFileService } from './midiFile.service';
 
 
 @Injectable({
@@ -32,7 +33,7 @@ export class ArenaService {
   });
   activeArena$ = this.activeArenaSubject.asObservable();
 
-  constructor(private circleService: CircleService) {
+  constructor(private circleService: CircleService, private midiFileService: MidiFileService) {
 
     this.activeArenaSubject.next(this.arenaListSubject.getValue()[0]);
 
@@ -48,6 +49,10 @@ export class ArenaService {
     this.circleService.circleMovedToDead$.subscribe(circle => {
       this.moveCircleToDeadList(circle);
     });
+    this.circleService.circleMovedToAlive$.subscribe(circle => {
+      this.moveCircleToAliveList(circle);
+    });
+
 
   }
 
@@ -193,12 +198,36 @@ export class ArenaService {
     });
   }
 
+  moveCircleToAliveList(circle: Circle) {
+    const arenas = this.arenaListSubject.getValue();
+    arenas.forEach((arena, arenaIndex) => {
+      const index = arena.circleListWaiting.findIndex(c => c.id === circle.id);
+      if(index !== -1) {
+        arena.circleListWaiting.splice(index, 1);
+        arena.circleListAlive.push(circle);
+        arenas[arenaIndex] = arena;
+        this.arenaListSubject.next(arenas);
+        if(arena.id === this.activeArenaSubject.getValue().id) {
+          this.activeArenaSubject.next(arena);
+        }
+        return;
+      }
+    });
+  }
+
   updateArenas(elapsedTime: number, time: number, squareUnit: number, exportMP3Active: boolean = false) {
     const arenas = this.arenaListSubject.getValue();
 
+    let midSquareSize = squareUnit / 2 - this.circleService.circleRad;
+
     arenas.forEach(arena => {
+      arena.circleListWaiting.forEach(circle => {
+        if(time >= circle.spawnTime) {
+          this.circleService.moveCircleToAliveList(circle);
+        }
+      });
       arena.circleListAlive.forEach(circle => {
-        this.circleService.calculatePos(elapsedTime, time, circle, squareUnit, arena.isMuted, exportMP3Active );
+        this.circleService.calculatePos(elapsedTime, time, circle, squareUnit, arena.isMuted, midSquareSize, exportMP3Active);
       });
     });
 
@@ -258,6 +287,10 @@ export class ArenaService {
         circle.showable = true;
         circle.isColliding = false;
         circle.contactPoint = {x: -1, y: -1};
+        if(circle.spawnTime > 0) {
+          arena.circleListWaiting.push(circle);
+          arena.circleListAlive.splice(arena.circleListAlive.indexOf(circle), 1);
+        }
       });
     });
     this.setArenaList(tempoArenaList, arenaActiveId);
@@ -278,5 +311,17 @@ export class ArenaService {
       // Update the arena list subject with the updated list of arenas
       this.arenaListSubject.next([...arenas]);
     }
+  }
+
+  async uploadMidiFile(file: File) {
+    this.clearAll();
+    let processedMidiFile = await this.midiFileService.processMidiFile(file);
+    let circles = this.midiFileService.getCircles(processedMidiFile);
+    let arena = this.activeArenaSubject.getValue();
+    arena.circleListWaiting = circles.filter(circle => circle.spawnTime > 0);
+    arena.circleListAlive = circles.filter(circle => circle.spawnTime === 0);
+    this.setArenaList(this.arenaListSubject.getValue(), arena.id);
+    this.circleService.setCircleListWaiting(arena.circleListWaiting);
+    this.circleService.setCircleListAlive(arena.circleListAlive);
   }
 }

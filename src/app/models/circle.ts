@@ -20,5 +20,6 @@ export interface Circle {
   nbBounces: number,
   showable: boolean,
   contactPoint: {x: number, y: number},
-  isColliding: boolean;
+  isColliding: boolean,
+  audio: HTMLAudioElement;
 }
