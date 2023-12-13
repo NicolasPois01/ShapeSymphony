@@ -84,22 +84,8 @@ export class SoundService {
   }
 
   playAudio = function(circle : Circle) {
-    //Cas des percussions
-    if (Object.values(Percussions).includes(circle.instrument as Percussions)){
-      const audioFileName = circle.instrument+'.mp3';
-      const audioFilePath = `./assets/samples/Percussion/${audioFileName}`;
-      const audio = new Audio(audioFilePath);
-      audio.volume = (circle.volume/100);
-      audio.play();
-    }
-    // les autres instruments
-    else {
-      const audioFileName = circle.instrument+circle.note+circle.alteration+circle.octave+'.mp3';
-      const audioFilePath = `./assets/samples/${circle.instrument}/${audioFileName}`;
-      const audio = new Audio(audioFilePath);
-      audio.volume = (circle.volume/100);
-      audio.play();
-    }
+    circle.audio.currentTime = 0;
+    circle.audio.play();
   }
 
   setActiveInstrument(instrument: string){

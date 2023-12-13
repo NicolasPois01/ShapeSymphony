@@ -102,7 +102,7 @@ export class CircleService {
       let adjustedX = circle.xSpeed > 0 ? circle.x + this.circleRad : circle.x - this.circleRad;
       let adjustedY = circle.ySpeed > 0 ? circle.y + this.circleRad : circle.y - this.circleRad;
       circle.contactPoint = { x: adjustedX, y: adjustedY };
-      this.bounceXY(circle, circle.xSpeed < 0, circle.ySpeed > 0, midSquareSize, isArenaMuted);
+      this.bounceXY(circle, circle.xSpeed < 0, circle.ySpeed < 0, midSquareSize, isArenaMuted);
       if (exportMP3Active) this.exportWavCircleSubject.next(circle);
 
       setTimeout(() => {
@@ -129,7 +129,7 @@ export class CircleService {
         circle.nbBounces ++;
         let adjustedY = circle.ySpeed > 0 ? circle.y + this.circleRad : circle.y - this.circleRad;
         circle.contactPoint = {x: circle.x, y: adjustedY};
-        this.bounceY(circle, circle.ySpeed > 0, midSquareSize, isArenaMuted);
+        this.bounceY(circle, circle.ySpeed < 0, midSquareSize, isArenaMuted);
         if (exportMP3Active) this.exportWavCircleSubject.next(circle);
   
         setTimeout(() => {

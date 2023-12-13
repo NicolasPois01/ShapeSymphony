@@ -99,8 +99,16 @@ export class MidiFileService {
         circle_set.forEach((note: any) => {
             circle_sets.push([note]);
         });
-        (Object.entries(circle_sets) as any[]).forEach(([index, circle_set]) => {
+        circle_sets.forEach((circle_set, index) => {
             if(circle_set.length > 1) {
+                /*
+                * |                      distance (m)   |
+                * |                      ecart_time (s) |
+                * |                  x<---------------->|
+                * |                   A (x,y)           |
+                * |<----------------------------------->|
+                * |               ecart (s)             |
+                */
                 let x = Math.round((Math.random() * 8) - 4);
                 let y = Math.round((Math.random() * 8) - 4);
                 let ecart = circle_set[1].time - circle_set[0].time;
