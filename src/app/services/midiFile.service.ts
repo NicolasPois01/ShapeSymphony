@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Midi } from '@tonejs/midi'
 import { SoundService } from "./sound.service";
+import { Percussions } from "../models/percussionEnum";
 
 interface StringArray {
     [key:string]: any
@@ -131,6 +132,17 @@ export class MidiFileService {
                 } else if(direction === 0 && x < 0) {
                     speed = -speed;
                 }
+                let instrument = this.soundService.getValidInstrument(circle_set[0].instrument, circle_set[0].instrumentFamily);
+                let audioFilePath = "";
+                if (Object.values(Percussions).includes(instrument as Percussions)){
+                  let audioFileName = instrument+'.mp3';
+                  audioFilePath = `./assets/samples/Percussion/${audioFileName}`;
+                } else {
+                  let audioFileName = instrument+circle_set[0].note+circle_set[0].alteration+circle_set[0].octave+'.mp3';
+                  audioFilePath = `./assets/samples/${instrument}/${audioFileName}`;
+                }
+                const audio = new Audio(audioFilePath);
+                audio.volume = (50/100);
                 circle_sets[index] = {
                     id: index,
                     x: x,
@@ -142,7 +154,7 @@ export class MidiFileService {
                     startY: y,
                     startXSpeed: direction ? 0 : speed,
                     startYSpeed: direction ? speed : 0,
-                    instrument: this.soundService.getValidInstrument(circle_set[0].instrument, circle_set[0].instrumentFamily),
+                    instrument: instrument,
                     note: circle_set[0].note,
                     alteration: circle_set[0].alteration,
                     octave: circle_set[0].octave,
@@ -153,7 +165,8 @@ export class MidiFileService {
                     nbBounces: 0,
                     showable: true,
                     contactPoint: {x: -1, y: -1},
-                    isColliding: false
+                    isColliding: false,
+                    audio: audio
                 };
             } else {
                 let x = Math.round((Math.random() * 8) - 4);
@@ -169,6 +182,17 @@ export class MidiFileService {
                 } else if(direction === 0 && x < 0) {
                     speed = -speed;
                 }
+                let instrument = this.soundService.getValidInstrument(circle_set[0].instrument, circle_set[0].instrumentFamily);
+                let audioFilePath = "";
+                if (Object.values(Percussions).includes(instrument as Percussions)){
+                  let audioFileName = instrument+'.mp3';
+                  audioFilePath = `./assets/samples/Percussion/${audioFileName}`;
+                } else {
+                  let audioFileName = instrument+circle_set[0].note+circle_set[0].alteration+circle_set[0].octave+'.mp3';
+                  audioFilePath = `./assets/samples/${instrument}/${audioFileName}`;
+                }
+                const audio = new Audio(audioFilePath);
+                audio.volume = (50/100);
                 circle_sets[index] = {
                     id: index,
                     x: x,
@@ -180,7 +204,7 @@ export class MidiFileService {
                     startY: y,
                     startXSpeed: direction ? 0 : speed,
                     startYSpeed: direction ? speed : 0,
-                    instrument: this.soundService.getValidInstrument(circle_set[0].instrument, circle_set[0].instrumentFamily),
+                    instrument: instrument,
                     note: circle_set[0].note,
                     alteration: circle_set[0].alteration,
                     octave: circle_set[0].octave,
@@ -191,7 +215,8 @@ export class MidiFileService {
                     nbBounces: 0,
                     showable: true,
                     contactPoint: {x: -1, y: -1},
-                    isColliding: false
+                    isColliding: false,
+                    audio: audio
                 };
             }
         });
