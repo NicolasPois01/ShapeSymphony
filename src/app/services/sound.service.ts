@@ -177,6 +177,10 @@ export class SoundService {
 
   getValidNoteName(name: string): string {
     let note = name.substring(0, 1);
+    if(name.substring(0, 2) === "G#") return "Do";
+    if(name.substring(0, 2) === "Ab") return "Si";
+    if(name.substring(0, 2) === "Db") return "Mi";
+    if(name.substring(0, 2) === "C#") return "Fa";
     switch (note) {
       case 'A':
         return "Do";
@@ -199,6 +203,10 @@ export class SoundService {
   }
 
   getAlteration(name:string): string {
+    if(name.substring(0, 2) === "G#") return "";
+    if(name.substring(0, 2) === "Ab") return "";
+    if(name.substring(0, 2) === "Db") return "";
+    if(name.substring(0, 2) === "C#") return "";
     return name.substring(1, 2) === "#" ? "d" : name.substring(1, 2) === "b" ? "b" : "";
   }
 }
