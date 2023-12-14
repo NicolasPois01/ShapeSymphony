@@ -275,10 +275,14 @@ export class ArenaService {
         arenaActiveId = arena.id;
       }
       arena.circleListDead.forEach(circle => {
-        arena.circleListAlive.push(circle);
+        if(circle.spawnTime > 0) {
+          arena.circleListWaiting.push(circle);
+        } else {
+          arena.circleListAlive.push(circle);
+        }
       });
       arena.circleListDead = [];
-      arena.circleListAlive.forEach(circle => {
+      arena.circleListAlive = arena.circleListAlive.filter(circle => {
         circle.x = circle.startX;
         circle.y = circle.startY;
         circle.xSpeed = circle.startXSpeed;
@@ -289,8 +293,9 @@ export class ArenaService {
         circle.contactPoint = {x: -1, y: -1};
         if(circle.spawnTime > 0) {
           arena.circleListWaiting.push(circle);
-          arena.circleListAlive.splice(arena.circleListAlive.indexOf(circle), 1);
+          return false;
         }
+        return true;
       });
     });
     this.setArenaList(tempoArenaList, arenaActiveId);

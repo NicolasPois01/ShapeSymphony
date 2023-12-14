@@ -62,11 +62,17 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     this.soundService?.loadAudioFiles();
     this.animationService.isAnimationRunning$.subscribe(isRunning => {
       if (isRunning && this.timerService?.getIsRunning()) {
+        let isRunning = false;
         this.interval = setInterval(() => {
-          let elapsedTime = ((this.timerService?.getTimeStamp() ?? 0) - this.timestamp) / 1000;
-          this.timestamp = this.timerService?.getTimeStamp();
-          if (elapsedTime > 0){
-            this.arenaService.updateArenas(elapsedTime, this.timestamp, this.squareUnit );
+          if(!isRunning) {
+            isRunning = true;
+            let time = this.timerService?.getTimeStamp() ?? 0;
+            let elapsedTime = (time - this.timestamp) / 1000;
+            this.timestamp = time;
+            if (elapsedTime > 0){
+              this.arenaService.updateArenas(elapsedTime, this.timestamp, this.squareUnit );
+            }
+            isRunning = false;
           }
         }, 1000 / this.fps);
       }
