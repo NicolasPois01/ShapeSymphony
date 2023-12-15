@@ -33,7 +33,8 @@ export class MidiFileService {
                         octave: note.octave,
                         percussion: track.instrument.percussion,
                         instrument: track.instrument.name,
-                        instrumentFamily: track.instrument.family
+                        instrumentFamily: track.instrument.family,
+                        volume: Math.floor(note.velocity * 100)
                     });
                 });
             });
@@ -158,7 +159,7 @@ export class MidiFileService {
                     note: circle_set[0].note,
                     alteration: circle_set[0].alteration,
                     octave: circle_set[0].octave,
-                    volume: 50,
+                    volume: circle_set[0].volume,
                     spawnTime: spawnTime,
                     maxBounces: circle_set.length,
                     maxTime: 0,
@@ -208,7 +209,7 @@ export class MidiFileService {
                     note: circle_set[0].note,
                     alteration: circle_set[0].alteration,
                     octave: circle_set[0].octave,
-                    volume: 50,
+                    volume: circle_set[0].volume,
                     spawnTime: circle_set[0].time < 1 ? 0 : (circle_set[0].time * 1000) - 1000,
                     maxBounces: 1,
                     maxTime: 0,

@@ -1,22 +1,16 @@
-<div class="square" (click)="onSquareClick($event)"
-     (mousemove)="onSquareMouseMove($event)"
-     (mouseenter)="onSquareMouseEnter($event)"
-     (mouseleave)="onSquareMouseLeave($event)"
-     (mousedown)="onSquareMouseDown($event)"
-     (mouseup)="onSquareMouseUp($event)"
-     [ngClass]="{'grid' : this.grid}" tabindex="0" #square>
-
-  <!-- Cercles se déplaçant à l'intérieur du carré -->
-  <app-circle *ngFor="let element of circles"
-              [circle]="element"
-              [style.--circle-color]="element.color"></app-circle>
-
+<canvas class="square" tabindex="0" [width]="this.squareCanvasSize" [height]="this.squareCanvasSize" #square>
+</canvas>
+<div id="containerSquareElements"
+(pointermove)="onSquareMouseMove($event)"
+(pointerdown)="onSquarePointerDown($event)"
+(mousedown)="onSquareMouseDown($event)"
+(mouseup)="onSquareMouseUp($event)"
+(pointerup)="onSquarePointerUp($event)" #containerSquareElements>
   <!-- Grille à l'intérieur du carré -->
-  <div class="grid">
+  <div class="grid" [ngClass]="{'show' : this.grid}">
     <div class="horyzontal-grid" *ngFor="let _ of [].constructor(this.squareUnit-1); let i = index;" [ngStyle]="{'top' : ((100/this.squareUnit) *(i+1))+'%'}"></div>
     <div class="vertical-grid" *ngFor="let _ of [].constructor(this.squareUnit-1); let i = index;" [ngStyle]="{'left' : ((100/this.squareUnit) *(i+1))+'%'}"></div>
   </div>
-
 
   <!-- Prévisualisation des cercles -->
   <div class="previs" [style.width.%]="(getCircleSize()/this.squareUnit)*100" [style.height.%]="(getCircleSize()/this.squareUnit)*100"></div>
@@ -29,3 +23,4 @@
     <div class="arrow"></div>
   </div>
 </div>
+
