@@ -115,7 +115,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     this.animationService.pauseAnimation();
   }
 
-  onSquareClick(event: MouseEvent) {
+  onSquareClick(event: PointerEvent) {
     if(this.soundService === undefined) return;
     let x, y = 0;
     let squareSize = this.getSquareSize();
@@ -135,7 +135,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     let octave = this.soundService.activeOctaveSubject.getValue();
     let volume = this.soundService.activeVolumeSubject.getValue();
     let audioFilePath = "";
-    if (Object.values(Percussions).includes(instrument as Percussions)){
+    if (Object.values(Percussions).includes(instrument as Percussions)) {
       let audioFileName = instrument+'.mp3';
       audioFilePath = `./assets/samples/Percussion/${audioFileName}`;
     } else {
@@ -173,7 +173,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   }
 
 
-  onSquareMouseMove(event: MouseEvent, dispatched: boolean = false) {
+  onSquareMouseMove(event: PointerEvent, dispatched: boolean = false) {
     this.currentPosX = !dispatched ? event.offsetX : this.currentPosX;
     this.currentPosY = !dispatched ? event.offsetY : this.currentPosY;
     let squareSize = this.getSquareSize();
@@ -198,7 +198,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     }
   }
 
-  onSquareMouseDown(event: PointerEvent) {
+  onSquarePointerDown(event: PointerEvent) {
     this.arrow.nativeElement.style.display = "block";
     this.mouseDown = true;
     let demiCircleSize = ((this.getCircleSize()/2) * this.getSquareSize()) / this.squareUnit;
@@ -214,7 +214,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     this.containerSquareElements.nativeElement.setPointerCapture(event.pointerId);
   }
 
-  onSquareMouseUp(event: PointerEvent) {
+  onSquarePointerUp(event: PointerEvent) {
     this.arrow.nativeElement.style.display = "none";
     this.arrow.nativeElement.style.width = "0px";
     this.mouseDown = false;
@@ -229,12 +229,13 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     this.containerSquareElements.nativeElement.style.setProperty("--left-mouse-px", event.offsetX + 'px');
     this.containerSquareElements.nativeElement.style.setProperty("--top-mouse-px", event.offsetY + 'px');
     this.containerSquareElements.nativeElement.releasePointerCapture(event.pointerId);
+    this.onSquareClick(event);
   }
 
-  onSquareMouseEnter(event: MouseEvent) {
+  onSquareMouseDown( event: MouseEvent) {
   }
 
-  onSquareMouseLeave(event: MouseEvent) {
+  onSquareMouseUp( event: MouseEvent) {
   }
 
   getCircleSize(): number {
@@ -255,7 +256,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if(this.mousebox) this.onSquareMouseMove(new MouseEvent("mousemove"), true );
+    if(this.mousebox) this.onSquareMouseMove(new PointerEvent("mousemove"), true );
     if (changes['arena']) {
       this.circles = this.arena.circleListAlive;
     }

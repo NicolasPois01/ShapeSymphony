@@ -1,12 +1,11 @@
 <canvas class="square" tabindex="0" [width]="this.squareCanvasSize" [height]="this.squareCanvasSize" #square>
 </canvas>
 <div id="containerSquareElements"
-(click)="onSquareClick($event)"
-(mousemove)="onSquareMouseMove($event)"
-(mouseenter)="onSquareMouseEnter($event)"
-(mouseleave)="onSquareMouseLeave($event)"
-(pointerdown)="onSquareMouseDown($event)"
-(pointerup)="onSquareMouseUp($event)"#containerSquareElements>
+(pointermove)="onSquareMouseMove($event)"
+(pointerdown)="onSquarePointerDown($event)"
+(mousedown)="onSquareMouseDown($event)"
+(mouseup)="onSquareMouseUp($event)"
+(pointerup)="onSquarePointerUp($event)" #containerSquareElements>
   <!-- Grille à l'intérieur du carré -->
   <div class="grid" [ngClass]="{'show' : this.grid}">
     <div class="horyzontal-grid" *ngFor="let _ of [].constructor(this.squareUnit-1); let i = index;" [ngStyle]="{'top' : ((100/this.squareUnit) *(i+1))+'%'}"></div>
