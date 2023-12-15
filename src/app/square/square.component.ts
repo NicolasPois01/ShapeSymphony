@@ -27,6 +27,8 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   @Input() squareUnit: number = 10;
   @Input() arena!: Arena;
 
+  ctx!: CanvasRenderingContext2D;
+
   circles!: Circle[];
 
   circleX: number = 0;
@@ -88,6 +90,8 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   }
 
   ngAfterViewInit() {
+    this.ctx = this.squareElement.nativeElement.getContext("2d");
+    this.ctx.lineWidth = 3;
   }
 
   getSquareSize() {
@@ -161,7 +165,6 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
 
 
   onSquareMouseMove(event: MouseEvent, dispatched: boolean = false) {
-    console.log(event);
     this.currentPosX = !dispatched ? event.offsetX : this.currentPosX;
     this.currentPosY = !dispatched ? event.offsetY : this.currentPosY;
     let squareSize = this.getSquareSize();
@@ -229,16 +232,14 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
 
   draw() {
     if(this.squareElement === undefined) return;
-    const ctx: CanvasRenderingContext2D = this.squareElement.nativeElement.getContext("2d");
-    ctx.clearRect(0, 0, this.squareCanvasSize, this.squareCanvasSize);
+    this.ctx.clearRect(0, 0, this.squareCanvasSize, this.squareCanvasSize);
     for(let circle of this.circles) {
       if(circle.showable) {
-        ctx.beginPath();
-        ctx.arc(((circle.x + this.midSquareSize)*this.squareCanvasSize)/(2*this.midSquareSize), ((circle.y + this.midSquareSize)*this.squareCanvasSize)/(2*this.midSquareSize), (this.getCircleSize()*this.squareCanvasSize)/(this.squareUnit*2), 0, 2 * Math.PI);
-        ctx.strokeStyle = circle.color;
-        ctx.lineWidth = 3;
-        ctx.stroke();
-        ctx.closePath();
+        this.ctx.beginPath();
+        this.ctx.strokeStyle = circle.color;
+        this.ctx.arc(((circle.x + this.midSquareSize)*this.squareCanvasSize)/(2*this.midSquareSize), ((circle.y + this.midSquareSize)*this.squareCanvasSize)/(2*this.midSquareSize), (this.getCircleSize()*this.squareCanvasSize)/(this.squareUnit*2), 0, 2 * Math.PI);
+        this.ctx.stroke();
+        this.ctx.closePath();
       }
     }
   }
