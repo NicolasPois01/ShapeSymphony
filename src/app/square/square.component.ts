@@ -198,7 +198,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     }
   }
 
-  onSquareMouseDown(event: MouseEvent) {
+  onSquareMouseDown(event: PointerEvent) {
     this.arrow.nativeElement.style.display = "block";
     this.mouseDown = true;
     let demiCircleSize = ((this.getCircleSize()/2) * this.getSquareSize()) / this.squareUnit;
@@ -211,9 +211,10 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     this.saveVx = 0;
     this.saveVy = 0;
     this.mousebox.nativeElement.innerHTML = "0 m/s <br/> 0°";
+    this.containerSquareElements.nativeElement.setPointerCapture(event.pointerId);
   }
 
-  onSquareMouseUp(event: MouseEvent) {
+  onSquareMouseUp(event: PointerEvent) {
     this.arrow.nativeElement.style.display = "none";
     this.arrow.nativeElement.style.width = "0px";
     this.mouseDown = false;
@@ -227,6 +228,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     this.containerSquareElements.nativeElement.style.setProperty("--top-mouse-percent", (y + (this.squareUnit/2 - this.circlesService.circleRad))*10 + '%');
     this.containerSquareElements.nativeElement.style.setProperty("--left-mouse-px", event.offsetX + 'px');
     this.containerSquareElements.nativeElement.style.setProperty("--top-mouse-px", event.offsetY + 'px');
+    this.containerSquareElements.nativeElement.releasePointerCapture(event.pointerId);
   }
 
   onSquareMouseEnter(event: MouseEvent) {
