@@ -51,6 +51,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   currentPosX: number = 0;
   currentPosY: number = 0;
   timestamp: any = 0;
+  canvasInvisible!: CanvasRenderingContext2D;
 
   interval: any;
 
@@ -73,6 +74,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         this.interval = setInterval(() => {
           let time = this.timerService?.getTimeStamp() ?? 0;
           let elapsedTime = (time - this.timestamp) / 1000;
+          if(elapsedTime > 0.1) console.log(elapsedTime);
           this.timestamp = time;
           if (elapsedTime > 0){
             this.arenaService.updateArenas(elapsedTime, this.timestamp, this.squareUnit);
@@ -91,7 +93,14 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
 
   ngAfterViewInit() {
     this.ctx = this.squareElement.nativeElement.getContext("2d");
-    this.ctx.lineWidth = 3;
+    let canvasInvisible = document.createElement('canvas');
+    canvasInvisible.width = this.squareCanvasSize;
+    canvasInvisible.height = this.squareCanvasSize;
+    let ctxInvisible = canvasInvisible.getContext("2d");
+    if(ctxInvisible !== null) {
+      this.canvasInvisible = ctxInvisible;
+    }
+    this.canvasInvisible.lineWidth = 3;
   }
 
   getSquareSize() {
@@ -230,18 +239,17 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     return this.circlesService.circleSize;
   }
 
-  draw() {
+  async draw() {
     if(this.squareElement === undefined) return;
     this.ctx.clearRect(0, 0, this.squareCanvasSize, this.squareCanvasSize);
+    this.canvasInvisible.clearRect(0, 0, this.squareCanvasSize, this.squareCanvasSize);
     for(let circle of this.circles) {
-      if(circle.showable) {
-        this.ctx.beginPath();
-        this.ctx.strokeStyle = circle.color;
-        this.ctx.arc(((circle.x + this.midSquareSize)*this.squareCanvasSize)/(2*this.midSquareSize), ((circle.y + this.midSquareSize)*this.squareCanvasSize)/(2*this.midSquareSize), (this.getCircleSize()*this.squareCanvasSize)/(this.squareUnit*2), 0, 2 * Math.PI);
-        this.ctx.stroke();
-        this.ctx.closePath();
-      }
+      this.canvasInvisible.beginPath();
+      this.canvasInvisible.strokeStyle = circle.color;
+      this.canvasInvisible.arc(((circle.x + this.midSquareSize)*this.squareCanvasSize)/(2*this.midSquareSize), ((circle.y + this.midSquareSize)*this.squareCanvasSize)/(2*this.midSquareSize), (this.getCircleSize()*this.squareCanvasSize)/(this.squareUnit*2), 0, 2 * Math.PI);
+      this.canvasInvisible.stroke();
     }
+    this.ctx.drawImage(this.canvasInvisible.canvas, 0, 0);
   }
 
   ngOnChanges(changes: SimpleChanges) {
