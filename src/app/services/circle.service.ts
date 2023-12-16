@@ -280,10 +280,11 @@ export class CircleService {
     }
   }
 
-  setNote(note: string | undefined) {
+  async setNote(note: string | undefined) {
     if (this.selectedCircle) {
       if (note != null) {
         this.selectedCircle.note = note;
+        this.selectedCircle.audio = await this.modifyNote(this.selectedCircle, note, this.selectedCircle.alteration, this.selectedCircle.octave);
       }
       this.circleChangedSubject.next(this.selectedCircle);
     }
@@ -311,19 +312,23 @@ export class CircleService {
     }
   }
 
-  setAlteration(alteration: string | undefined) {
+  async setAlteration(alteration: string | undefined) {
     if (this.selectedCircle) {
       if (alteration != null) {
         this.selectedCircle.alteration = alteration;
+        this.selectedCircle.audio = await this.modifyNote(this.selectedCircle, this.selectedCircle.note, alteration, this.selectedCircle.octave);
+      
       }
       this.circleChangedSubject.next(this.selectedCircle);
     }
   }
 
-  setOctave(octave: number | undefined) {
+  async setOctave(octave: number | undefined) {
     if (this.selectedCircle) {
       if (octave != null) {
         this.selectedCircle.octave = octave;
+        this.selectedCircle.audio = await this.modifyNote(this.selectedCircle, this.selectedCircle.note, this.selectedCircle.alteration, octave);
+      
       }
       this.circleChangedSubject.next(this.selectedCircle);
     }
@@ -339,4 +344,48 @@ export class CircleService {
   getNewId(): number {
     return this.highestId++;
   }
+
+  async modifyNote(
+    circle: Circle,
+    newNote: string,
+    newAlteration: string,
+    newOctave: number
+  ): Promise<HTMLAudioElement> {
+    const instrument = circle.instrument;
+  
+    let alteration = newAlteration !== undefined ? newAlteration : circle.alteration;
+    let octave = newOctave !== undefined ? newOctave : circle.octave;
+    
+    if (newNote === "Do" && alteration === "b") {
+      circle.note = "Si";
+      circle.alteration = "";
+      circle.octave -=1;
+    } else if (newNote === "Mi" && alteration === "d") {
+      circle.note = "Fa";
+      circle.alteration = "";
+    } else if (newNote === "Fa" && alteration === "b") {
+      circle.note = "Mi";
+      circle.alteration = ""; 
+    } else if (newNote === "Si" && alteration === "d") {
+      circle.note = "Do";
+      circle.alteration = "";
+      circle.octave +=1;
+    }
+  
+    const newAudioFileName = `${instrument}${circle.note}${circle.alteration}${circle.octave}.mp3`;
+    const newAudioFilePath = `./assets/samples/${instrument}/${newAudioFileName}`;
+  
+    const response = await fetch(newAudioFilePath, { method: 'HEAD' });
+    let newAudio = new Audio();
+    if (response.ok) {
+      newAudio = new Audio(newAudioFilePath);
+      newAudio.preload = "auto";
+      newAudio.load();
+    }
+    this.circleChangedSubject.next(circle);
+    return newAudio;
+  }
+  
+  
+  
 }
