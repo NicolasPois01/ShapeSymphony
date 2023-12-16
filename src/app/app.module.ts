@@ -18,11 +18,10 @@ import { AlterationComponent } from './alteration/alteration.component';
 import { OctaveComponent } from './octave/octave.component';
 import { FormsModule } from "@angular/forms";
 import { MusicComponent} from './music-component/music-component.component';
-import { ArenaListComponent } from './arena-list/arena-list.component';
-import {VolumeComponent} from "./volume/volume.component";
 import { ExportMp3Component } from './export-mp3/export-mp3.component';
 import {ArenaListModule} from "./arena-list/arena-list.module";
 import {VolumeModule} from "./volume/volume.module";
+import { TimeInputComponent } from './time-input/time-input.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +41,7 @@ import {VolumeModule} from "./volume/volume.module";
     OctaveComponent,
     MusicComponent,
     ExportMp3Component,
+    TimeInputComponent
   ],
   imports: [
     BrowserModule,

@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import {TimerService} from "../services/timer.service";
-import {CircleService} from "../services/circle.service";
 import {ArenaService} from "../services/arena.service";
 import {SoundService} from "../services/sound.service";
 import {AnimationService} from "../services/animation.service";
@@ -14,8 +13,7 @@ export class TimerComponent {
 
   @Input() timerService: TimerService|undefined = undefined;
 
-  constructor(private circleService: CircleService,
-              private soundService: SoundService,
+  constructor(private soundService: SoundService,
               private arenaService: ArenaService,
               private animationService: AnimationService) {
   }

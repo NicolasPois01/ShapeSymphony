@@ -121,7 +121,7 @@ export class ExportWAVService {
       this.timestamp = this.timerService?.getTimeStamp();
 
       if (elapsedTime > 0) {
-        this.arenaService.updateArenas(elapsedTime, this.squareUnit, true);
+        this.arenaService.updateArenas(elapsedTime, this.timestamp, this.squareUnit, true);
       }
 
       if ((this.timerService?.getTimeStamp() ?? 0) >= duration) {

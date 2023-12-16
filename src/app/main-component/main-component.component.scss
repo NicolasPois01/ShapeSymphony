@@ -30,8 +30,8 @@
 .square {
   width: 100%;
   flex-grow: 1;
-  /* Assurez-vous que la hauteur du .square est définie pour qu'il s'affiche */
-  height: 75vh; /* ou une hauteur fixe selon vos besoins */
+  position: relative;
+  height: 75vh;
 }
 
 .controls-container {

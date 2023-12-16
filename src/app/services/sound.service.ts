@@ -84,22 +84,8 @@ export class SoundService {
   }
 
   playAudio = function(circle : Circle) {
-    //Cas des percussions
-    if (Object.values(Percussions).includes(circle.instrument as Percussions)){
-      const audioFileName = circle.instrument+'.mp3';
-      const audioFilePath = `./assets/samples/Percussion/${audioFileName}`;
-      const audio = new Audio(audioFilePath);
-      audio.volume = (circle.volume/100);
-      audio.play();
-    }
-    // les autres instruments
-    else {
-      const audioFileName = circle.instrument+circle.note+circle.alteration+circle.octave+'.mp3';
-      const audioFilePath = `./assets/samples/${circle.instrument}/${audioFileName}`;
-      const audio = new Audio(audioFilePath);
-      audio.volume = (circle.volume/100);
-      audio.play();
-    }
+    circle.audio.currentTime = 0;
+    circle.audio.play();
   }
 
   setActiveInstrument(instrument: string){
@@ -161,5 +147,52 @@ export class SoundService {
         break;
     }
     return `${this.activeInstrumentSubject.getValue()} ${this.activeNoteSubject.getValue()}${alterationSymbol}${this.activeOctaveSubject.getValue()}`;
+  }
+
+  getValidInstrument(instrument: string, family: string) {
+    if(family === "chromatic percussion" || family === "percussive") {
+      if(instrument === "xylophone") {
+        return "Xylophone";
+      }
+      return "Percussion";
+    } else if(family === "bass" || family === "guitar"){
+      return "Bass";
+    }
+    return "Piano";
+  }
+
+  getValidNoteName(name: string): string {
+    let note = name.substring(0, 1);
+    if(name.substring(0, 2) === "B#") return "Do";
+    if(name.substring(0, 2) === "Cb") return "Si";
+    if(name.substring(0, 2) === "Fb") return "Mi";
+    if(name.substring(0, 2) === "E#") return "Fa";
+    switch (note) {
+      case 'A':
+        return "La";
+      case 'B':
+        return "Si";
+      case 'C':
+        return "Do";
+      case 'D':
+        return "Re";
+      case 'E':
+        return "Mi";
+      case 'F':
+        return "Fa";
+      case 'G':
+        return "Sol";
+      default:
+        break;
+    }
+    return "";
+  }
+
+  getAlteration(name:string): string {
+    if(name.substring(0, 2) === "B#") return "";
+    if(name.substring(0, 2) === "Cb") return "";
+    if(name.substring(0, 2) === "Fb") return "";
+    if(name.substring(0, 2) === "E#") return "";
+    return name.substring(1, 2) === "#" ? "d" : name.substring(1, 2) === "b" ? "b" : "";
   }
 }

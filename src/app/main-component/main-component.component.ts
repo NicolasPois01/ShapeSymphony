@@ -7,6 +7,7 @@ import { TimerService } from '../services/timer.service';
 import { Arena } from "../models/arena";
 import { ArenaService } from "../services/arena.service";
 import {SoundService} from "../services/sound.service";
+import { AnimationService } from '../services/animation.service';
 
 @Component({
   selector: 'app-main-component',
@@ -33,7 +34,8 @@ export class MainComponentComponent implements OnInit, OnDestroy {
   constructor(private circleService: CircleService,
               private arenaService: ArenaService,
               public timerService: TimerService,
-              private soundService: SoundService) {}
+              private soundService: SoundService,
+              private animationService: AnimationService) {}
 
   ngOnInit() {
     this.circleService.circleListAlive$
@@ -51,8 +53,20 @@ export class MainComponentComponent implements OnInit, OnDestroy {
   }
 
   handleKeyboardEvent(event: KeyboardEvent) {
+    if( event.target instanceof HTMLInputElement || 
+        event.target instanceof HTMLTextAreaElement || 
+        event.target instanceof HTMLSelectElement) return;
     if(event.key === "Shift") this.grid = !this.grid;
     else if(event.key === "Control") this.precisionMode = !this.precisionMode;
+    else if(event.key === " ") {
+      this.timerService.toggle();
+      this.animationService.toggleAnimation();
+    }
+    if(event.target instanceof HTMLButtonElement) {
+      // stop execution of button
+      event.preventDefault();
+      event.stopPropagation();
+    }
   }
 
   isPercussion (instrument: string): boolean {

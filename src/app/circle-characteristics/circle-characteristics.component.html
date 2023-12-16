@@ -49,6 +49,10 @@
       <li>Nombre de rebonds max:
         <input type="number" [(ngModel)]="maxBounces" (change)="setMaxBounces(maxBounces)" step="1" min="0"/>
       </li>
+      <li>Temporalité d'apparition :</li>
+      <li>
+        <time-input [disable]="false" [minutes]="spawnTime.minutes" [secondes]="spawnTime.secondes" [millisecondes]="spawnTime.millisecondes" (onValueChange)="onTimeChange($event)"></time-input>
+      </li>
     </ng-container>
     <ng-container *ngIf="!isTimerNotStarted()">
       <li>Angle: {{ newAngle }}</li>
@@ -73,6 +77,10 @@
         </select>
       </li>
       <li>Nombre de rebonds max: {{ maxBounces }}</li>
+      <li>Temporalité d'apparition :</li>
+      <li>
+        <time-input [disable]="true" [minutes]="spawnTime.minutes" [secondes]="spawnTime.secondes" [millisecondes]="spawnTime.millisecondes" (onValueChange)="onTimeChange($event)"></time-input>
+      </li>
     </ng-container>
   </ul>
 </div>
