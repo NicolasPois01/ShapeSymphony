@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { Midi } from '@tonejs/midi'
 import { SoundService } from "./sound.service";
 import { Percussions } from "../models/percussionEnum";
+import { CircleService } from "./circle.service";
 
 interface StringArray {
     [key:string]: any
@@ -12,7 +13,7 @@ interface StringArray {
 })
 export class MidiFileService {
 
-    constructor(private soundService: SoundService) {}
+    constructor(private soundService: SoundService, private circleService: CircleService) {}
 
     async processMidiFile(file: File): Promise<any> {
         return new Promise(async (resolve, reject) => {
@@ -143,14 +144,14 @@ export class MidiFileService {
                   audioFilePath = `./assets/samples/${instrument}/${audioFileName}`;
                 }
                 const audio = new Audio(audioFilePath);
-                audio.volume = (50/100);
+                audio.volume = (circle_set[0].volume/100);
                 circle_sets[index] = {
                     id: index,
                     x: x,
                     y: y,
                     xSpeed: direction ? 0 : speed,
                     ySpeed: direction ? speed : 0,
-                    color: "red",
+                    color: this.circleService.getRandomColor(),
                     startX: x,
                     startY: y,
                     startXSpeed: direction ? 0 : speed,
@@ -193,14 +194,14 @@ export class MidiFileService {
                   audioFilePath = `./assets/samples/${instrument}/${audioFileName}`;
                 }
                 const audio = new Audio(audioFilePath);
-                audio.volume = (50/100);
+                audio.volume = (circle_set[0].volume/100);
                 circle_sets[index] = {
                     id: index,
                     x: x,
                     y: y,
                     xSpeed: direction ? 0 : speed,
                     ySpeed: direction ? speed : 0,
-                    color: "red",
+                    color: this.circleService.getRandomColor(),
                     startX: x,
                     startY: y,
                     startXSpeed: direction ? 0 : speed,

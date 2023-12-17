@@ -380,6 +380,7 @@ export class CircleService {
     if (response.ok) {
       newAudio = new Audio(newAudioFilePath);
       newAudio.preload = "auto";
+      newAudio.volume = circle.volume/100;
       newAudio.load();
     }
     this.circleChangedSubject.next(circle);
