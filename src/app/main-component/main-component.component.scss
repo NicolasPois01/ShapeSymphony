@@ -84,7 +84,7 @@ app-timer{
 .dropdown-content app-import-json,
 .dropdown-content app-export-mp3 {
   color: white;
-  padding: 12px 16px;
+  padding: 2px 30px;
   text-decoration: none;
   display: block;
   font-size: 14px;
@@ -113,15 +113,14 @@ app-arena-list {
   color: #fff;
   padding: 10px 20px;
   border: none;
-  border-radius: 12px;
   cursor: pointer;
   box-shadow: -3px -3px 7px #36284e, 3px 3px 7px #1e162c;
   transition: background-color 0.3s, box-shadow 0.3s;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  width: 120px;
-  margin-top: 10px;
+  width: 10rem;
+  margin-top: 5px;
 }
 
 .clear-button:hover {
