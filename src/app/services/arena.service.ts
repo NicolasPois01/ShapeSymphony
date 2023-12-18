@@ -220,16 +220,16 @@ export class ArenaService {
 
     let midSquareSize = squareUnit / 2 - this.circleService.circleRad;
 
-    arenas.forEach(arena => {
-      arena.circleListWaiting.forEach(circle => {
+    for(let arena of arenas) {
+      for(let circle of arena.circleListWaiting) {
         if(time >= circle.spawnTime) {
           this.circleService.moveCircleToAliveList(circle);
         }
-      });
-      arena.circleListAlive.forEach(circle => {
+      };
+      for(let circle of arena.circleListAlive) {
         this.circleService.calculatePos(elapsedTime, time, circle, squareUnit, arena.isMuted, midSquareSize, exportMP3Active);
-      });
-    });
+      };
+    };
 
     this.arenaListSubject.next(arenas);
   }
