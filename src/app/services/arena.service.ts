@@ -215,7 +215,7 @@ export class ArenaService {
     });
   }
 
-  updateArenas(elapsedTime: number, time: number, squareUnit: number, exportMP3Active: boolean = false) {
+  updateArenas(elapsedTime: number, time: number, squareUnit: number, exportMP3Active: boolean = false, mode: string = 'Normal') {
     const arenas = this.arenaListSubject.getValue();
 
     let midSquareSize = squareUnit / 2 - this.circleService.circleRad;

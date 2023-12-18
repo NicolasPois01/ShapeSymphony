@@ -1,0 +1,56 @@
+.arena-option {
+    position: absolute;
+    width: max-content;
+    display: flex;
+    column-gap: 10px;
+    bottom: 0;
+    right: calc(50% - 32.5vh + 20px);
+    transform: translateY(5px);
+    z-index: 0;
+    font-size: 12px;
+    box-shadow: -5px -5px 10px #36284e, 5px 5px 10px #1e162c;
+    padding: 5px;
+    border-radius: 0 0 12px 12px;
+    transition: transform 0.3s;
+    flex-wrap: wrap;
+
+    button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5px;
+        background-color: #2a1f3d;
+        border: none;
+        border-radius: 12px;
+        color: white;
+        cursor: pointer;
+        box-shadow: -5px -5px 10px #36284e, 5px 5px 10px #1e162c;
+        transition: background-color 0.3s, box-shadow 0.3s;
+        font-weight: 700;
+        flex-grow: 1;
+        flex-basis: 40%;
+    }
+    
+    button:hover {
+        box-shadow: -2px -2px 5px #36284e, 2px 2px 5px #1e162c;
+        background-color: #36284e;
+    }
+    
+    button.active {
+        background-color: #36284e;
+        box-shadow: inset -2px -2px 5px #41305f, inset 2px 2px 5px #1e162c;
+    }
+
+    &:hover {
+        transform: translateY(calc(100% - 10px));
+    }
+
+    &::after {
+        // fleche down :
+        content: '˯';
+        flex-grow: 1;
+        flex-basis: 100%;
+        text-align: center;
+    }
+    
+}

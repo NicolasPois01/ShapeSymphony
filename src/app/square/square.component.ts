@@ -23,9 +23,11 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   @Input() grid: boolean = false;
   @Input() precisionMode: boolean = false;
   @Input() timerService: TimerService|undefined = undefined;
-  @Input() fps: number = 30;
+  @Input() fps: number = 60;
   @Input() squareUnit: number = 10;
   @Input() arena!: Arena;
+
+  mode = "normal";
 
   ctx!: CanvasRenderingContext2D;
 
@@ -74,10 +76,9 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
         this.interval = setInterval(() => {
           let time = this.timerService?.getTimeStamp() ?? 0;
           let elapsedTime = (time - this.timestamp) / 1000;
-          if(elapsedTime > 0.1) console.log(elapsedTime);
           this.timestamp = time;
           if (elapsedTime > 0){
-            this.arenaService.updateArenas(elapsedTime, this.timestamp, this.squareUnit);
+            this.arenaService.updateArenas(elapsedTime, this.timestamp, this.squareUnit, false, this.mode);
             this.draw();
           }
         }, 1000 / this.fps);
@@ -243,7 +244,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   }
 
   async draw() {
-    if(this.squareElement === undefined) return;
+    if(this.squareElement === undefined || this.mode === "No Circles") return;
     this.ctx.clearRect(0, 0, this.squareCanvasSize, this.squareCanvasSize);
     this.canvasInvisible.clearRect(0, 0, this.squareCanvasSize, this.squareCanvasSize);
     for(let circle of this.circles) {
@@ -265,5 +266,18 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   ngOnDestroy() {
     clearInterval(this.interval);
     this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  onFPSChange(fps: number) {
+    this.fps = fps;
+  }
+
+  onModeChange(mode: string) {
+    this.mode = mode;
+    if(this.mode === "No Circles") {
+      this.ctx.clearRect(0, 0, this.squareCanvasSize, this.squareCanvasSize);
+    } else {
+      this.draw();
+    }
   }
 }
