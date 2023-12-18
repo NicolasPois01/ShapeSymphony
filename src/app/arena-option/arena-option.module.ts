@@ -2,7 +2,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ArenaOptionComponent } from './arena-option.component';
-import { Circle, CircleOff, EyeOff, LucideAngularModule } from 'lucide-angular';
+import { Circle, CircleOff, StarOff, LucideAngularModule } from 'lucide-angular';
 import {FormsModule} from "@angular/forms";
 
 @NgModule({
@@ -11,7 +11,7 @@ import {FormsModule} from "@angular/forms";
   ],
   imports: [
     CommonModule,
-    LucideAngularModule.pick({Circle, CircleOff, EyeOff}),
+    LucideAngularModule.pick({Circle, CircleOff, StarOff}),
     FormsModule,
   ],
   exports: [
