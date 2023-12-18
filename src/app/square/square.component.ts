@@ -270,12 +270,10 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
 
   onFPSChange(fps: number) {
     this.fps = fps;
-    console.log(this.fps);
   }
 
   onModeChange(mode: string) {
     this.mode = mode;
-    console.log(this.mode);
     if(this.mode === "No Circles") {
       this.ctx.clearRect(0, 0, this.squareCanvasSize, this.squareCanvasSize);
     } else {
