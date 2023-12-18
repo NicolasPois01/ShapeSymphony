@@ -41,7 +41,7 @@ export class ArenaOptionComponent {
         this.fps = '60fps';
         break;
     }
-    this.onFPSChange.emit(this.fps);
+    this.onFPSChange.emit(Number(this.fps.slice(0, 2)));
   }
 
   getIconName() {
