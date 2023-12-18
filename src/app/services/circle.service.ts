@@ -164,7 +164,6 @@ export class CircleService {
   }
 
   bounceXY(circle: any, leftBorder: Boolean, topBorder: Boolean, midSquareSize: number, isArenaMuted: boolean) {
-    console.log("bounceXY");
     if (!isArenaMuted) {
       this.soundService.playAudio(circle);
     }
