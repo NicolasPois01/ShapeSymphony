@@ -55,7 +55,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   timestamp: any = 0;
   canvasInvisible!: CanvasRenderingContext2D;
 
-  interval: any;
+  reqAnimationFrame: any;
 
   subscriptions: Subscription[] = [];
   offset = 0
@@ -69,24 +69,28 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     });
   }
 
+  animate(self: SquareComponent) {
+    let time = self.timerService?.getTimeStamp() ?? 0;
+    let elapsedTime = (time - self.timestamp) / 1000;
+    if (elapsedTime > 0 && elapsedTime >= 1/self.fps) {
+      self.timestamp = time;
+      self.arenaService.updateArenas(elapsedTime, self.timestamp, self.squareUnit, false, self.mode);
+      self.draw();
+    }
+    this.reqAnimationFrame = requestAnimationFrame(() => self.animate(self));
+  }
+
   ngOnInit() {
     this.soundService?.loadAudioFiles();
     this.animationService.isAnimationRunning$.subscribe(isRunning => {
+      this.timestamp = this.timerService?.getTimeStamp() ?? 0;
       if (isRunning && this.timerService?.getIsRunning()) {
-        this.interval = setInterval(() => {
-          let time = this.timerService?.getTimeStamp() ?? 0;
-          let elapsedTime = (time - this.timestamp) / 1000;
-          this.timestamp = time;
-          if (elapsedTime > 0){
-            this.arenaService.updateArenas(elapsedTime, this.timestamp, this.squareUnit, false, this.mode);
-            this.draw();
-          }
-        }, 1000 / this.fps);
+        this.reqAnimationFrame = requestAnimationFrame(() => this.animate(this));
       }
       else {
-        if (this.interval) {
-          clearInterval(this.interval);
-          this.interval = null;
+        if (this.reqAnimationFrame) {
+          cancelAnimationFrame(this.reqAnimationFrame);
+          this.reqAnimationFrame = null;
         }
       }
     });
@@ -183,10 +187,10 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     this.mousebox.nativeElement.style.left = this.currentPosX+this.containerSquareElements.nativeElement.getBoundingClientRect().left+10 + 'px';
     this.mousebox.nativeElement.style.top = this.currentPosY+this.containerSquareElements.nativeElement.getBoundingClientRect().top+10 + 'px';
     if(this.mouseDown) {
-      this.saveVx = parseFloat((this.currentPosX - this.savePoseX).toFixed(this.precisionMode ? 1 : 2));
-      this.saveVy = parseFloat((this.currentPosY - this.savePoseY).toFixed(this.precisionMode ? 1 : 2));
-      this.saveDistance = parseFloat((Math.sqrt(Math.pow(Math.abs(this.saveVx), 2) + Math.pow(Math.abs(this.saveVy), 2))).toFixed(this.precisionMode ? 1 : 2));
-      this.saveAngle = (360-Math.round(Math.atan2(this.saveVy, this.saveVx)/Math.PI*180))%360;
+      this.saveAngle = (360-Math.round(Math.atan2(this.currentPosY - this.savePoseY, this.currentPosX - this.savePoseX)/Math.PI*180))%360;
+      this.saveDistance = parseFloat((Math.sqrt(Math.pow(Math.abs(this.currentPosX - this.savePoseX), 2) + Math.pow(Math.abs(this.currentPosY - this.savePoseY), 2))).toFixed(this.precisionMode ? 1 : 2));
+      this.saveVx = parseFloat((Math.cos(this.saveAngle * Math.PI / 180) * this.saveDistance).toFixed(this.precisionMode ? 1 : 2));
+      this.saveVy = parseFloat((Math.sin(this.saveAngle * Math.PI / 180) * this.saveDistance).toFixed(this.precisionMode ? 1 : 2));
       this.mousebox.nativeElement.innerHTML = ((this.saveDistance * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2) + " m/s <br/> "+this.saveAngle+" °";
       this.arrow.nativeElement.style.width = this.saveDistance + "px";
       this.arrow.nativeElement.style.transform = "translateY(calc(-50% + 2.5px)) rotate("+(-this.saveAngle)+"deg)";
@@ -264,7 +268,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   }
 
   ngOnDestroy() {
-    clearInterval(this.interval);
+    window.cancelAnimationFrame(this.reqAnimationFrame);
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
