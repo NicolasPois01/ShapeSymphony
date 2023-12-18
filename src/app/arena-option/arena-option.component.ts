@@ -49,7 +49,7 @@ export class ArenaOptionComponent {
       case 'Normal':
         return 'circle';
       case 'No Effects':
-        return 'eye-off';
+        return 'star-off';
       default:
         return 'circle-off';
     }
