@@ -190,7 +190,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
       this.saveAngle = (360-Math.round(Math.atan2(this.currentPosY - this.savePoseY, this.currentPosX - this.savePoseX)/Math.PI*180))%360;
       this.saveDistance = parseFloat((Math.sqrt(Math.pow(Math.abs(this.currentPosX - this.savePoseX), 2) + Math.pow(Math.abs(this.currentPosY - this.savePoseY), 2))).toFixed(this.precisionMode ? 1 : 2));
       this.saveVx = parseFloat((Math.cos(this.saveAngle * Math.PI / 180) * this.saveDistance).toFixed(this.precisionMode ? 1 : 2));
-      this.saveVy = parseFloat((Math.sin(this.saveAngle * Math.PI / 180) * this.saveDistance).toFixed(this.precisionMode ? 1 : 2));
+      this.saveVy = -1*parseFloat((Math.sin(this.saveAngle * Math.PI / 180) * this.saveDistance).toFixed(this.precisionMode ? 1 : 2));
       this.mousebox.nativeElement.innerHTML = ((this.saveDistance * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2) + " m/s <br/> "+this.saveAngle+" °";
       this.arrow.nativeElement.style.width = this.saveDistance + "px";
       this.arrow.nativeElement.style.transform = "translateY(calc(-50% + 2.5px)) rotate("+(-this.saveAngle)+"deg)";
