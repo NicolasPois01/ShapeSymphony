@@ -1,6 +1,7 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {Arena} from "../models/arena";
 import {ArenaService} from "../services/arena.service";
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-arena-list',
@@ -10,10 +11,12 @@ import {ArenaService} from "../services/arena.service";
 export class ArenaListComponent implements OnInit {
   arenaList!: Arena[];
   activeArena!: Arena;
+  isProcessModalVisible: boolean = false;
 
   @ViewChild('fileInput') fileInput: ElementRef | undefined;
 
-  constructor(private arenaService: ArenaService) {}
+  constructor(private arenaService: ArenaService) {
+  }
 
   ngOnInit() {
     this.arenaService.arenaList$.subscribe(
@@ -21,7 +24,7 @@ export class ArenaListComponent implements OnInit {
     );
     this.arenaService.activeArena$.subscribe(
       arena => this.activeArena = arena
-    )
+    );
   }
 
   clearActive(id: number) {
@@ -34,9 +37,11 @@ export class ArenaListComponent implements OnInit {
   }
 
   uploadMidiFile() {
-    this.fileInput?.nativeElement.addEventListener('change', (event: any) => {
+    this.fileInput?.nativeElement.addEventListener('change', async (event: any) => {
       const file = event.target.files[0];
-      this.arenaService.uploadMidiFile(file);
+      this.showProcessModal();
+      await this.arenaService.uploadMidiFile(file);
+      this.hideProcessModal();
     });
     this.fileInput?.nativeElement.click();
   }
@@ -63,5 +68,13 @@ export class ArenaListComponent implements OnInit {
 
   setArenaName(idArena: number, name: string) {
     this.arenaService.setArenaName(idArena, name);
+  }
+
+  showProcessModal() {
+    this.isProcessModalVisible = true;
+  }
+
+  hideProcessModal() {
+    this.isProcessModalVisible = false;
   }
 }
