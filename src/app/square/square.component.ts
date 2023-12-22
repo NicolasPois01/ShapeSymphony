@@ -58,7 +58,6 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   reqAnimationFrame: any;
 
   subscriptions: Subscription[] = [];
-  offset = 0
   constructor(private circlesService: CircleService,
               private soundService: SoundService,
               private arenaService: ArenaService,

@@ -36,7 +36,8 @@ export class ExportWAVService {
       note: circle.note,
       octave: circle.octave,
       alteration: circle.alteration,
-      currentTime: this.timerService?.getTimeStamp() * 10
+      currentTime: this.timerService?.getTimeStamp(),
+      volume: circle.volume
     };
     this.collisionData.push(collisionInfo);
   }
@@ -49,11 +50,14 @@ export class ExportWAVService {
     this.collisionData = [];
   }
 
-  async mergeAudio(jsonData: any[], duration: number ): Promise<void> {
+  async mergeAudio(jsonData: any[], duration: number): Promise<void> {
     const context = new AudioContext();
+
+    // Décoder tous les buffers audio en parallèle
     const buffers = await Promise.all(
       jsonData.map(async (item) => {
         let response;
+        // Utiliser le chemin d'accès approprié pour charger l'audio
         if(this.soundService.isPercussion(item.instrument)){
           response = await fetch(`assets/samples/Percussion/${item.instrument}.mp3`);
         }
@@ -64,15 +68,28 @@ export class ExportWAVService {
         return context.decodeAudioData(arrayBuffer);
       })
     );
-    const output = context.createBuffer(2, context.sampleRate * (duration/1000), context.sampleRate);
+
+    // Créer un buffer audio pour la sortie avec la durée spécifiée
+    const output = context.createBuffer(2, context.sampleRate * (duration / 1000), context.sampleRate);
+
+    // Combinez tous les buffers en tenant compte du volume
     jsonData.forEach((item, index) => {
       const buffer = buffers[index];
+      // Assurez-vous que le volume est une valeur entre 0 et 1
+      const volume = item.volume / 100;
+
       for (let channel = 0; channel < output.numberOfChannels; channel++) {
         const outputData = output.getChannelData(channel);
         const inputData = buffer.getChannelData(channel);
+        // Convertir le temps de collision en échantillons
         const startTime = context.sampleRate * item.currentTime / 1000;
+
+        // Ajouter les données audio au buffer de sortie avec le volume appliqué
         for (let i = 0; i < inputData.length; i++) {
-          outputData[i + startTime] += inputData[i];
+          // S'assurer que l'on ne dépasse pas la longueur du buffer de sortie
+          if (i + startTime < outputData.length) {
+            outputData[i + startTime] += inputData[i] * volume;
+          }
         }
       }
     });
@@ -107,7 +124,7 @@ export class ExportWAVService {
         this.arenaService.updateArenas(elapsedTime, this.timestamp, this.squareUnit, true);
       }
 
-      if ((this.timerService?.getTimeStamp() ?? 0) >= duration/10) {
+      if ((this.timerService?.getTimeStamp() ?? 0) >= duration) {
         clearInterval(interval);
         this.intervalChangedSubject.next(null); // Émettre une notification
       }
