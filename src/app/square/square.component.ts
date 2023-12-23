@@ -9,6 +9,24 @@ import { ArenaService } from "../services/arena.service";
 import { AnimationService } from "../services/animation.service";
 import { Percussions } from '../models/percussionEnum';
 
+interface Shockwave {
+  x: number;
+  y: number;
+  radius: number;
+  opacity: number;
+  color: string;
+}
+
+function getColorComponents(colorName: string | CanvasGradient | CanvasPattern) {
+  const canvas = document.createElement("canvas");
+  canvas.width = canvas.height = 1;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("Could not get canvas context");
+  ctx.fillStyle = colorName;
+  ctx.fillRect(0, 0, 1, 1);
+  const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
+  return `${r}, ${g}, ${b}`;
+}
 @Component({
   selector: 'app-square',
   templateUrl: './square.component.html',
@@ -28,19 +46,16 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   @Input() arena!: Arena;
 
   ctx!: CanvasRenderingContext2D;
+  shockwaves: Shockwave[] = [];
 
   circles!: Circle[];
-
   circleX: number = 0;
   circleY: number = 0;
-
   velocityX: number = 1.2;
   velocityY: number = 2.6;
-
   squareSize: number = 600;
   squareCanvasSize: number = 600;
   midSquareSize = this.squareUnit/2;
-
   mouseDown: boolean = false;
   savePoseX: number = 0;
   savePoseY: number = 0;
@@ -52,28 +67,33 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   currentPosY: number = 0;
   timestamp: any = 0;
   canvasInvisible!: CanvasRenderingContext2D;
-
   interval: any;
+  private collisionSubscription: Subscription | undefined;
 
   subscriptions: Subscription[] = [];
-  constructor(private circlesService: CircleService,
-              private soundService: SoundService,
-              private arenaService: ArenaService,
-              private animationService: AnimationService) {
-    arenaService.activeArenaSubject.subscribe(arena => {
+
+  constructor(
+    private circlesService: CircleService,
+    private soundService: SoundService,
+    private arenaService: ArenaService,
+    private animationService: AnimationService
+  ) {
+    this.arenaService.activeArenaSubject.subscribe(arena => {
       this.circles = arena.circleListAlive;
       this.draw();
     });
   }
 
   ngOnInit() {
+    this.collisionSubscription = this.circlesService.collision$.subscribe(collisionData => {
+      this.handleCollision(collisionData.circle, collisionData.point);
+    });
     this.soundService?.loadAudioFiles();
     this.animationService.isAnimationRunning$.subscribe(isRunning => {
       if (isRunning && this.timerService?.getIsRunning()) {
         this.interval = setInterval(() => {
           let time = this.timerService?.getTimeStamp() ?? 0;
           let elapsedTime = (time - this.timestamp) / 1000;
-          if(elapsedTime > 0.1) console.log(elapsedTime);
           this.timestamp = time;
           if (elapsedTime > 0){
             this.arenaService.updateArenas(elapsedTime, this.timestamp, this.squareUnit);
@@ -96,7 +116,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     canvasInvisible.width = this.squareCanvasSize;
     canvasInvisible.height = this.squareCanvasSize;
     let ctxInvisible = canvasInvisible.getContext("2d");
-    if(ctxInvisible !== null) {
+    if (ctxInvisible !== null) {
       this.canvasInvisible = ctxInvisible;
     }
     this.canvasInvisible.lineWidth = 3;
@@ -241,16 +261,66 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     return this.circlesService.circleSize;
   }
 
+  // Méthode appelée lors d'une collision
+  handleCollision(circle: Circle, point: { x: number; y: number; }) {
+    // Convertir les coordonnées du cercle en coordonnées du canvas
+    const canvasX = ((circle.contactPoint.x + this.midSquareSize) * this.squareCanvasSize) / (2 * this.midSquareSize);
+    const canvasY = ((circle.contactPoint.y + this.midSquareSize) * this.squareCanvasSize) / (2 * this.midSquareSize);
+
+    this.shockwaves.push({
+      x: canvasX,
+      y: canvasY,
+      radius: 10,
+      opacity: 1,
+      color: circle.color
+    });
+  }
+
+
+  // Méthode pour dessiner les ondes de choc
+  drawShockwaves() {
+    this.shockwaves.forEach((wave, index) => {
+      // Augmenter la taille des rayons pour une onde plus grande
+      const radii = [0, wave.radius + 23, wave.radius + 35, wave.radius + 45];
+      const opacities = [0.18 , 0.20, 0.18, 0.15];
+
+      radii.forEach((radius, idx) => {
+        this.canvasInvisible.beginPath();
+        this.canvasInvisible.arc(wave.x, wave.y, radius, 0, 2 * Math.PI);
+        this.canvasInvisible.fillStyle = `rgba(${getColorComponents(wave.color)}, ${opacities[idx] * wave.opacity})`;
+        this.canvasInvisible.fill();
+      });
+
+      wave.opacity -= 0.02;
+
+      if (wave.opacity <= 0) {
+        this.shockwaves.splice(index, 1);
+      }
+    });
+  }
+
+
+  // Méthode draw modifiée pour inclure drawShockwaves
   async draw() {
-    if(this.squareElement === undefined) return;
+    if (this.squareElement === undefined) return;
     this.ctx.clearRect(0, 0, this.squareCanvasSize, this.squareCanvasSize);
     this.canvasInvisible.clearRect(0, 0, this.squareCanvasSize, this.squareCanvasSize);
-    for(let circle of this.circles) {
+
+    for (let circle of this.circles) {
       this.canvasInvisible.beginPath();
       this.canvasInvisible.strokeStyle = circle.color;
-      this.canvasInvisible.arc(((circle.x + this.midSquareSize)*this.squareCanvasSize)/(2*this.midSquareSize), ((circle.y + this.midSquareSize)*this.squareCanvasSize)/(2*this.midSquareSize), (this.getCircleSize()*this.squareCanvasSize)/(this.squareUnit*2), 0, 2 * Math.PI);
+      this.canvasInvisible.arc(
+        ((circle.x + this.midSquareSize) * this.squareCanvasSize) / (2 * this.midSquareSize),
+        ((circle.y + this.midSquareSize) * this.squareCanvasSize) / (2 * this.midSquareSize),
+        (this.getCircleSize() * this.squareCanvasSize) / (this.squareUnit * 2),
+        0,
+        2 * Math.PI
+      );
       this.canvasInvisible.stroke();
     }
+
+    this.drawShockwaves();
+
     this.ctx.drawImage(this.canvasInvisible.canvas, 0, 0);
   }
 
@@ -265,4 +335,5 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     clearInterval(this.interval);
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
+
 }

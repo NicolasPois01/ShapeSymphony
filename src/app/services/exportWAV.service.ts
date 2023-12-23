@@ -115,20 +115,21 @@ export class ExportWAVService {
 
   public startUpdateLoop(duration: number) {
     this.timerService?.start(false);
-    const interval = setInterval(() => {
-      let elapsedTime = ((this.timerService?.getTimeStamp() ?? 0) - this.timestamp) / 1000;
-      console.log("startUpdateLoop " +this.timerService?.getTimeStamp() )
-      this.timestamp = this.timerService?.getTimeStamp();
+    const startTime = this.timerService?.getTimeStamp() ?? 0;
+    console.log(`Début de la simulation sonore. Durée totale: ${duration} ms`);
 
-      if (elapsedTime > 0) {
-        this.arenaService.updateArenas(elapsedTime, this.timestamp, this.squareUnit, true);
-      }
+    for (let currentTime = 0; currentTime <= duration; currentTime += 10) {
+      const elapsedTime = currentTime;
+      console.log(`Mise à jour des arènes à ${currentTime} ms (temps écoulé: ${elapsedTime / 1000} s)`);
+      this.arenaService.updateArenas(elapsedTime , startTime + elapsedTime, this.squareUnit, true);
 
-      if ((this.timerService?.getTimeStamp() ?? 0) >= duration) {
-        clearInterval(interval);
+      if (currentTime >= duration) {
+        console.log('Fin de la simulation sonore.');
         this.intervalChangedSubject.next(null); // Émettre une notification
+        break;
       }
-    }, 1000 / this.fps);
+    }
   }
+
 
 }
