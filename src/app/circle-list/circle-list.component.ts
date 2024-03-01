@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import {ArenaService} from "../services/arena.service";
 import {Arena} from "../models/arena";
 import {SoundService} from "../services/sound.service";
+import { TimerService } from '../services/timer.service';
 
 @Component({
   selector: 'app-circle-list',
@@ -20,20 +21,39 @@ export class CircleListComponent implements OnInit  {
   circleNameList: [Circle, string, number, string][] = [];    //circleNameList[circle, name, occurrence, list];
   private arenaSubscription!: Subscription;
   private circlesListSubscription!: Subscription;
+  private timerSubscription!: Subscription;
 
 
   constructor(private circlesService: CircleService,
-              private arenaService: ArenaService) {}
+              private arenaService: ArenaService,
+              private timerService: TimerService) {}
 
   ngOnInit() {
     this.arenaSubscription = this.arenaService.activeArena$
       .subscribe(arena => {
-        this.activeArena = arena;
-        this.circleListAlive = arena.circleListAlive
-        this.circleListWaiting = arena.circleListWaiting
-        this.circleListDead = arena.circleListDead
-        this.circleListDisplay()
+        if(!this.timerService.isRunning) {
+          this.activeArena = arena;
+          this.circleListAlive = arena.circleListAlive;
+          this.circleListWaiting = arena.circleListWaiting;
+          this.circleListDead = arena.circleListDead;
+          this.circleListDisplay();
+        } else {
+          this.activeArena = arena;
+          this.circleListAlive = [];
+          this.circleListWaiting = [];
+          this.circleListDead = [];
+          this.circleListDisplay();
+        }
       });  // S'abonner à circleList de l'activeArena$
+
+      this.timerSubscription = this.timerService.isRunning$.subscribe(isRunning => {
+        if (!isRunning) {
+          this.circleListAlive = this.activeArena.circleListAlive;
+          this.circleListWaiting = this.activeArena.circleListWaiting;
+          this.circleListDead = this.activeArena.circleListDead;
+          this.circleListDisplay();
+        }
+      });
 
       this.circlesListSubscription = this.circlesService.circleChanged$.subscribe(
         (updatedCircle: Circle) => {
