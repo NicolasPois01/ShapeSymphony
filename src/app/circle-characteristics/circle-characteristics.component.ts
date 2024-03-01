@@ -15,7 +15,7 @@ export class CircleCharacteristicsComponent implements OnInit{
   vitesseGlobale: number | undefined;
   selectedColor: string = '';
   selectedNote: string = '';
-  selectedAlteration: string = '';
+  selectedAlteration: number = 0;
   selectedOctave: number | undefined;
   availableColors: string[] = this.circlesService.colors;
   availableNotes: string[] = this.circlesService.notes;
@@ -37,7 +37,7 @@ export class CircleCharacteristicsComponent implements OnInit{
         this.newStartY = circle.startY;
         this.selectedColor = circle.color;
         this.selectedNote = circle.note;
-        this.selectedAlteration = circle.alteration;
+        this.selectedAlteration = Number(circle.alteration);
         this.selectedOctave = circle.octave;
         this.angleDepart = Math.atan2(-circle.ySpeed, circle.xSpeed);
         if (this.angleDepart < 0) {
@@ -83,12 +83,25 @@ export class CircleCharacteristicsComponent implements OnInit{
     }
   }
 
-  setAlteration(alteration: string | undefined) {
+  setAlteration(alteration: number | undefined) {
+    let trueAlteration =""
+    switch (alteration){
+      case -1: 
+        trueAlteration = "b";
+        break;
+      case 0: 
+        trueAlteration = "";
+        break;
+      case 1: 
+        trueAlteration = "d";
+        break;
+    }
+
     if (this.selectedCircle) {
       if (alteration != null) {
-        this.selectedCircle.alteration = alteration;
+        this.selectedCircle.alteration = trueAlteration;
       }
-      this.circlesService.setAlteration(alteration);
+      this.circlesService.setAlteration(trueAlteration);
     }
   }
 

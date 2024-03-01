@@ -63,7 +63,8 @@ export class SoundService {
           for (const note of this.notes) {
             for (const octave of this.octaves) {
               for (const alteration of this.alterations) {
-              const audioFileName = `${instrument}${note}${alteration}${octave}.mp3`;
+              let alt = alteration === '♭' ? 'b' : alteration === '♯' ? 'd' : '';
+              const audioFileName = `${instrument}${note}${alt}${octave}.mp3`;
               const audioFilePath = `./assets/samples/${instrument}/${audioFileName}`;
               //Vérifie si le fichier audio existe :
               const response = await fetch(audioFilePath, { method: 'HEAD' });

@@ -1,7 +1,3 @@
-.title {
-  margin-left: 0.5rem;
-  border: 1px solid #000;
-}
 ul {
   list-style-type: none; /* Removes bullet points */
   margin-left: -1rem;
@@ -227,7 +223,7 @@ span {
 }
 
 .scroll-container {
-  max-height: 29rem;
+  height: 65vh;
   overflow-y: auto;
 }
 

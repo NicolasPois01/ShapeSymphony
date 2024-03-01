@@ -41,21 +41,27 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   @Input() grid: boolean = false;
   @Input() precisionMode: boolean = false;
   @Input() timerService: TimerService|undefined = undefined;
-  @Input() fps: number = 30;
+  @Input() fps: number = 60;
   @Input() squareUnit: number = 10;
   @Input() arena!: Arena;
+
+  mode = "normal";
 
   ctx!: CanvasRenderingContext2D;
   shockwaves: Shockwave[] = [];
 
   circles!: Circle[];
+
   circleX: number = 0;
   circleY: number = 0;
+
   velocityX: number = 1.2;
   velocityY: number = 2.6;
+
   squareSize: number = 600;
   squareCanvasSize: number = 600;
   midSquareSize = this.squareUnit/2;
+
   mouseDown: boolean = false;
   savePoseX: number = 0;
   savePoseY: number = 0;
@@ -70,6 +76,8 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   interval: any;
   private collisionSubscription: Subscription | undefined;
 
+  reqAnimationFrame: any;
+
   subscriptions: Subscription[] = [];
 
   constructor(
@@ -82,6 +90,17 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
       this.circles = arena.circleListAlive;
       this.draw();
     });
+  }
+
+  animate(self: SquareComponent) {
+    let time = self.timerService?.getTimeStamp() ?? 0;
+    let elapsedTime = (time - self.timestamp) / 1000;
+    if (elapsedTime >= 1/self.fps) {
+      self.timestamp = time;
+      self.arenaService.updateArenas(elapsedTime, self.timestamp, self.squareUnit, false, self.mode);
+      self.draw();
+    }
+    this.reqAnimationFrame = requestAnimationFrame(() => self.animate(self));
   }
 
   ngOnInit() {
@@ -100,11 +119,12 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
             this.draw();
           }
         }, 1000 / this.fps);
+        this.reqAnimationFrame = requestAnimationFrame(() => this.animate(this));
       }
       else {
-        if (this.interval) {
-          clearInterval(this.interval);
-          this.interval = null;
+        if (this.reqAnimationFrame) {
+          cancelAnimationFrame(this.reqAnimationFrame);
+          this.reqAnimationFrame = null;
         }
       }
     });
@@ -201,10 +221,10 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     this.mousebox.nativeElement.style.left = this.currentPosX+this.containerSquareElements.nativeElement.getBoundingClientRect().left+10 + 'px';
     this.mousebox.nativeElement.style.top = this.currentPosY+this.containerSquareElements.nativeElement.getBoundingClientRect().top+10 + 'px';
     if(this.mouseDown) {
-      this.saveVx = parseFloat((this.currentPosX - this.savePoseX).toFixed(this.precisionMode ? 1 : 2));
-      this.saveVy = parseFloat((this.currentPosY - this.savePoseY).toFixed(this.precisionMode ? 1 : 2));
-      this.saveDistance = parseFloat((Math.sqrt(Math.pow(Math.abs(this.saveVx), 2) + Math.pow(Math.abs(this.saveVy), 2))).toFixed(this.precisionMode ? 1 : 2));
-      this.saveAngle = (360-Math.round(Math.atan2(this.saveVy, this.saveVx)/Math.PI*180))%360;
+      this.saveAngle = (360-Math.round(Math.atan2(this.currentPosY - this.savePoseY, this.currentPosX - this.savePoseX)/Math.PI*180))%360;
+      this.saveDistance = parseFloat((Math.sqrt(Math.pow(Math.abs(this.currentPosX - this.savePoseX), 2) + Math.pow(Math.abs(this.currentPosY - this.savePoseY), 2))).toFixed(this.precisionMode ? 1 : 2));
+      this.saveVx = parseFloat((Math.cos(this.saveAngle * Math.PI / 180) * this.saveDistance).toFixed(this.precisionMode ? 1 : 2));
+      this.saveVy = -1*parseFloat((Math.sin(this.saveAngle * Math.PI / 180) * this.saveDistance).toFixed(this.precisionMode ? 1 : 2));
       this.mousebox.nativeElement.innerHTML = ((this.saveDistance * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2) + " m/s <br/> "+this.saveAngle+" °";
       this.arrow.nativeElement.style.width = this.saveDistance + "px";
       this.arrow.nativeElement.style.transform = "translateY(calc(-50% + 2.5px)) rotate("+(-this.saveAngle)+"deg)";
@@ -302,7 +322,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
 
   // Méthode draw modifiée pour inclure drawShockwaves
   async draw() {
-    if (this.squareElement === undefined) return;
+    if(this.squareElement === undefined || this.mode === "No Circles") return;
     this.ctx.clearRect(0, 0, this.squareCanvasSize, this.squareCanvasSize);
     this.canvasInvisible.clearRect(0, 0, this.squareCanvasSize, this.squareCanvasSize);
 
@@ -332,8 +352,21 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   }
 
   ngOnDestroy() {
-    clearInterval(this.interval);
+    window.cancelAnimationFrame(this.reqAnimationFrame);
     this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  onFPSChange(fps: number) {
+    this.fps = fps;
+  }
+
+  onModeChange(mode: string) {
+    this.mode = mode;
+    if(this.mode === "No Circles") {
+      this.ctx.clearRect(0, 0, this.squareCanvasSize, this.squareCanvasSize);
+    } else {
+      this.draw();
+    }
   }
 
 }

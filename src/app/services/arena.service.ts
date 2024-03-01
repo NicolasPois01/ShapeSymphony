@@ -215,21 +215,21 @@ export class ArenaService {
     });
   }
 
-  updateArenas(elapsedTime: number, time: number, squareUnit: number, exportMP3Active: boolean = false) {
+  updateArenas(elapsedTime: number, time: number, squareUnit: number, exportMP3Active: boolean = false, mode: string = 'Normal') {
     const arenas = this.arenaListSubject.getValue();
 
     let midSquareSize = squareUnit / 2 - this.circleService.circleRad;
 
-    arenas.forEach(arena => {
-      arena.circleListWaiting.forEach(circle => {
+    for(let arena of arenas) {
+      for(let circle of arena.circleListWaiting) {
         if(time >= circle.spawnTime) {
           this.circleService.moveCircleToAliveList(circle);
         }
-      });
-      arena.circleListAlive.forEach(circle => {
+      };
+      for(let circle of arena.circleListAlive) {
         this.circleService.calculatePos(elapsedTime, time, circle, squareUnit, arena.isMuted, midSquareSize, exportMP3Active);
-      });
-    });
+      };
+    };
 
     this.arenaListSubject.next(arenas);
   }

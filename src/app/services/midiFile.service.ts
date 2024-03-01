@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { Midi } from '@tonejs/midi'
 import { SoundService } from "./sound.service";
 import { Percussions } from "../models/percussionEnum";
+import { CircleService } from "./circle.service";
 
 interface StringArray {
     [key:string]: any
@@ -12,33 +13,34 @@ interface StringArray {
 })
 export class MidiFileService {
 
-    constructor(private soundService: SoundService) {}
+    constructor(private soundService: SoundService, private circleService: CircleService) {}
 
     async processMidiFile(file: File): Promise<any> {
-        return new Promise(async (resolve, reject) => {
+        return new Promise((resolve, reject) => {
             var midiProcessed = { name: file.name, elements: {} as StringArray };
-            const midi = await Midi.fromUrl(URL.createObjectURL(file));
-            midi.tracks.forEach(track => {
-                const notes = track.notes;
-                notes.forEach(note => {
-                    let note_name = this.soundService.getValidNoteName(note.name);
-                    let alteration = this.soundService.getAlteration(note.name);
-                    midiProcessed.elements[track.instrument.family] = midiProcessed.elements[track.instrument.family] || {};
-                    midiProcessed.elements[track.instrument.family][note_name+alteration+note.octave] = midiProcessed.elements[track.instrument.family][note_name+alteration+note.octave] || [];
-                    midiProcessed.elements[track.instrument.family][note_name+alteration+note.octave].push({
-                        note: note_name,
-                        alteration: alteration,
-                        time: note.time.toFixed(3),
-                        duration: note.duration.toFixed(3),
-                        octave: note.octave,
-                        percussion: track.instrument.percussion,
-                        instrument: track.instrument.name,
-                        instrumentFamily: track.instrument.family,
-                        volume: Math.floor(note.velocity * 100)
+            Midi.fromUrl(URL.createObjectURL(file)).then((midi) => {
+                midi.tracks.forEach(track => {
+                    const notes = track.notes;
+                    notes.forEach(note => {
+                        let note_name = this.soundService.getValidNoteName(note.name);
+                        let alteration = this.soundService.getAlteration(note.name);
+                        midiProcessed.elements[track.instrument.family] = midiProcessed.elements[track.instrument.family] || {};
+                        midiProcessed.elements[track.instrument.family][note_name+alteration+note.octave] = midiProcessed.elements[track.instrument.family][note_name+alteration+note.octave] || [];
+                        midiProcessed.elements[track.instrument.family][note_name+alteration+note.octave].push({
+                            note: note_name,
+                            alteration: alteration,
+                            time: note.time.toFixed(3),
+                            duration: note.duration.toFixed(3),
+                            octave: note.octave,
+                            percussion: track.instrument.percussion,
+                            instrument: track.instrument.name,
+                            instrumentFamily: track.instrument.family,
+                            volume: Math.floor(note.velocity * 100)
+                        });
                     });
                 });
+                resolve(midiProcessed);
             });
-            resolve(midiProcessed);
         });
     }
 
@@ -46,7 +48,7 @@ export class MidiFileService {
         var circle_sets = Array<any>();
         var suites = Array<any>();
         var circle_set = Array<any>();
-        (Object.entries(processMidiFile.elements) as any[]).forEach(([instrument_index, instrument]) => {
+        (Object.entries(processMidiFile.elements) as any[]).forEach(([_instrument_index, instrument]) => {
             (Object.entries(instrument) as any[]).forEach(([note_index, notes]) => {
                 notes.forEach((note_first: any, index_note_first: any) => {
                     circle_set.push(note_first);
@@ -143,14 +145,14 @@ export class MidiFileService {
                   audioFilePath = `./assets/samples/${instrument}/${audioFileName}`;
                 }
                 const audio = new Audio(audioFilePath);
-                audio.volume = (50/100);
+                audio.volume = (circle_set[0].volume/100);
                 circle_sets[index] = {
                     id: index,
                     x: x,
                     y: y,
                     xSpeed: direction ? 0 : speed,
                     ySpeed: direction ? speed : 0,
-                    color: "red",
+                    color: this.circleService.getRandomColor(),
                     startX: x,
                     startY: y,
                     startXSpeed: direction ? 0 : speed,
@@ -193,14 +195,14 @@ export class MidiFileService {
                   audioFilePath = `./assets/samples/${instrument}/${audioFileName}`;
                 }
                 const audio = new Audio(audioFilePath);
-                audio.volume = (50/100);
+                audio.volume = (circle_set[0].volume/100);
                 circle_sets[index] = {
                     id: index,
                     x: x,
                     y: y,
                     xSpeed: direction ? 0 : speed,
                     ySpeed: direction ? speed : 0,
-                    color: "red",
+                    color: this.circleService.getRandomColor(),
                     startX: x,
                     startY: y,
                     startXSpeed: direction ? 0 : speed,
