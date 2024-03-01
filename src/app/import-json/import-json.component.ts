@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { CircleService } from '../services/circle.service';
 import { TimerService } from '../services/timer.service';
 import { Circle } from '../models/circle';
-import {ArenaService} from "../services/arena.service";
-import {Arena} from "../models/arena";
+import { ArenaService } from "../services/arena.service";
+import { Arena } from "../models/arena";
 import { Percussions } from '../models/percussionEnum';
 
 @Component({
@@ -14,8 +14,8 @@ import { Percussions } from '../models/percussionEnum';
 export class ImportJsonComponent {
 
   constructor(private circleService: CircleService,
-              private timerService: TimerService,
-              private arenaService: ArenaService) { }
+    private timerService: TimerService,
+    private arenaService: ArenaService) { }
 
   handleFileInput(event: any): void {
     const file = event.target.files[0];
@@ -39,16 +39,16 @@ export class ImportJsonComponent {
       this.arenaService.clearAll();
       this.timerService.resetTimer();
 
-      let arenaList: Arena [] = [];
-      let circleListWaiting: Circle [] = [];
-      let circleListAlive: Circle [] = [];
-      let circleListDead: Circle [] = [];
+      let arenaList: Arena[] = [];
+      let circleListWaiting: Circle[] = [];
+      let circleListAlive: Circle[] = [];
+      let circleListDead: Circle[] = [];
       let arenaActiveId: number = 0;
       arenas.forEach(arenaData => {
         circleListWaiting = [];
         circleListAlive = [];
         circleListDead = [];
-        if(arenaActiveId === 0) {
+        if (arenaActiveId === 0) {
           arenaActiveId = arenaData.id;
         }
         arenaData.circleListAlive.forEach((circleData: Circle) => {
@@ -78,16 +78,16 @@ export class ImportJsonComponent {
 
   getCircleData(circleData: Circle) {
     let audioFilePath = "";
-    if (Object.values(Percussions).includes(circleData.instrument as Percussions)){
-      let audioFileName = circleData.instrument+'.mp3';
+    if (Object.values(Percussions).includes(circleData.instrument as Percussions)) {
+      let audioFileName = circleData.instrument + '.mp3';
       audioFilePath = `./assets/samples/Percussion/${audioFileName}`;
     } else {
-      let audioFileName = circleData.instrument+circleData.note+circleData.alteration+circleData.octave+'.mp3';
+      let audioFileName = circleData.instrument + circleData.note + circleData.alteration + circleData.octave + '.mp3';
       audioFilePath = `./assets/samples/${circleData.instrument}/${audioFileName}`;
     }
     const audio = new Audio(audioFilePath);
-    audio.volume = (circleData.volume/100);
-   return {
+    audio.volume = (circleData.volume / 100);
+    return {
       id: circleData.id,
       x: circleData.startX,
       y: circleData.startY,
@@ -109,7 +109,7 @@ export class ImportJsonComponent {
       nbBounces: circleData.nbBounces,
       showable: circleData.showable,
       isColliding: false,
-      contactPoint: {x: -1, y: -1},
+      contactPoint: { x: -1, y: -1 },
       audio: audio
     }
   }
