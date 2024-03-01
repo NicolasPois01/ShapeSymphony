@@ -14,13 +14,13 @@
       <li>Vitesse:
         <input type="number" [(ngModel)]="vitesseGlobale" (change)="changeSpeed(vitesseGlobale)" step="0.01"/>
       </li>
-      <li>
+      <li *ngIf="!isPercussion(instrumentName)">
         Note:
         <select [(ngModel)]="selectedNote" (change)="setNote(selectedNote)">
           <option *ngFor="let note of availableNotes" [value]="note">{{ note }}</option>
         </select>
       </li>
-      <li>
+      <li *ngIf="!isPercussion(instrumentName)">
         Altération:
         <div class="alteration-container">
           <div class="alteration-labels">
@@ -30,15 +30,13 @@
           </div>
         </div>
       </li>
-      <li>
-        <li>
-          Octave :
-          <div class="spinbox-container">
-            <input class="octave-spinbox" type="number" [(ngModel)]="selectedOctave" min="1" max="7">
-            <button class="spinbox-button up" (click)="increaseOctave()">▲</button>
-            <button class="spinbox-button down" (click)="decreaseOctave()">▼</button>
-          </div>
-        <li>
+      <li *ngIf="!isPercussion(instrumentName)">
+        Octave :
+        <div class="spinbox-container">
+          <input class="octave-spinbox" type="number" [(ngModel)]="selectedOctave" min="1" max="7">
+          <button class="spinbox-button up" (click)="increaseOctave()">▲</button>
+          <button class="spinbox-button down" (click)="decreaseOctave()">▼</button>
+        </div>
       </li>
       <li>
         Couleur:
@@ -64,7 +62,7 @@
         <div class="alteration-container">
           <div class="alteration-labels">
             ♭
-            <input class="alteration-slider" type="range" min="-1" max="1" step="1" disabled=true [(ngModel)]="selectedAlteration" (change)="setAlteration(selectedAlteration)">
+            <input class="alteration-slider" type="range" min="-1" max="1" step="1" [disabled]=true [(ngModel)]="selectedAlteration" (change)="setAlteration(selectedAlteration)">
             ♯
           </div>
         </div>

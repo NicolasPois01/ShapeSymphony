@@ -17,14 +17,18 @@ export class SoundService {
 
   activeInstrumentSubject = new BehaviorSubject<string>("Piano");
   activeInstrument$ = this.activeInstrumentSubject.asObservable();
+
   activeNoteSubject = new BehaviorSubject<string>("Do");
   activeNote$ = this.activeNoteSubject.asObservable();
+
   activeOctaveSubject = new BehaviorSubject<number>(4);
   activeOctave$ = this.activeOctaveSubject.asObservable();
+
   activeAlterationSubject = new BehaviorSubject<number>(0);
   activeAlteration$ = this.activeAlterationSubject.asObservable();
   activeAlterationStringSubject = new BehaviorSubject<string>("");
   activeAlterationString$ = this.activeAlterationStringSubject.asObservable();
+
   activeVolumeSubject = new BehaviorSubject<number>(50);   //Valeur par défault pour le volume à 50%.
   activeVolume$ = this.activeVolumeSubject.asObservable();
 

@@ -3,6 +3,7 @@ import { CircleService } from "../services/circle.service";
 import { Circle } from "../models/circle";
 import { TimerService } from "../services/timer.service";
 import { TimeInputComponent } from '../time-input/time-input.component';
+import {SoundService} from "../services/sound.service";
 
 @Component({
   selector: 'app-circle-characteristics-list',
@@ -26,13 +27,17 @@ export class CircleCharacteristicsComponent implements OnInit{
   newAngle: number | undefined;
   maxBounces: number = 0;
   spawnTime: any = { millisecondes: 0, secondes: 0, minutes: 0 };
+  instrumentName!: string;
 
-  constructor(private circlesService: CircleService, private timerService: TimerService) {}
+  constructor(private circlesService: CircleService,
+              private timerService: TimerService,
+              private soundService: SoundService) {}
 
   ngOnInit() {
     this.circlesService.selectedCircle$.subscribe((circle: Circle | null) => {
       this.selectedCircle = circle;
       if (circle) {
+        this.instrumentName = circle.instrument;
         this.newStartX = circle.startX;
         this.newStartY = circle.startY;
         this.selectedColor = circle.color;
@@ -86,13 +91,13 @@ export class CircleCharacteristicsComponent implements OnInit{
   setAlteration(alteration: number | undefined) {
     let trueAlteration =""
     switch (alteration){
-      case -1: 
+      case -1:
         trueAlteration = "b";
         break;
-      case 0: 
+      case 0:
         trueAlteration = "";
         break;
-      case 1: 
+      case 1:
         trueAlteration = "d";
         break;
     }
@@ -215,5 +220,9 @@ export class CircleCharacteristicsComponent implements OnInit{
       this.selectedOctave--;
       this.circlesService.setOctave(this.selectedOctave);
     }
+  }
+
+  isPercussion(instrument: string): boolean {
+    return this.soundService.isPercussion(instrument);
   }
 }

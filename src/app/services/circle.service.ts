@@ -10,28 +10,40 @@ import { TimerService } from './timer.service';
 export class CircleService {
   circleSize: number = 1;
   circleRad: number = this.circleSize/2;
+
   circleChangedSubject: Subject<Circle> = new Subject<Circle>();
   circleChanged$: Observable<Circle> = this.circleChangedSubject.asObservable();
+
   circleDeletedSubject: Subject<Circle> = new Subject<Circle>();
   circleDeleted$: Observable<Circle> = this.circleDeletedSubject.asObservable();
+
   circleNewWaitingSubject: Subject<Circle> = new Subject<Circle>();
   circleNewWaiting$ = this.circleNewWaitingSubject.asObservable();
+
   circleNewAliveSubject: Subject<Circle> = new Subject<Circle>();
   circleNewAlive$ = this.circleNewAliveSubject.asObservable();
+
   circleNewDeadSubject: Subject<Circle> = new Subject<Circle>();
   circleNewDead$ = this.circleNewDeadSubject.asObservable();
+
   circleMovedToWaitingSubject: Subject<Circle> = new Subject<Circle>();
   circleMovedToWaiting$ = this.circleMovedToWaitingSubject.asObservable();
+
   circleMovedToAliveSubject: Subject<Circle> = new Subject<Circle>();
   circleMovedToAlive$ = this.circleMovedToAliveSubject.asObservable();
+
   circleMovedToDeadSubject: Subject<Circle> = new Subject<Circle>();
   circleMovedToDead$ = this.circleMovedToDeadSubject.asObservable();
+
   circleListWaitingSubject = new BehaviorSubject<Circle[]>([]);
   circleListWaiting$: Observable<Circle[]> = this.circleListWaitingSubject.asObservable();
+
   circleListAliveSubject = new BehaviorSubject<Circle[]>([]);
   circleListAlive$: Observable<Circle[]> = this.circleListAliveSubject.asObservable();
+
   circleListDeadSubject = new BehaviorSubject<Circle[]>([]);
   circleListDead$: Observable<Circle[]> = this.circleListDeadSubject.asObservable();
+
   private collisionSubject = new Subject<any>();
   public collision$ = this.collisionSubject.asObservable();
 
@@ -42,10 +54,13 @@ export class CircleService {
   alterations: string[] = [];
   octaves: string[] = [];
   highestId: number = 0;
+
   circleListSubject = new BehaviorSubject<Circle[]>([]);
   circleList$: Observable<Circle[]> = this.circleListSubject.asObservable();
+
   selectedCircleSubject = new BehaviorSubject<Circle | null>(null);
   selectedCircle$ = this.selectedCircleSubject.asObservable();
+
   exportWavCircleSubject = new BehaviorSubject<Circle | null>(null);
   exportWavCircle$ = this.exportWavCircleSubject.asObservable();
   constructor(soundService : SoundService, timerService: TimerService) {
