@@ -3,9 +3,9 @@ import { Circle } from '../models/circle';
 import { TimerService } from './timer.service';
 import * as toWav from 'audiobuffer-to-wav';
 import { SoundService } from './sound.service';
-import {ArenaService} from "./arena.service";
-import {Observable, Subject} from "rxjs";
-import {CircleService} from "./circle.service";
+import { ArenaService } from "./arena.service";
+import { Observable, Subject } from "rxjs";
+import { CircleService } from "./circle.service";
 
 @Injectable({
   providedIn: 'root'
@@ -15,28 +15,27 @@ export class ExportWAVService {
   currentTime: number = 0;
   timestamp: number = 0;
   squareUnit: number = 10;
-  fps: number= 60;
+  elapsedTime: number = 0;
+  fps: number = 60;
   intervalChangedSubject: Subject<any> = new Subject<any>();
   intervalChanged$: Observable<any> = this.intervalChangedSubject.asObservable();
   constructor(private timerService: TimerService, private soundService: SoundService, private arenaService: ArenaService, private circleService: CircleService) {
-    this.circleService.exportWavCircle$.subscribe(circle => {
-      if (circle) {
-        this.exportMp3(circle);
+    this.circleService.exportWavCircle$.subscribe(data => {
+      if (data) {
+        this.exportMp3(data);
       }
     });
   }
 
 
-  exportMp3(circle: Circle) {
-    console.log("exportMP3 " +this.timerService?.getTimeStamp() )
-
+  exportMp3(data: any[]) {
+    var circle: Circle = data[0];
     const collisionInfo = {
-
       instrument: circle.instrument,
       note: circle.note,
       octave: circle.octave,
       alteration: circle.alteration,
-      currentTime: this.timerService?.getTimeStamp(),
+      currentTime: data[1] / 1000,
       volume: circle.volume
     };
     this.collisionData.push(collisionInfo);
@@ -58,10 +57,10 @@ export class ExportWAVService {
       jsonData.map(async (item) => {
         let response;
         // Utiliser le chemin d'accès approprié pour charger l'audio
-        if(this.soundService.isPercussion(item.instrument)){
+        if (this.soundService.isPercussion(item.instrument)) {
           response = await fetch(`assets/samples/Percussion/${item.instrument}.mp3`);
         }
-        else{
+        else {
           response = await fetch(`assets/samples/${item.instrument}/${item.instrument}${item.note}${item.octave}.mp3`);
         }
         const arrayBuffer = await response.arrayBuffer();
@@ -82,7 +81,7 @@ export class ExportWAVService {
         const outputData = output.getChannelData(channel);
         const inputData = buffer.getChannelData(channel);
         // Convertir le temps de collision en échantillons
-        const startTime = context.sampleRate * item.currentTime / 1000;
+        const startTime = context.sampleRate * item.currentTime;
 
         // Ajouter les données audio au buffer de sortie avec le volume appliqué
         for (let i = 0; i < inputData.length; i++) {
@@ -107,6 +106,7 @@ export class ExportWAVService {
     anchor.download = 'audio_output.wav';
     anchor.click();
     window.URL.revokeObjectURL(url);
+    this.collisionData = [];
   }
 
   private audioBufferToWav(audioBuffer: AudioBuffer) {
@@ -118,10 +118,10 @@ export class ExportWAVService {
     const startTime = this.timerService?.getTimeStamp() ?? 0;
     console.log(`Début de la simulation sonore. Durée totale: ${duration} ms`);
 
-    for (let currentTime = 0; currentTime <= duration; currentTime += 10) {
-      const elapsedTime = currentTime;
-      console.log(`Mise à jour des arènes à ${currentTime} ms (temps écoulé: ${elapsedTime / 1000} s)`);
-      this.arenaService.updateArenas(elapsedTime , startTime + elapsedTime, this.squareUnit, true);
+    for (let currentTime = 10; currentTime <= duration; currentTime += 10) {
+      this.elapsedTime = currentTime / 1000;
+      console.log(`Mise à jour des arènes à ${currentTime} ms (temps écoulé: ${this.elapsedTime} s)`);
+      this.arenaService.updateArenas(0.01, currentTime, this.squareUnit, true);
 
       if (currentTime >= duration) {
         console.log('Fin de la simulation sonore.');

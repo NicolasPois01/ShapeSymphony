@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {ExportWAVService} from "../services/exportWAV.service";
+import { ExportWAVService } from "../services/exportWAV.service";
 import { TimerService } from "../services/timer.service";
 import { ArenaService } from "../services/arena.service";
 import { AnimationService } from "../services/animation.service";
@@ -22,9 +22,9 @@ export class ExportMp3Component {
     private timerService: TimerService,
     private arenaService: ArenaService,
     private animationService: AnimationService,
-  ) {}
+  ) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   openTimeInputModal() {
     this.showModal = true;
@@ -37,13 +37,18 @@ export class ExportMp3Component {
   submitTime() {
     this.showModal = false;
     this.arenaService.arenaList$.subscribe(arenas => { this.arenas = arenas; });
+    this.timerService?.pause();
+    this.timerService?.resetTimer();
+    this.animationService.pauseAnimation();
+    this.arenaService.restoreArenas();
     this.arenas.forEach(arena => { this.arenaService.muteArena(arena.id); });
     this.totalTimeInMilliseconds = ((this.inputMinutes || 0) * 60000) + ((this.inputSeconds || 0) * 1000);
-    this.ExportWAVService.startUpdateLoop(this.totalTimeInMilliseconds);
 
     this.ExportWAVService.intervalChanged$.subscribe(() => {
       this.finalizeRecording(this.totalTimeInMilliseconds);
     });
+
+    this.ExportWAVService.startUpdateLoop(this.totalTimeInMilliseconds);
   }
 
 
@@ -62,7 +67,6 @@ export class ExportMp3Component {
 
   processAudioMerge(duration: number) {
     const jsonData = this.ExportWAVService.exportCollisionDataAsJson();
-    console.log(jsonData);
     const audioData = JSON.parse(jsonData);
     this.ExportWAVService.mergeAudio(audioData, duration);
   }
