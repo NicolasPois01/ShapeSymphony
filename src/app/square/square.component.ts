@@ -40,7 +40,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
 
   @Input() grid: boolean = false;
   @Input() precisionMode: boolean = false;
-  @Input() timerService: TimerService|undefined = undefined;
+  @Input() timerService: TimerService | undefined = undefined;
   @Input() fps: number = 60;
   @Input() squareUnit: number = 10;
   @Input() arena!: Arena;
@@ -60,7 +60,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
 
   squareSize: number = 600;
   squareCanvasSize: number = 600;
-  midSquareSize = this.squareUnit/2;
+  midSquareSize = this.squareUnit / 2;
 
   mouseDown: boolean = false;
   savePoseX: number = 0;
@@ -87,15 +87,18 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     private animationService: AnimationService
   ) {
     this.arenaService.activeArenaSubject.subscribe(arena => {
-      this.circles = arena.circleListAlive;
-      this.draw();
+      if (!this.timerService?.isRunning) {
+        this.circles = arena.circleListAlive;
+        this.shockwaves = [];
+        this.draw();
+      }
     });
   }
 
   animate(self: SquareComponent) {
     let time = self.timerService?.getTimeStamp() ?? 0;
     let elapsedTime = (time - self.timestamp) / 1000;
-    if (elapsedTime >= 1/self.fps) {
+    if (elapsedTime >= 1 / self.fps) {
       self.timestamp = time;
       self.arenaService.updateArenas(elapsedTime, self.timestamp, self.squareUnit, false, self.mode);
       self.draw();
@@ -105,7 +108,11 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
 
   ngOnInit() {
     this.collisionSubscription = this.circlesService.collision$.subscribe(collisionData => {
-      this.handleCollision(collisionData.circle, collisionData.point);
+      if (this.mode !== "No Effects" && this.mode !== "No Circles") {
+        this.handleCollision(collisionData.circle, collisionData.point);
+      } else {
+        this.shockwaves = [];
+      }
     });
     this.soundService?.loadAudioFiles();
     this.animationService.isAnimationRunning$.subscribe(isRunning => {
@@ -114,7 +121,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
           let time = this.timerService?.getTimeStamp() ?? 0;
           let elapsedTime = (time - this.timestamp) / 1000;
           this.timestamp = time;
-          if (elapsedTime > 0){
+          if (elapsedTime > 0) {
             this.arenaService.updateArenas(elapsedTime, this.timestamp, this.squareUnit);
             this.draw();
           }
@@ -155,17 +162,17 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
   }
 
   onSquareClick(event: PointerEvent) {
-    if(this.soundService === undefined) return;
+    if (this.soundService === undefined) return;
     let x, y = 0;
     let squareSize = this.getSquareSize();
-    if(event.target === this.containerSquareElements.nativeElement) {
+    if (event.target === this.containerSquareElements.nativeElement) {
       x = this.circlesService.getFromMouse(this.savePoseX, this.squareUnit, squareSize);
       y = this.circlesService.getFromMouse(this.savePoseY, this.squareUnit, squareSize);
     } else {
       x = this.circlesService.getFromMouse(this.savePoseX + ((event?.target as HTMLElement)?.parentElement as HTMLElement)?.getBoundingClientRect()?.left, this.squareUnit, squareSize);
       y = this.circlesService.getFromMouse(this.savePoseY + ((event?.target as HTMLElement)?.parentElement as HTMLElement)?.getBoundingClientRect()?.top, this.squareUnit, squareSize);
     }
-    if(!this.circlesService.inRange(x, this.squareUnit) || !this.circlesService.inRange(y, this.squareUnit)) return;
+    if (!this.circlesService.inRange(x, this.squareUnit) || !this.circlesService.inRange(y, this.squareUnit)) return;
 
     let spawnTimeValue: number = this.timerService ? this.timerService.getTimeStamp() : 0;
     let instrument = this.soundService.activeInstrumentSubject.getValue();
@@ -175,14 +182,14 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     let volume = this.soundService.activeVolumeSubject.getValue();
     let audioFilePath = "";
     if (Object.values(Percussions).includes(instrument as Percussions)) {
-      let audioFileName = instrument+'.mp3';
+      let audioFileName = instrument + '.mp3';
       audioFilePath = `./assets/samples/Percussion/${audioFileName}`;
     } else {
-      let audioFileName = instrument+note+alteration+octave+'.mp3';
+      let audioFileName = instrument + note + alteration + octave + '.mp3';
       audioFilePath = `./assets/samples/${instrument}/${audioFileName}`;
     }
     const audio = new Audio(audioFilePath);
-    audio.volume = (volume/100);
+    audio.volume = (volume / 100);
     let circle: Circle = {
       id: this.circlesService.getNewId(),
       x: parseFloat(x.toFixed(this.precisionMode ? 1 : 2)),
@@ -204,7 +211,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
       maxTime: 0,
       nbBounces: 0,
       showable: true,
-      contactPoint: {x: -1, y: -1},
+      contactPoint: { x: -1, y: -1 },
       isColliding: false,
       audio: audio
     }
@@ -218,29 +225,29 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     let squareSize = this.getSquareSize();
     let x = parseFloat(this.circlesService.getFromMouse(this.currentPosX, this.squareUnit, squareSize).toFixed(this.precisionMode ? 1 : 2));
     let y = parseFloat(this.circlesService.getFromMouse(this.currentPosY, this.squareUnit, squareSize).toFixed(this.precisionMode ? 1 : 2));
-    this.mousebox.nativeElement.style.left = this.currentPosX+this.containerSquareElements.nativeElement.getBoundingClientRect().left+10 + 'px';
-    this.mousebox.nativeElement.style.top = this.currentPosY+this.containerSquareElements.nativeElement.getBoundingClientRect().top+10 + 'px';
-    if(this.mouseDown) {
-      this.saveAngle = (360-Math.round(Math.atan2(this.currentPosY - this.savePoseY, this.currentPosX - this.savePoseX)/Math.PI*180))%360;
+    this.mousebox.nativeElement.style.left = this.currentPosX + this.containerSquareElements.nativeElement.getBoundingClientRect().left + 10 + 'px';
+    this.mousebox.nativeElement.style.top = this.currentPosY + this.containerSquareElements.nativeElement.getBoundingClientRect().top + 10 + 'px';
+    if (this.mouseDown) {
+      this.saveAngle = (360 - Math.round(Math.atan2(this.currentPosY - this.savePoseY, this.currentPosX - this.savePoseX) / Math.PI * 180)) % 360;
       this.saveDistance = parseFloat((Math.sqrt(Math.pow(Math.abs(this.currentPosX - this.savePoseX), 2) + Math.pow(Math.abs(this.currentPosY - this.savePoseY), 2))).toFixed(this.precisionMode ? 1 : 2));
       this.saveVx = parseFloat((Math.cos(this.saveAngle * Math.PI / 180) * this.saveDistance).toFixed(this.precisionMode ? 1 : 2));
-      this.saveVy = -1*parseFloat((Math.sin(this.saveAngle * Math.PI / 180) * this.saveDistance).toFixed(this.precisionMode ? 1 : 2));
-      this.mousebox.nativeElement.innerHTML = ((this.saveDistance * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2) + " m/s <br/> "+this.saveAngle+" °";
+      this.saveVy = -1 * parseFloat((Math.sin(this.saveAngle * Math.PI / 180) * this.saveDistance).toFixed(this.precisionMode ? 1 : 2));
+      this.mousebox.nativeElement.innerHTML = ((this.saveDistance * this.squareUnit) / squareSize).toFixed(this.precisionMode ? 1 : 2) + " m/s <br/> " + this.saveAngle + " °";
       this.arrow.nativeElement.style.width = this.saveDistance + "px";
-      this.arrow.nativeElement.style.transform = "translateY(calc(-50% + 2.5px)) rotate("+(-this.saveAngle)+"deg)";
+      this.arrow.nativeElement.style.transform = "translateY(calc(-50% + 2.5px)) rotate(" + (-this.saveAngle) + "deg)";
     } else {
-      this.mousebox.nativeElement.innerText =  x+";"+y;
-      this.containerSquareElements.nativeElement.style.setProperty("--left-mouse-percent", (x + (this.squareUnit/2 - this.circlesService.circleRad))*10 + '%');
-      this.containerSquareElements.nativeElement.style.setProperty("--top-mouse-percent", (y + (this.squareUnit/2 - this.circlesService.circleRad))*10 + '%');
-      this.containerSquareElements.nativeElement.style.setProperty("--left-mouse-px", (this.currentPosX+this.containerSquareElements.nativeElement.getBoundingClientRect().left) + 'px');
-      this.containerSquareElements.nativeElement.style.setProperty("--top-mouse-px", (this.currentPosY+this.containerSquareElements.nativeElement.getBoundingClientRect().top) + 'px');
+      this.mousebox.nativeElement.innerText = x + ";" + y;
+      this.containerSquareElements.nativeElement.style.setProperty("--left-mouse-percent", (x + (this.squareUnit / 2 - this.circlesService.circleRad)) * 10 + '%');
+      this.containerSquareElements.nativeElement.style.setProperty("--top-mouse-percent", (y + (this.squareUnit / 2 - this.circlesService.circleRad)) * 10 + '%');
+      this.containerSquareElements.nativeElement.style.setProperty("--left-mouse-px", (this.currentPosX + this.containerSquareElements.nativeElement.getBoundingClientRect().left) + 'px');
+      this.containerSquareElements.nativeElement.style.setProperty("--top-mouse-px", (this.currentPosY + this.containerSquareElements.nativeElement.getBoundingClientRect().top) + 'px');
     }
   }
 
   onSquarePointerDown(event: PointerEvent) {
     this.arrow.nativeElement.style.display = "block";
     this.mouseDown = true;
-    let demiCircleSize = ((this.getCircleSize()/2) * this.getSquareSize()) / this.squareUnit;
+    let demiCircleSize = ((this.getCircleSize() / 2) * this.getSquareSize()) / this.squareUnit;
     this.savePoseX = event.offsetX < demiCircleSize ? demiCircleSize : (event.offsetX > this.getSquareSize() - demiCircleSize ? this.getSquareSize() - demiCircleSize : event.offsetX);
     this.savePoseY = event.offsetY < demiCircleSize ? demiCircleSize : (event.offsetY > this.getSquareSize() - demiCircleSize ? this.getSquareSize() - demiCircleSize : event.offsetY);
     this.containerSquareElements.nativeElement.style.setProperty("--left-mouse-px", (this.savePoseX + this.containerSquareElements.nativeElement.getBoundingClientRect().left) + 'px');
@@ -260,21 +267,21 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     document.body.classList.remove("unselectable");
     let x = parseFloat(this.circlesService.getFromMouse(event.offsetX, this.squareUnit, this.getSquareSize()).toFixed(this.precisionMode ? 1 : 2));
     let y = parseFloat(this.circlesService.getFromMouse(event.offsetY, this.squareUnit, this.getSquareSize()).toFixed(this.precisionMode ? 1 : 2));
-    this.mousebox.nativeElement.style.left = event.pageX+10 + 'px';
-    this.mousebox.nativeElement.style.top = event.pageY+10 + 'px';
-    this.mousebox.nativeElement.innerText =  x+";"+y;
-    this.containerSquareElements.nativeElement.style.setProperty("--left-mouse-percent", (x + (this.squareUnit/2 - this.circlesService.circleRad))*10 + '%');
-    this.containerSquareElements.nativeElement.style.setProperty("--top-mouse-percent", (y + (this.squareUnit/2 - this.circlesService.circleRad))*10 + '%');
+    this.mousebox.nativeElement.style.left = event.pageX + 10 + 'px';
+    this.mousebox.nativeElement.style.top = event.pageY + 10 + 'px';
+    this.mousebox.nativeElement.innerText = x + ";" + y;
+    this.containerSquareElements.nativeElement.style.setProperty("--left-mouse-percent", (x + (this.squareUnit / 2 - this.circlesService.circleRad)) * 10 + '%');
+    this.containerSquareElements.nativeElement.style.setProperty("--top-mouse-percent", (y + (this.squareUnit / 2 - this.circlesService.circleRad)) * 10 + '%');
     this.containerSquareElements.nativeElement.style.setProperty("--left-mouse-px", event.offsetX + 'px');
     this.containerSquareElements.nativeElement.style.setProperty("--top-mouse-px", event.offsetY + 'px');
     this.containerSquareElements.nativeElement.releasePointerCapture(event.pointerId);
     this.onSquareClick(event);
   }
 
-  onSquareMouseDown( event: MouseEvent) {
+  onSquareMouseDown(event: MouseEvent) {
   }
 
-  onSquareMouseUp( event: MouseEvent) {
+  onSquareMouseUp(event: MouseEvent) {
   }
 
   getCircleSize(): number {
@@ -302,7 +309,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
     this.shockwaves.forEach((wave, index) => {
       // Augmenter la taille des rayons pour une onde plus grande
       const radii = [0, wave.radius + 23, wave.radius + 35, wave.radius + 45];
-      const opacities = [0.18 , 0.20, 0.18, 0.15];
+      const opacities = [0.18, 0.20, 0.18, 0.15];
 
       radii.forEach((radius, idx) => {
         this.canvasInvisible.beginPath();
@@ -322,7 +329,7 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
 
   // Méthode draw modifiée pour inclure drawShockwaves
   async draw() {
-    if(this.squareElement === undefined || this.mode === "No Circles") return;
+    if (this.squareElement === undefined || this.mode === "No Circles") return;
     this.ctx.clearRect(0, 0, this.squareCanvasSize, this.squareCanvasSize);
     this.canvasInvisible.clearRect(0, 0, this.squareCanvasSize, this.squareCanvasSize);
 
@@ -339,13 +346,15 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
       this.canvasInvisible.stroke();
     }
 
-    this.drawShockwaves();
+    if (this.mode !== "No Effects") {
+      this.drawShockwaves();
+    }
 
     this.ctx.drawImage(this.canvasInvisible.canvas, 0, 0);
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if(this.mousebox) this.onSquareMouseMove(new PointerEvent("mousemove"), true );
+    if (this.mousebox) this.onSquareMouseMove(new PointerEvent("mousemove"), true);
     if (changes['arena']) {
       this.circles = this.arena.circleListAlive;
     }
@@ -362,8 +371,8 @@ export class SquareComponent implements OnInit, OnDestroy, OnChanges, AfterViewI
 
   onModeChange(mode: string) {
     this.mode = mode;
-    if(this.mode === "No Circles") {
-      this.ctx.clearRect(0, 0, this.squareCanvasSize, this.squareCanvasSize);
+    if (this.mode === "No Circles") {
+      this.ctx.clearRect(0, 0, this.squareCanvasSize, this.squareCanvasSize)
     } else {
       this.draw();
     }
