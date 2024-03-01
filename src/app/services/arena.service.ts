@@ -57,13 +57,25 @@ export class ArenaService {
   }
 
   addArena(): number {
+    const currentArenas = this.arenaListSubject.getValue();
+    let newId = 0;
+
+    // Create a sorted array of existing IDs for efficient checking
+    const existingIds = currentArenas.map(arena => arena.id).sort((a, b) => a - b);
+
+    // Find the first unused ID
+    while (existingIds.includes(newId)) {
+      newId++;
+    }
+    let newNameNumber: number = newId + 1;
+
     const newArena: Arena = {
-      id: this.arenaListSubject.getValue().length,
+      id: newId,
       circleListWaiting: [],
       circleListDead: [],
       circleListAlive: [],
       isMuted: false,
-      name: 'Arena ' + (this.arenaListSubject.getValue().length + 1)
+      name: 'Arena ' + newNameNumber
     };
 
     const updatedArenas = [...this.arenaListSubject.getValue(), newArena];
