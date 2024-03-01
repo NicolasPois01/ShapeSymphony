@@ -1,10 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import {CircleService} from "../services/circle.service";
-import {Circle} from "../models/circle";
+import { Component, OnInit } from '@angular/core';
+import { CircleService } from "../services/circle.service";
+import { Circle } from "../models/circle";
 import { Subscription } from 'rxjs';
-import {ArenaService} from "../services/arena.service";
-import {Arena} from "../models/arena";
-import {SoundService} from "../services/sound.service";
+import { ArenaService } from "../services/arena.service";
+import { Arena } from "../models/arena";
+import { SoundService } from "../services/sound.service";
 import { TimerService } from '../services/timer.service';
 
 @Component({
@@ -12,7 +12,7 @@ import { TimerService } from '../services/timer.service';
   templateUrl: './circle-list.component.html',
   styleUrls: ['./circle-list.component.scss']
 })
-export class CircleListComponent implements OnInit  {
+export class CircleListComponent implements OnInit {
   circleListWaiting!: Circle[];
   circleListAlive!: Circle[];
   circleListDead!: Circle[];
@@ -25,13 +25,13 @@ export class CircleListComponent implements OnInit  {
 
 
   constructor(private circlesService: CircleService,
-              private arenaService: ArenaService,
-              private timerService: TimerService) {}
+    private arenaService: ArenaService,
+    private timerService: TimerService) { }
 
   ngOnInit() {
     this.arenaSubscription = this.arenaService.activeArena$
       .subscribe(arena => {
-        if(!this.timerService.isRunning) {
+        if (!this.timerService.isRunning) {
           this.activeArena = arena;
           this.circleListAlive = arena.circleListAlive;
           this.circleListWaiting = arena.circleListWaiting;
@@ -46,64 +46,69 @@ export class CircleListComponent implements OnInit  {
         }
       });  // S'abonner à circleList de l'activeArena$
 
-      this.timerSubscription = this.timerService.isRunning$.subscribe(isRunning => {
-        if (!isRunning) {
-          this.circleListAlive = this.activeArena.circleListAlive;
-          this.circleListWaiting = this.activeArena.circleListWaiting;
-          this.circleListDead = this.activeArena.circleListDead;
-          this.circleListDisplay();
-        }
-      });
+    this.timerSubscription = this.timerService.isRunning$.subscribe(isRunning => {
+      if (!isRunning) {
+        this.circleListAlive = this.activeArena.circleListAlive;
+        this.circleListWaiting = this.activeArena.circleListWaiting;
+        this.circleListDead = this.activeArena.circleListDead;
+        this.circleListDisplay();
+      } else {
+        this.circleListAlive = [];
+        this.circleListWaiting = [];
+        this.circleListDead = [];
+        this.circleListDisplay();
+      }
+    });
 
-      this.circlesListSubscription = this.circlesService.circleChanged$.subscribe(
-        (updatedCircle: Circle) => {
-          let index = this.circleListAlive.findIndex(
+    this.circlesListSubscription = this.circlesService.circleChanged$.subscribe(
+      (updatedCircle: Circle) => {
+        let index = this.circleListAlive.findIndex(
+          (circle) => circle.id === updatedCircle.id
+        );
+
+        if (index !== -1) {
+          this.circleListAlive[index] = updatedCircle;
+        } else {
+          index = this.circleListWaiting.findIndex(
             (circle) => circle.id === updatedCircle.id
           );
-
           if (index !== -1) {
-            this.circleListAlive[index] = updatedCircle;
+            this.circleListWaiting[index] = updatedCircle;
           } else {
-            index = this.circleListWaiting.findIndex(
+            index = this.circleListDead.findIndex(
               (circle) => circle.id === updatedCircle.id
             );
             if (index !== -1) {
-              this.circleListWaiting[index] = updatedCircle;
-            } else {
-              index = this.circleListDead.findIndex(
-                (circle) => circle.id === updatedCircle.id
-              );
-              if (index !== -1) {
-                this.circleListDead[index] = updatedCircle;
-              }
+              this.circleListDead[index] = updatedCircle;
             }
           }
         }
-      );
-      this.circlesService.circleDeleted$.subscribe(
-        (deletedCircle: Circle) => {
-          let index = this.circleListAlive.findIndex(
+      }
+    );
+    this.circlesService.circleDeleted$.subscribe(
+      (deletedCircle: Circle) => {
+        let index = this.circleListAlive.findIndex(
+          (circle) => circle.id === deletedCircle.id
+        );
+        if (index !== -1) {
+          this.circleListAlive.splice(index, 1);
+        } else {
+          index = this.circleListWaiting.findIndex(
             (circle) => circle.id === deletedCircle.id
           );
           if (index !== -1) {
-            this.circleListAlive.splice(index, 1);
+            this.circleListWaiting.splice(index, 1);
           } else {
-            index = this.circleListWaiting.findIndex(
+            index = this.circleListDead.findIndex(
               (circle) => circle.id === deletedCircle.id
             );
             if (index !== -1) {
-              this.circleListWaiting.splice(index, 1);
-            } else {
-              index = this.circleListDead.findIndex(
-                (circle) => circle.id === deletedCircle.id
-              );
-              if (index !== -1) {
-                this.circleListDead.splice(index, 1);
-              }
+              this.circleListDead.splice(index, 1);
             }
           }
         }
-      );
+      }
+    );
 
     this.circleListWaiting = this.circlesService.circleListWaitingSubject.getValue();
     this.circleListAlive = this.circlesService.circleListAliveSubject.getValue();
@@ -160,7 +165,7 @@ export class CircleListComponent implements OnInit  {
   getCircleNameList(circle: Circle, list: string): [Circle, string, number, string] {
     let name: string;
     let counter: number = 0;
-    let alteration:string = '';
+    let alteration: string = '';
 
     switch (circle.alteration) {
       case "b":
