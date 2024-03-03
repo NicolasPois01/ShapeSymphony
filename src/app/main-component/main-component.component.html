@@ -3,8 +3,26 @@
   <div class="dropdown-content">
     <app-json-export></app-json-export>
     <app-import-json></app-import-json>
+    <button class="toggle-button-upload-midi-file" (click)="uploadMidiFile()" for="upload-midi-file-input">
+      Upload Midi
+    </button>
+    <input type="file" accept=".mid,.midi" id="upload-midi-file-input" style="display: none;" #fileInput/>
     <app-export-mp3></app-export-mp3>
     <button (click)="showConfirmationModal()" class="clear-button">Clear All</button>
+  </div>
+</div>
+
+<!-- Fenêtre modale de process -->
+<div class="modal" *ngIf="isProcessModalVisible">
+  <div class="modal-content">
+    <h3>Chargement du fichier .midi</h3>
+    <div class="progress">
+      <div class="progress-bar"></div>
+      <div class="progress-bar"></div>
+      <div class="progress-bar"></div>
+      <div class="progress-bar"></div>
+      <div class="progress-bar"></div>
+    </div>
   </div>
 </div>
 

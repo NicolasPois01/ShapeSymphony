@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
-import {Circle} from "../models/circle";
-import {BehaviorSubject, Observable, Subject} from "rxjs";
-import {SoundService} from "./sound.service";
+import { Injectable } from '@angular/core';
+import { Circle } from "../models/circle";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { SoundService } from "./sound.service";
 import { TimerService } from './timer.service';
 
 @Injectable({
@@ -9,8 +9,7 @@ import { TimerService } from './timer.service';
 })
 export class CircleService {
   circleSize: number = 1;
-  circleRad: number = this.circleSize/2;
-
+  circleRad: number = this.circleSize / 2;
   circleChangedSubject: Subject<Circle> = new Subject<Circle>();
   circleChanged$: Observable<Circle> = this.circleChangedSubject.asObservable();
 
@@ -49,7 +48,7 @@ export class CircleService {
 
   colors = ["red", "green", "blue", "yellow", "pink", "orange", "purple", "cyan", "magenta", "brown"];
   selectedCircle: Circle | null;
-  soundService : SoundService;
+  soundService: SoundService;
   notes: string[] = [];
   alterations: string[] = [];
   octaves: string[] = [];
@@ -60,10 +59,9 @@ export class CircleService {
 
   selectedCircleSubject = new BehaviorSubject<Circle | null>(null);
   selectedCircle$ = this.selectedCircleSubject.asObservable();
-
   exportWavCircleSubject = new BehaviorSubject<Circle | null>(null);
   exportWavCircle$ = this.exportWavCircleSubject.asObservable();
-  constructor(soundService : SoundService, timerService: TimerService) {
+  constructor(soundService: SoundService, timerService: TimerService) {
     this.selectedCircle = null;
     this.soundService = soundService;
     this.notes = this.soundService.notes;
@@ -73,18 +71,18 @@ export class CircleService {
 
   getFromMouse(pos: number, squareUnit: number, squareSize: number): number {
     let ret: number = (pos * squareUnit / squareSize) - squareUnit / 2;
-    if(ret > squareUnit / 2 - this.circleRad) ret = squareUnit/2 - this.circleRad;
-    else if(ret < -(squareUnit / 2 - this.circleRad)) ret = -(squareUnit/2 - this.circleRad);
+    if (ret > squareUnit / 2 - this.circleRad) ret = squareUnit / 2 - this.circleRad;
+    else if (ret < -(squareUnit / 2 - this.circleRad)) ret = -(squareUnit / 2 - this.circleRad);
     return ret;
   }
 
   inRange(pos: number, squareUnit: number): boolean {
-    return pos + (squareUnit/2) >= this.circleRad && pos <= (squareUnit/2) - this.circleRad;
+    return pos + (squareUnit / 2) >= this.circleRad && pos <= (squareUnit / 2) - this.circleRad;
   }
 
   clearAllCircles(): void {
     let circleList = [...this.circleListAliveSubject.getValue(), ...this.circleListWaitingSubject.getValue(), ...this.circleListDeadSubject.getValue()];
-    while(circleList.length > 0) {
+    while (circleList.length > 0) {
       this.deleteCircle(circleList[0]);
     }
   }
@@ -97,64 +95,58 @@ export class CircleService {
 
   calculatePos(elapsedTime: number, time: number, circle: Circle, squareUnit: number, isArenaMuted: boolean, midSquareSize: number, exportMP3Active: boolean = false) {
 
-    if(circle.spawnTime > time) return;
+    if (circle.spawnTime > time) return;
 
     // Update the circle's position based on its speed and elapsed time
-    if (exportMP3Active) {
-      circle.x += circle.xSpeed * elapsedTime * 10;
-      circle.y += circle.ySpeed * elapsedTime * 10;
-    }
-    else {
-      circle.x += circle.xSpeed * elapsedTime;
-      circle.y += circle.ySpeed * elapsedTime;
-    }
+    circle.x += circle.xSpeed * elapsedTime;
+    circle.y += circle.ySpeed * elapsedTime;
+
     this.updatePos(circle, circle.x, circle.y);
 
     let inRangeX = this.inRange(circle.x, squareUnit);
     let inRangeY = this.inRange(circle.y, squareUnit);
     // Collides x and y
-    if(!inRangeX && !inRangeY) {
-
-      circle.nbBounces ++;
+    if (!inRangeX && !inRangeY) {
+      circle.isColliding = true;
+      circle.nbBounces++;
       let adjustedX = circle.xSpeed > 0 ? circle.x + this.circleRad : circle.x - this.circleRad;
       let adjustedY = circle.ySpeed > 0 ? circle.y + this.circleRad : circle.y - this.circleRad;
       circle.contactPoint = { x: adjustedX, y: adjustedY };
-      this.collisionSubject.next({circle, point: circle.contactPoint});
+      this.collisionSubject.next({ circle, point: circle.contactPoint });
 
       this.bounceXY(circle, circle.xSpeed < 0, circle.ySpeed < 0, midSquareSize, isArenaMuted);
-      if (exportMP3Active) this.exportWavCircleSubject.next(circle);
+      if (exportMP3Active) this.exportWavCircleSubject.next([circle, time]);
 
       setTimeout(() => {
         circle.isColliding = false;
       }, 500);
     } else if (!inRangeX) { // Collides x
       circle.isColliding = true;
-      circle.nbBounces ++;
+      circle.nbBounces++;
       let adjustedX = circle.xSpeed > 0 ? circle.x + this.circleRad : circle.x - this.circleRad;
       circle.contactPoint = { x: adjustedX, y: circle.y };
-      this.collisionSubject.next({circle, point: circle.contactPoint});
-
+      this.collisionSubject.next({ circle, point: circle.contactPoint });
       this.bounceX(circle, circle.xSpeed < 0, midSquareSize, isArenaMuted)
-      if (exportMP3Active) this.exportWavCircleSubject.next(circle);
+      if (exportMP3Active) this.exportWavCircleSubject.next([circle, time]);
 
       setTimeout(() => {
         circle.isColliding = false;
       }, 500);
     } else if (!inRangeY) { // Collides y
       circle.isColliding = true;
-      circle.nbBounces ++;
+      circle.nbBounces++;
       let adjustedY = circle.ySpeed > 0 ? circle.y + this.circleRad : circle.y - this.circleRad;
-      circle.contactPoint = {x: circle.x, y: adjustedY};
-      this.collisionSubject.next({circle, point: circle.contactPoint});
+      circle.contactPoint = { x: circle.x, y: adjustedY };
+      this.collisionSubject.next({ circle, point: circle.contactPoint });
 
       this.bounceY(circle, circle.ySpeed < 0, midSquareSize, isArenaMuted);
-      if (exportMP3Active) this.exportWavCircleSubject.next(circle);
+      if (exportMP3Active) this.exportWavCircleSubject.next([circle, time]);
 
       setTimeout(() => {
         circle.isColliding = false;
       }, 500);
     }
-    if(circle.maxBounces != 0 && circle.nbBounces >= circle.maxBounces) {
+    if (circle.maxBounces != 0 && circle.nbBounces >= circle.maxBounces) {
       this.moveCircleToDeadList(circle);
       return;
     }
@@ -167,7 +159,7 @@ export class CircleService {
       this.soundService.playAudio(circle);
     }
     circle.xSpeed = -circle.xSpeed;
-    if(leftBorder) {
+    if (leftBorder) {
       circle.x = -(midSquareSize + (circle.x + midSquareSize));
     } else {
       circle.x = midSquareSize - (circle.x - midSquareSize);
@@ -179,7 +171,7 @@ export class CircleService {
       this.soundService.playAudio(circle);
     }
     circle.ySpeed = -circle.ySpeed;
-    if(topBorder) {
+    if (topBorder) {
       circle.y = -(midSquareSize + (circle.y + midSquareSize));
     } else {
       circle.y = midSquareSize - (circle.y - midSquareSize);
@@ -192,12 +184,12 @@ export class CircleService {
     }
     circle.xSpeed = -circle.xSpeed;
     circle.ySpeed = -circle.ySpeed;
-    if(leftBorder) {
+    if (leftBorder) {
       circle.x = -(midSquareSize + (circle.x + midSquareSize));
     } else {
       circle.x = midSquareSize - (circle.x - midSquareSize);
     }
-    if(topBorder) {
+    if (topBorder) {
       circle.y = -(midSquareSize + (circle.y + midSquareSize));
     } else {
       circle.y = midSquareSize - (circle.y - midSquareSize);
@@ -275,17 +267,17 @@ export class CircleService {
 
   setCircleListAlive(circleList: Circle[]) {
     this.circleListAliveSubject.next(circleList);
-    this.highestId = Math.max(...[...this.circleListWaitingSubject.getValue(),...this.circleListAliveSubject.getValue(),...this.circleListDeadSubject.getValue()].map(circle => circle.id)) + 1;
+    this.highestId = Math.max(...[...this.circleListWaitingSubject.getValue(), ...this.circleListAliveSubject.getValue(), ...this.circleListDeadSubject.getValue()].map(circle => circle.id)) + 1;
   }
 
   setCircleListWaiting(circleList: Circle[]) {
     this.circleListWaitingSubject.next(circleList);
-    this.highestId = Math.max(...[...this.circleListWaitingSubject.getValue(),...this.circleListAliveSubject.getValue(),...this.circleListDeadSubject.getValue()].map(circle => circle.id)) + 1;
+    this.highestId = Math.max(...[...this.circleListWaitingSubject.getValue(), ...this.circleListAliveSubject.getValue(), ...this.circleListDeadSubject.getValue()].map(circle => circle.id)) + 1;
   }
 
   setCircleListDead(circleList: Circle[]) {
     this.circleListDeadSubject.next(circleList);
-    this.highestId = Math.max(...[...this.circleListWaitingSubject.getValue(),...this.circleListAliveSubject.getValue(),...this.circleListDeadSubject.getValue()].map(circle => circle.id)) + 1;
+    this.highestId = Math.max(...[...this.circleListWaitingSubject.getValue(), ...this.circleListAliveSubject.getValue(), ...this.circleListDeadSubject.getValue()].map(circle => circle.id)) + 1;
   }
 
   setColor(color: string | undefined) {
@@ -376,7 +368,7 @@ export class CircleService {
     if (newNote === "Do" && alteration === "b") {
       circle.note = "Si";
       circle.alteration = "";
-      circle.octave -=1;
+      circle.octave -= 1;
     } else if (newNote === "Mi" && alteration === "d") {
       circle.note = "Fa";
       circle.alteration = "";
@@ -386,7 +378,7 @@ export class CircleService {
     } else if (newNote === "Si" && alteration === "d") {
       circle.note = "Do";
       circle.alteration = "";
-      circle.octave +=1;
+      circle.octave += 1;
     }
 
     const newAudioFileName = `${instrument}${circle.note}${circle.alteration}${circle.octave}.mp3`;
@@ -397,7 +389,7 @@ export class CircleService {
     if (response.ok) {
       newAudio = new Audio(newAudioFilePath);
       newAudio.preload = "auto";
-      newAudio.volume = circle.volume/100;
+      newAudio.volume = circle.volume / 100;
       newAudio.load();
     }
     this.circleChangedSubject.next(circle);

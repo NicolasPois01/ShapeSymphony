@@ -6,14 +6,14 @@ import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
   styleUrls: ['./arena-option.component.scss']
 })
 export class ArenaOptionComponent {
-  
+
   @Output() public onFPSChange: EventEmitter<any> = new EventEmitter();
   @Output() public onModeChange: EventEmitter<any> = new EventEmitter();
 
   mode = 'Normal';
-  fps = '60fps';
+  fps = 60;
 
-  constructor() {}
+  constructor() { }
 
   changeMode() {
     switch (this.mode) {
@@ -31,17 +31,17 @@ export class ArenaOptionComponent {
 
   changeFPS() {
     switch (this.fps) {
-      case '60fps':
-        this.fps = '30fps';
+      case 60:
+        this.fps = 30;
         break;
-      case '30fps':
-        this.fps = '15fps';
+      case 30:
+        this.fps = 15;
         break;
       default:
-        this.fps = '60fps';
+        this.fps = 60;
         break;
     }
-    this.onFPSChange.emit(Number(this.fps.slice(0, 2)));
+    this.onFPSChange.emit(this.fps);
   }
 
   getIconName() {
