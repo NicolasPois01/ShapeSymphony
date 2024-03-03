@@ -59,7 +59,7 @@ export class CircleService {
 
   selectedCircleSubject = new BehaviorSubject<Circle | null>(null);
   selectedCircle$ = this.selectedCircleSubject.asObservable();
-  exportWavCircleSubject = new BehaviorSubject<Circle | null>(null);
+  exportWavCircleSubject = new BehaviorSubject<any[] | null>(null);
   exportWavCircle$ = this.exportWavCircleSubject.asObservable();
   constructor(soundService: SoundService, timerService: TimerService) {
     this.selectedCircle = null;
