@@ -94,7 +94,7 @@ export class CircleService {
     let inRangeY = this.inRange(circle.y, squareUnit);
     // Collides x and y
     if (!inRangeX && !inRangeY) {
-
+      circle.isColliding = true;
       circle.nbBounces++;
       let adjustedX = circle.xSpeed > 0 ? circle.x + this.circleRad : circle.x - this.circleRad;
       let adjustedY = circle.ySpeed > 0 ? circle.y + this.circleRad : circle.y - this.circleRad;

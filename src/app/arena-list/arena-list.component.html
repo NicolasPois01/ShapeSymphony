@@ -3,10 +3,6 @@
     <button class="toggle-button-add-arena" (click)="addArena()">
       <lucide-icon name="plus"></lucide-icon> Add arena
     </button>
-    <input type="file" accept=".mid,.midi" id="upload-midi-file-input" style="display: none;" #fileInput/>
-    <button class="toggle-button-upload-midi-file" (click)="uploadMidiFile()" for="upload-midi-file-input">
-      <lucide-icon name="plus"></lucide-icon> Upload Midi
-    </button>
   </div>
   <div id="app-arena-list-inside">
   <div *ngFor="let arena of arenaList"
@@ -35,19 +31,4 @@
   </div>
   </div>
 </div>
-
-<!-- Fenêtre modale de process -->
-<div class="modal" *ngIf="isProcessModalVisible">
-  <div class="modal-content">
-    <h3>Chargement du fichier .midi</h3>
-    <div class="progress">
-      <div class="progress-bar"></div>
-      <div class="progress-bar"></div>
-      <div class="progress-bar"></div>
-      <div class="progress-bar"></div>
-      <div class="progress-bar"></div>
-    </div>
-  </div>
-</div>
-
 

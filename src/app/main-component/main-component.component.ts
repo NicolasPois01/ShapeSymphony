@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { CircleService } from '../services/circle.service';
 import { Circle } from '../models/circle';
 import { Subject } from 'rxjs';
@@ -6,7 +6,7 @@ import { takeUntil } from 'rxjs/operators';
 import { TimerService } from '../services/timer.service';
 import { Arena } from "../models/arena";
 import { ArenaService } from "../services/arena.service";
-import {SoundService} from "../services/sound.service";
+import { SoundService } from "../services/sound.service";
 import { AnimationService } from '../services/animation.service';
 
 @Component({
@@ -16,7 +16,7 @@ import { AnimationService } from '../services/animation.service';
   host: {
     '(document:keydown)': 'handleKeyboardEvent($event)'
   },
-  providers: [ TimerService ]
+  providers: [TimerService]
 })
 export class MainComponentComponent implements OnInit, OnDestroy {
 
@@ -25,17 +25,21 @@ export class MainComponentComponent implements OnInit, OnDestroy {
   circles: Circle[] = [];
   private unsubscribe$ = new Subject();
 
+  @ViewChild('fileInput') fileInput: ElementRef | undefined;
+
   fps: number = 60;
   squareUnit: number = 10;
 
   activeArena!: Arena;
   activeInstrument!: string;
 
+  isProcessModalVisible: boolean = false;
+
   constructor(private circleService: CircleService,
-              private arenaService: ArenaService,
-              public timerService: TimerService,
-              private soundService: SoundService,
-              private animationService: AnimationService) {}
+    private arenaService: ArenaService,
+    public timerService: TimerService,
+    private soundService: SoundService,
+    private animationService: AnimationService) { }
 
   ngOnInit() {
     this.circleService.circleListAlive$
@@ -52,24 +56,34 @@ export class MainComponentComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
+  uploadMidiFile() {
+    this.fileInput?.nativeElement.addEventListener('change', async (event: any) => {
+      const file = event.target.files[0];
+      this.showProcessModal();
+      await this.arenaService.uploadMidiFile(file);
+      this.hideProcessModal();
+    });
+    this.fileInput?.nativeElement.click();
+  }
+
   handleKeyboardEvent(event: KeyboardEvent) {
-    if( event.target instanceof HTMLInputElement || 
-        event.target instanceof HTMLTextAreaElement || 
-        event.target instanceof HTMLSelectElement) return;
-    if(event.key === "Shift") this.grid = !this.grid;
-    else if(event.key === "Control") this.precisionMode = !this.precisionMode;
-    else if(event.key === " ") {
+    if (event.target instanceof HTMLInputElement ||
+      event.target instanceof HTMLTextAreaElement ||
+      event.target instanceof HTMLSelectElement) return;
+    if (event.key === "Shift") this.grid = !this.grid;
+    else if (event.key === "Control") this.precisionMode = !this.precisionMode;
+    else if (event.key === " ") {
       this.timerService.toggle();
       this.animationService.toggleAnimation();
     }
-    if(event.target instanceof HTMLButtonElement) {
+    if (event.target instanceof HTMLButtonElement) {
       // stop execution of button
       event.preventDefault();
       event.stopPropagation();
     }
   }
 
-  isPercussion (instrument: string): boolean {
+  isPercussion(instrument: string): boolean {
     return this.soundService.isPercussion(instrument);
   }
 
@@ -86,6 +100,13 @@ export class MainComponentComponent implements OnInit, OnDestroy {
     this.arenaService.clearAll();
     this.timerService?.resetTimer();
     this.hideConfirmationModal();
+  }
+  showProcessModal() {
+    this.isProcessModalVisible = true;
+  }
+
+  hideProcessModal() {
+    this.isProcessModalVisible = false;
   }
 
 }

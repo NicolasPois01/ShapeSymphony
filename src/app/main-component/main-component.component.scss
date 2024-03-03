@@ -84,12 +84,31 @@ app-timer{
 
 .dropdown-content app-json-export,
 .dropdown-content app-import-json,
-.dropdown-content app-export-mp3 {
+.dropdown-content app-export-mp3,
+.dropdown-content .toggle-button-upload-midi-file {
   color: white;
   padding: 12px 16px;
   text-decoration: none;
   display: block;
   font-size: 14px;
+}
+
+.dropdown-content .toggle-button-upload-midi-file {
+  background-color: #2a1f3d; /* Couleur d'arrière-plan */
+  color: #fff; /* Couleur du texte */
+  padding: 10px 20px; /* Espacement intérieur */
+  flex: 1;
+  margin: 10px 20px;
+  border: none; /* Suppression de la bordure */
+  border-radius: 12px; /* Coins arrondis */
+  cursor: pointer; /* Curseur de la main au survol */
+  box-shadow: -3px -3px 7px #36284e, 3px 3px 7px #1e162c; /* Ombre */
+  transition: background-color 0.3s, box-shadow 0.3s; /* Transition en douceur */
+}
+
+.dropdown-content .toggle-button-upload-midi-file:hover {
+  box-shadow: -1px -1px 3px #36284e, 1px 1px 3px #1e162c; /* Ombre au survol */
+  background-color: #36284e; /* Changement de couleur d'arrière-plan au survol */
 }
 
 .file-dropdown:hover .dropdown-content {
@@ -231,4 +250,66 @@ input::placeholder {
 
 ::-moz-scrollbar-track {
   background-color: #2a1f3d; /* Color of the track */
+}
+
+.progress {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  column-gap: 10px;
+  background: none;
+  overflow: visible;
+  height: 10px;
+}
+
+.progress-bar {
+  width: calc(20% - 10px);
+  height: 10px;
+  -webkit-animation: pulse 1s alternate infinite;
+  -moz-animation: pulse 1s alternate infinite;
+  animation: pulse 1s alternate infinite;
+  background: rgba(255,255,255,0.9);
+  box-shadow: inset 0px 0px 10px 2px rgba(117,182,255,0.5),
+                    0px 0px 20px rgba(117,182,214,0.5);
+}
+
+@-webkit-keyframes pulse {
+  0% {
+    background: rgba(255,255,255,1);
+    box-shadow: inset 0px 0px 10px 2px rgba(117,182,255,0.5),
+                      0px 0px 40px 2px rgba(105,135,255,1);
+  }
+  100% {
+    background: rgba(255,255,255,0);
+    box-shadow: inset 0px 0px 10px 2px rgba(117,182,255,0.5),
+                      0px 0px 30px 2px rgba(105,135,255,0.3);
+  }
+}
+
+@-moz-keyframes pulse {
+  0% {
+    background: rgba(255,255,255,1);
+    box-shadow: inset 0px 0px 10px 2px rgba(117,182,255,0.5),
+                      0px 0px 40px 2px rgba(105,135,255,1);
+  }
+  100% {
+    background: rgba(255,255,255,0);
+    box-shadow: inset 0px 0px 10px 2px rgba(117,182,255,0.5),
+                      0px 0px 30px 2px rgba(105,135,255,0.3);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    background: rgba(255,255,255,1);
+    box-shadow: inset 0px 0px 10px 2px rgba(117,182,255,0.5),
+                      0px 0px 40px 2px rgba(105,135,255,1);
+  }
+  100% {
+    background: rgba(255,255,255,0);
+    box-shadow: inset 0px 0px 10px 2px rgba(117,182,255,0.5),
+                      0px 0px 30px 2px rgba(105,135,255,0.3);
+  }
 }
