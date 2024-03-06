@@ -4,9 +4,11 @@
     <app-json-export></app-json-export>
     <app-import-json></app-import-json>
     <button class="toggle-button-upload-midi-file" (click)="uploadMidiFile()" for="upload-midi-file-input">
-      Uploader un Midi
+      Importer un Midi
     </button>
     <input type="file" accept=".mid,.midi" id="upload-midi-file-input" style="display: none;" #fileInput/>
+    <button class="toggle-button-upload-audio-file" (click)="uploadAudioFile()" for="upload-audio-file-input">Importer un audio</button>
+    <input type="file" accept=".mp3,.wav" id="upload-audio-file-input" style="display: none;" #audioFileInput/>
     <app-export-mp3></app-export-mp3>
   </div>
 </div>
@@ -15,6 +17,20 @@
 <div class="modal" *ngIf="isProcessModalVisible">
   <div class="modal-content">
     <h3>Chargement du fichier .midi</h3>
+    <div class="progress">
+      <div class="progress-bar"></div>
+      <div class="progress-bar"></div>
+      <div class="progress-bar"></div>
+      <div class="progress-bar"></div>
+      <div class="progress-bar"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Fenêtre modale de process audio -->
+<div class="modal" *ngIf="isProcessAudioModalVisible">
+  <div class="modal-content">
+    <h3>Chargement du fichier audio</h3>
     <div class="progress">
       <div class="progress-bar"></div>
       <div class="progress-bar"></div>

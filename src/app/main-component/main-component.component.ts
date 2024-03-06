@@ -26,6 +26,7 @@ export class MainComponentComponent implements OnInit, OnDestroy {
   private unsubscribe$ = new Subject();
 
   @ViewChild('fileInput') fileInput: ElementRef | undefined;
+  @ViewChild('audioFileInput') audioFileInput: ElementRef | undefined;
 
   fps: number = 60;
   squareUnit: number = 10;
@@ -34,6 +35,7 @@ export class MainComponentComponent implements OnInit, OnDestroy {
   activeInstrument!: string;
 
   isProcessModalVisible: boolean = false;
+  isProcessAudioModalVisible: boolean = false;
 
   constructor(private circleService: CircleService,
     private arenaService: ArenaService,
@@ -66,6 +68,16 @@ export class MainComponentComponent implements OnInit, OnDestroy {
     this.fileInput?.nativeElement.click();
   }
 
+  uploadAudioFile() {
+    this.audioFileInput?.nativeElement.addEventListener('change', async (event: any) => {
+      const file = event.target.files[0];
+      this.showProcessAudioModal();
+      await this.arenaService.uploadAudioFile(file);
+      this.hideProcessAudioModal();
+    });
+    this.audioFileInput?.nativeElement.click();
+  }
+
   handleKeyboardEvent(event: KeyboardEvent) {
     if (event.target instanceof HTMLInputElement ||
       event.target instanceof HTMLTextAreaElement ||
@@ -96,6 +108,7 @@ export class MainComponentComponent implements OnInit, OnDestroy {
   hideConfirmationModal() {
     this.isConfirmationModalVisible = false;
   }
+
   clearAll(): void {
     this.arenaService.clearAll();
     this.timerService?.resetTimer();
@@ -107,6 +120,14 @@ export class MainComponentComponent implements OnInit, OnDestroy {
 
   hideProcessModal() {
     this.isProcessModalVisible = false;
+  }
+
+  showProcessAudioModal() {
+    this.isProcessAudioModalVisible = true;
+  }
+
+  hideProcessAudioModal() {
+    this.isProcessAudioModalVisible = false;
   }
 
 }
