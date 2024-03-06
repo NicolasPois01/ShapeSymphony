@@ -44,12 +44,42 @@ export class MidiFileService {
     });
   }
 
+  async processMidiObject(midi: Midi): Promise<any> {
+    return new Promise((resolve, reject) => {
+      var midiProcessed = { name: "imported", elements: {} as StringArray };
+      midi.tracks.forEach(track => {
+        const notes = track.notes;
+        notes.forEach(note => {
+          let note_name = this.soundService.getValidNoteName(note.name);
+          let alteration = this.soundService.getAlteration(note.name);
+          midiProcessed.elements[track.instrument.family] = midiProcessed.elements[track.instrument.family] || {};
+          midiProcessed.elements[track.instrument.family][note_name + alteration + note.octave] = midiProcessed.elements[track.instrument.family][note_name + alteration + note.octave] || [];
+          midiProcessed.elements[track.instrument.family][note_name + alteration + note.octave].push({
+            note: note_name,
+            alteration: alteration,
+            time: note.time.toFixed(3),
+            duration: note.duration.toFixed(3),
+            octave: note.octave,
+            percussion: track.instrument.percussion,
+            instrument: track.instrument.name,
+            instrumentFamily: track.instrument.family,
+            volume: Math.floor(note.velocity * 100)
+          });
+        });
+      });
+      resolve(midiProcessed);
+    });
+  }
+
+
   getCircles(processMidiFile: any): any[] {
     var circle_sets = Array<any>();
     var suites = Array<any>();
     var circle_set = Array<any>();
+    console.log(processMidiFile);
     (Object.entries(processMidiFile.elements) as any[]).forEach(([_instrument_index, instrument]) => {
       (Object.entries(instrument) as any[]).forEach(([note_index, notes]) => {
+        console.log(notes);
         notes.forEach((note_first: any, index_note_first: any) => {
           circle_set.push(note_first);
           notes.every((note_ecart: any, index_note_ecart: any) => {
