@@ -1,6 +1,6 @@
-import {Component, NgModule, OnInit} from '@angular/core';
-import {Arena} from "../models/arena";
-import {ArenaService} from "../services/arena.service";
+import { Component, OnInit } from '@angular/core';
+import { Arena } from "../models/arena";
+import { ArenaService } from "../services/arena.service";
 
 @Component({
   selector: 'app-arena-list',
@@ -11,7 +11,8 @@ export class ArenaListComponent implements OnInit {
   arenaList!: Arena[];
   activeArena!: Arena;
 
-  constructor(private arenaService: ArenaService) {}
+  constructor(private arenaService: ArenaService) {
+  }
 
   ngOnInit() {
     this.arenaService.arenaList$.subscribe(
@@ -19,11 +20,11 @@ export class ArenaListComponent implements OnInit {
     );
     this.arenaService.activeArena$.subscribe(
       arena => this.activeArena = arena
-    )
+    );
   }
 
-  clearActive() {
-    this.arenaService.clearActiveArena();
+  clearActive(id: number) {
+    this.arenaService.clearArenaById(id);
   }
 
   addArena() {
@@ -47,7 +48,7 @@ export class ArenaListComponent implements OnInit {
     this.arenaService.muteArena(idArena);
   }
 
-  unmuteArena (idArena: number) {
+  unmuteArena(idArena: number) {
     this.arenaService.unmuteArena(idArena);
   }
 

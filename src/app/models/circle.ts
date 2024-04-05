@@ -19,6 +19,7 @@ export interface Circle {
   maxTime: number,
   nbBounces: number,
   showable: boolean,
-  contactPoint: {x: number, y: number},
-  isColliding: boolean;
+  contactPoint: { x: number, y: number },
+  isColliding: boolean,
+  audio: HTMLAudioElement;
 }

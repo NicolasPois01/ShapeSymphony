@@ -1,7 +1,9 @@
-import {Component, OnInit} from '@angular/core';
-import {CircleService} from "../services/circle.service";
-import {Circle} from "../models/circle";
-import {TimerService} from "../services/timer.service";
+import { Component, OnInit } from '@angular/core';
+import { CircleService } from "../services/circle.service";
+import { Circle } from "../models/circle";
+import { TimerService } from "../services/timer.service";
+import { TimeInputComponent } from '../time-input/time-input.component';
+import {SoundService} from "../services/sound.service";
 
 @Component({
   selector: 'app-circle-characteristics-list',
@@ -14,7 +16,7 @@ export class CircleCharacteristicsComponent implements OnInit{
   vitesseGlobale: number | undefined;
   selectedColor: string = '';
   selectedNote: string = '';
-  selectedAlteration: string = '';
+  selectedAlteration: number = 0;
   selectedOctave: number | undefined;
   availableColors: string[] = this.circlesService.colors;
   availableNotes: string[] = this.circlesService.notes;
@@ -24,18 +26,23 @@ export class CircleCharacteristicsComponent implements OnInit{
   newStartY: number | undefined;
   newAngle: number | undefined;
   maxBounces: number = 0;
+  spawnTime: any = { millisecondes: 0, secondes: 0, minutes: 0 };
+  instrumentName!: string;
 
-  constructor(private circlesService: CircleService, private timerService: TimerService) {}
+  constructor(private circlesService: CircleService,
+              private timerService: TimerService,
+              private soundService: SoundService) {}
 
   ngOnInit() {
     this.circlesService.selectedCircle$.subscribe((circle: Circle | null) => {
       this.selectedCircle = circle;
       if (circle) {
+        this.instrumentName = circle.instrument;
         this.newStartX = circle.startX;
         this.newStartY = circle.startY;
         this.selectedColor = circle.color;
         this.selectedNote = circle.note;
-        this.selectedAlteration = circle.alteration;
+        this.selectedAlteration = Number(circle.alteration);
         this.selectedOctave = circle.octave;
         this.angleDepart = Math.atan2(-circle.ySpeed, circle.xSpeed);
         if (this.angleDepart < 0) {
@@ -45,6 +52,11 @@ export class CircleCharacteristicsComponent implements OnInit{
         this.newAngle = this.angleDepart;
         this.vitesseGlobale = +Math.sqrt(Math.pow(circle.xSpeed, 2) + Math.pow(circle.ySpeed, 2)).toFixed(2);
         this.maxBounces = circle.maxBounces;
+        this.spawnTime = {
+          millisecondes: circle.spawnTime % 1000,
+          secondes: Math.floor(circle.spawnTime / 1000) % 60,
+          minutes: Math.floor(circle.spawnTime / 60000) % 60
+        };
       }
     });
   }
@@ -76,12 +88,25 @@ export class CircleCharacteristicsComponent implements OnInit{
     }
   }
 
-  setAlteration(alteration: string | undefined) {
+  setAlteration(alteration: number | undefined) {
+    let trueAlteration =""
+    switch (alteration){
+      case -1:
+        trueAlteration = "b";
+        break;
+      case 0:
+        trueAlteration = "";
+        break;
+      case 1:
+        trueAlteration = "d";
+        break;
+    }
+
     if (this.selectedCircle) {
       if (alteration != null) {
-        this.selectedCircle.alteration = alteration;
+        this.selectedCircle.alteration = trueAlteration;
       }
-      this.circlesService.setAlteration(alteration);
+      this.circlesService.setAlteration(trueAlteration);
     }
   }
 
@@ -93,6 +118,20 @@ export class CircleCharacteristicsComponent implements OnInit{
       this.circlesService.setOctave(octave);
     }
   }
+
+  getMinutesSpawnTime() {
+    return this.spawnTime.minutes;
+  }
+
+  getSecondesSpawnTime() {
+    return this.spawnTime.secondes;
+  }
+
+  getMillisecondesSpawnTime() {
+    return this.spawnTime.millisecondes;
+  }
+
+
 
   validateStartX(value: number | undefined) {
     if (value !== undefined) {
@@ -139,6 +178,20 @@ export class CircleCharacteristicsComponent implements OnInit{
     }
   }
 
+  onTimeChange(time: any) {
+    if (this.selectedCircle) {
+      this.selectedCircle.spawnTime = time.millisecondes + (time.secondes * 1000) + (time.minutes * 60000);
+      this.circlesService.updateSpawnTime(this.selectedCircle);
+      if(this.selectedCircle.spawnTime > 0) {
+        this.circlesService.moveCircleToWaitingList(this.selectedCircle);
+      } else {
+        this.circlesService.moveCircleToAliveList(this.selectedCircle);
+      }
+      this.selectedCircle.spawnTime = this.selectedCircle.spawnTime;
+      this.circlesService.setSpawnTime(this.selectedCircle.spawnTime);
+    }
+  }
+
   isTimerNotStarted() {
    return this.timerService.isTimerNotStarted();
   }
@@ -167,5 +220,9 @@ export class CircleCharacteristicsComponent implements OnInit{
       this.selectedOctave--;
       this.circlesService.setOctave(this.selectedOctave);
     }
+  }
+
+  isPercussion(instrument: string): boolean {
+    return this.soundService.isPercussion(instrument);
   }
 }
